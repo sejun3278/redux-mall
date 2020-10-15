@@ -36,7 +36,7 @@ class App extends Component {
 
     return(
       <div className='App'>
-        <h1> Redux Test </h1>
+        <h1> Redux Test (자동 배포 중) </h1>
         <h3> 서버 상태 : {this.props.server}  </h3>
         <h3> DB 상태 : {this.props.db}  </h3>
 

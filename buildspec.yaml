@@ -3,15 +3,15 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 10 # 런타임 nodejs10으로 설정
+      nodejs: 10
     commands:
-      - npm i npm@latest -g # npm 버전 업데이트
+      - npm i npm@latest -g
   pre_build:
     commands:
-      - npm install # 빌드에 필요한 패키지 설치
+      - npm install
   build:
     commands:
-      - npm run build # 빌드
+      - npm run build
   post_build:
     commands:
-      - aws s3 sync ./build s3://sejun-redux-blog # 빌드 후 결과물을 버킷으로 업로드
+      - aws s3 sync ./build s3://sejun-redux-blog

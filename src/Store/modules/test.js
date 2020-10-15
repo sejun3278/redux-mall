@@ -2,13 +2,16 @@ import { createAction, handleActions } from 'redux-actions';
 
 const CHANGENUMBER = 'test/change_number';
 const CHECKSERVER = 'test/check_server';
+const CHECKDB = 'test/check_db';
 
 export const change_number = createAction(CHANGENUMBER);
 export const check_server = createAction(CHECKSERVER);
+export const check_db = createAction(CHECKDB);
 
 const initialState = {
    num : 0,
-   server : ""
+   server : "연동 안됨",
+   db : "연동 안됨"
 };
 
 export default handleActions({
@@ -29,7 +32,7 @@ export default handleActions({
     },
 
     [CHECKSERVER] : (state, data) => {
-      let server = ""
+      let server = state.server
 
       if(data.payload.status !== false) {
          server = data.payload.status
@@ -38,6 +41,19 @@ export default handleActions({
       return {
         ...state,
         server : server
+      };
+    },
+
+    [CHECKDB] : (state, data) => {
+      let db = ""
+
+      if(data.payload.status !== false) {
+         db = data.payload.status
+      }
+
+      return {
+        ...state,
+        db : db
       };
     },
 

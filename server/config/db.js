@@ -9,7 +9,7 @@ const db = mysql.createPool({
 
     password: 'SEJUN930520',
     
-    database: 'my-blog'
+    database: 'my_blog'
 });
 
 module.exports = db;

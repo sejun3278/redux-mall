@@ -11,12 +11,19 @@ class App extends Component {
 
   componentDidMount() {
     this._getServerStatus();
+    this._getDatabaseStatus();
   }
 
   _getServerStatus = async() => {
     const res = await axios.get('/data');
 
     this.props.testAction.check_server({ 'status' : res.data.result })
+  }
+
+  _getDatabaseStatus = async() => {
+    const res = await axios.get('/get/db_data');
+
+    this.props.testAction.check_db({ 'status' : res.data[0].string })
   }
 
   _changeNumber = (bool) => {
@@ -31,6 +38,8 @@ class App extends Component {
       <div className='App'>
         <h1> Redux Test </h1>
         <h3> 서버 상태 : {this.props.server}  </h3>
+        <h3> DB 상태 : {this.props.db}  </h3>
+
         <div>
           <button onClick={() => this._changeNumber(true)}> + </button>
           　{ this.props.num }　
@@ -48,7 +57,8 @@ App.defaultProps = {
 export default connect(
   (state) => ({
     num : state.test.num,
-    server : state.test.server
+    server : state.test.server,
+    db : state.test.db
   }), 
   (dispatch) => ({
       testAction : bindActionCreators(testAction, dispatch)

@@ -19,3 +19,15 @@ app.get('/test', (req, res) => {
 app.get('/data', (req, res) => {
     res.send({ result : '서버 통신 완료' });
 })
+
+app.get('/get/db_data', (req, res) => {
+    db.query("select * from test", (err, data) => {
+        if(!err) {
+            res.send(data);
+
+        } else {
+            console.log(err);
+            res.send(err);
+        }
+    })
+})

@@ -10,7 +10,7 @@ export const check_db = createAction(CHECKDB);
 
 const initialState = {
    num : 0,
-   server : "연동 안됨 222",
+   server : "연동 안됨",
    db : "연동 안됨"
 };
 

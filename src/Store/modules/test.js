@@ -45,7 +45,7 @@ export default handleActions({
     },
 
     [CHECKDB] : (state, data) => {
-      let db = ""
+      let db = state.db
 
       if(data.payload.status !== false) {
          db = data.payload.status

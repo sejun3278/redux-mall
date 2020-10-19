@@ -15,13 +15,13 @@ class App extends Component {
   }
 
   _getServerStatus = async() => {
-    const res = await axios.get('/data');
+    const res = await axios.get('https://sejun-redux-blog.herokuapp.com/data');
 
     this.props.testAction.check_server({ 'status' : res.data.result })
   }
 
   _getDatabaseStatus = async() => {
-    const res = await axios.get('/get/db_data');
+    const res = await axios.get('https://sejun-redux-blog.herokuapp.com/get/db_data');
 
     this.props.testAction.check_db({ 'status' : res.data[0].string })
   }

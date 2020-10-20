@@ -25,6 +25,7 @@ class App extends Component {
 
     this.props.testAction.check_db({ 'status' : res.data[0].string })
   }
+  //
 
   _changeNumber = (bool) => {
     const { testAction } = this.props;

@@ -14,7 +14,7 @@ class App extends Component {
   }
 
   _getAllState = async() => {
-    const res = await axios.get('/get/allState');
+    const res = await axios.get('https://sejun-redux-blog.herokuapp.com/get/allState');
 
     let result = {};
     result.server = res.data.server_state;

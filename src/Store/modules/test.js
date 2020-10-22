@@ -1,12 +1,11 @@
 import { createAction, handleActions } from 'redux-actions';
 
 const CHANGENUMBER = 'test/change_number';
-const CHECKSERVER = 'test/check_server';
-const CHECKDB = 'test/check_db';
+const ALLSTATE = 'test/all_state'
 
 export const change_number = createAction(CHANGENUMBER);
-export const check_server = createAction(CHECKSERVER);
-export const check_db = createAction(CHECKDB);
+export const all_state = createAction(ALLSTATE)
+
 
 const initialState = {
    num : 0,
@@ -31,28 +30,21 @@ export default handleActions({
       };
     },
 
-    [CHECKSERVER] : (state, data) => {
+    [ALLSTATE] : (state, data) => {
       let server = state.server
-
-      if(data.payload.status !== false) {
-         server = data.payload.status
-      }
-
-      return {
-        ...state,
-        server : server
-      };
-    },
-
-    [CHECKDB] : (state, data) => {
       let db = state.db
 
-      if(data.payload.status !== false) {
-         db = data.payload.status
+      if(data.payload.server === true) {
+         server = '서버 연결 완료'
+      }
+
+      if(data.payload.db === true) {
+         db = 'Sequelize 가동 중'
       }
 
       return {
         ...state,
+        server : server,
         db : db
       };
     },

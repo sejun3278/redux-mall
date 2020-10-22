@@ -10,22 +10,18 @@ import * as testAction from './Store/modules/test';
 class App extends Component {
 
   componentDidMount() {
-    this._getServerStatus();
-    this._getDatabaseStatus();
+    this._getAllState();
   }
 
-  _getServerStatus = async() => {
-    const res = await axios.get('https://sejun-redux-blog.herokuapp.com/data');
+  _getAllState = async() => {
+    const res = await axios.get('/get/allState');
 
-    this.props.testAction.check_server({ 'status' : res.data.result })
+    let result = {};
+    result.server = res.data.server_state;
+    result.db = res.data.db_state;
+
+    this.props.testAction.all_state( result )
   }
-
-  _getDatabaseStatus = async() => {
-    const res = await axios.get('https://sejun-redux-blog.herokuapp.com/get/db_data');
-
-    this.props.testAction.check_db({ 'status' : res.data[0].string })
-  }
-  //
 
   _changeNumber = (bool) => {
     const { testAction } = this.props;

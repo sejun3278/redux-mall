@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as testAction from './Store/modules/test';
+import { Route, Link, Switch } from 'react-router-dom';
+import { Food, Movie, Game } from './page'
 
 class App extends Component {
 
@@ -14,7 +16,7 @@ class App extends Component {
   }
 
   _getAllState = async() => {
-    const res = await axios.get('https://sejun-redux-blog.herokuapp.com/get/allState');
+    const res = await axios.get('/get/allState');
 
     let result = {};
     result.server = res.data.server_state;
@@ -41,6 +43,44 @@ class App extends Component {
           <button onClick={() => this._changeNumber(true)}> + </button>
           　{ this.props.num }　
           <button onClick={() => this._changeNumber(false)}> - </button>
+        </div>
+
+
+
+        <div style={{ 'marginTop' : '80px' }}>
+          <h4> What Do You Like ? </h4>
+
+          <ul id='like_list'>
+            <li id='list_list_title'> 
+              <Link to='/food'> Food </Link> 
+              <ul style={{  'listStyle' : 'none', 'marginLeft' : '60px' }}>
+                <li> <Link to='/food/Hamburger'> Hamburger </Link> </li>
+                <li> <Link to='/food/Ice Cream'> Ice Cream </Link> </li>
+                <li> <Link to='/food/Pizza'> Pizza </Link> </li>
+              </ul>
+            </li>
+
+            <li> 
+              <Link to='/game'> Game </Link> 
+              <ul style={{  'listStyle' : 'none', 'marginLeft' : '60px' }}>
+                <li> <Link to='/game?name=Warcraft'> Warcraft </Link> </li>
+                <li> <Link to='/game?name=League of Legends'> League of Legends </Link> </li>
+                <li> <Link to='/game?name=Fall Guys'> Fall Guys </Link> </li>
+              </ul>
+            </li>
+            <li> <Link to='/movie'> Movie </Link> </li>
+          </ul>
+
+          <h4> My Answer is : 
+            <Switch>
+              <Route path="/food/:name/:two" component={Food} />
+              <Route path="/food/:name" component={Food} />
+              <Route path="/food" component={Food} />
+
+              <Route path="/game" component={Game} />
+              <Route path="/movie" component={Movie} />
+            </Switch>
+          </h4>
         </div>
       </div>
     )

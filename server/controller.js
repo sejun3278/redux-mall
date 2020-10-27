@@ -11,6 +11,7 @@ module.exports = {
     api : {
         test : (req, res) => {
             console.log('컨트롤러 연결 성공!')
+            return res.send('컨트롤러 연결 성공!')
         },
     },
 

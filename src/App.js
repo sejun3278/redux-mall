@@ -11,6 +11,15 @@ import { Food, Movie, Game } from './page'
 
 class App extends Component {
 
+  componentDidMount() {
+    this._callServerStatus();
+  }
+
+  _callServerStatus = async() => {
+    const res = await axios.get('https://sejun-redux-server.herokuapp.com/test');
+    console.log(res)
+  }
+
   render() {
 
     return(

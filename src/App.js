@@ -15,7 +15,7 @@ class App extends Component {
 
     return(
       <div className='App'>
-        Sejun's mall
+        Sejun's mall (test)
       </div>
     )
   }

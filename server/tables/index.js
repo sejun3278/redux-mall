@@ -10,7 +10,7 @@ const config = require(path.join(__dirname, '..', 'config', 'db.json'))[
 const db = {};
 
 let sequelize = new Sequelize(
-    'my_blog',
+    'redux_mall',
 
     'sejun3278',
 

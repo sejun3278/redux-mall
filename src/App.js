@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import axios from 'axios';
 
 import { connect } from 'react-redux';
@@ -7,7 +6,8 @@ import { bindActionCreators } from 'redux';
 
 import * as testAction from './Store/modules/test';
 import { Route, Link, Switch } from 'react-router-dom';
-import { Food, Movie, Game } from './page'
+
+import { Header, Signup } from './page';
 
 class App extends Component {
 
@@ -24,7 +24,15 @@ class App extends Component {
 
     return(
       <div className='App'>
-        Sejun's mall (test)
+        <Header />
+
+        <div id='body_div'>
+          <div id='body_div_left'> </div>
+          <div id='body_div_center'>
+            <Route path='/signup' component={Signup} />
+          </div>
+          <div id='body_div_right'> </div>
+        </div>
       </div>
     )
   }

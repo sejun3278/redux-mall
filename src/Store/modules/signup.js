@@ -2,9 +2,11 @@ import { createAction, handleActions } from 'redux-actions';
 
 const INPUTINFO = 'signup/input_info';
 const SETALERT = 'signup/set_alert';
+const SIGNUPALLOW = 'signup/sigunup_allow';
 
 export const input_info = createAction(INPUTINFO);
 export const set_alert = createAction(SETALERT);
+export const signup_allow = createAction(SIGNUPALLOW);
 
 const initialState = {
     id : "",
@@ -13,6 +15,7 @@ const initialState = {
     pw_check : "",
     agree : false,
     alert_obj : { id : false, nick : false, pw : false, pw_check : false },
+    signup_allow : true
 };
 
 export default handleActions({
@@ -32,10 +35,18 @@ export default handleActions({
 
     [SETALERT] : (state, data) => {
     
-          return { 
-              ...state,
-              alert_obj : data.payload
-            };
-        },
+      return { 
+          ...state,
+          alert_obj : data.payload
+        };
+    },
+
+    [SIGNUPALLOW] : (state, data) => {
+
+      return {
+        ...state,
+        signup_allow : data.payload.bool
+      }
+    }
 
 }, initialState);

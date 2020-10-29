@@ -45,6 +45,7 @@ let sequelize = new Sequelize(
     });
 
     db.Connection = require('./connection')(sequelize, Sequelize);
+    db.UserInfo = require('./userInfo')(sequelize, Sequelize);
 
 
 db.secret = 'gdf80fsadf8098qwej123l;1k9809sf8daf90sdajkl1j23';

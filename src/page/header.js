@@ -4,7 +4,6 @@ import '../css/main.css';
 import { Link } from 'react-router-dom';
 
 const Header = ({ match }) => {
-    console.log(match)
 
     const _moveHome = () => {
         return window.location.href='/';

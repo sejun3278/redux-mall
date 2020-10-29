@@ -60,7 +60,7 @@ class Signup extends Component {
 
       } else {
         // 1차 회원가입 완료
-        return window.location.replace('https://sejun-redux-server.herokuapp.com/signup/complate')
+        return window.location.replace('/signup/complate')
       }
     }
   }

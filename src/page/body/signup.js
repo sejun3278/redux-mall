@@ -60,7 +60,7 @@ class Signup extends Component {
 
       } else {
         // 1차 회원가입 완료
-        return window.location.reload='/signup/complate'
+        return window.location.href='/signup/complate'
       }
     }
   }

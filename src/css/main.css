@@ -68,3 +68,11 @@
 }
 
 #signup_agree_mobile_div { display: none; }
+#signup_submit_button {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    background-color: white;
+    width: 215px;
+    position: absolute;
+    margin: 3% 20% 4% 20%;
+}

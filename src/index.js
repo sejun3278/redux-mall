@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import './css/responsive.css';
 import './css/origin.css';
 
 import { Provider } from 'react-redux';

@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 
-import test from './test';
+import signup from './signup';
+
 
 export default combineReducers({
-    test
+    signup
 });

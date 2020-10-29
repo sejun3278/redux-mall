@@ -57,3 +57,13 @@ input[type='checkbox'].check_custom_1 {
   }
 
 /* */
+
+/* alert */
+.alert { 
+    font-size: 12px;
+    font-weight: bold;
+    margin: 5px 0px 0px 10px;
+    width: 70%;
+    height: 20px;
+}
+.red_alert { color : #af2d2d; border-color: #af2d2d; }

@@ -12,13 +12,19 @@
         <div id='main_header'> 
             <div id='main_header_left'> </div>
             <div id='main_header_center'>
-                <h4 id='main_title'> <b id='main_title_button' class='pointer'> Sejun's Mall </b> </h4>
+                <h4 id='main_title'> 
+                    <a id='main_title_button' class='pointer'
+                        href='http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/'
+                    > 
+                        Sejun's Mall 
+                    </a> 
+                </h4>
             </div>
 
             <div id='main_header_right'> 
                 <ul id='main_login_ul'>
-                    <li> <Link to='/login'> 로그인 </Link> </li>
-                    <li> <Link to='/signup'> 회원가입 </Link> </li>
+                    <li> <a href='http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/login'> 로그인 </a> </li>
+                    <li> <a href='http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/signup'> 회원가입 </a> </li>
                 </ul>
             </div>
         </div>
@@ -28,9 +34,7 @@
 
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script>
-            $('#main_title_button').on('click', () => {
-                return window.location.replace('http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/')
-            })
+            
         </script>
     </body>
 </html>

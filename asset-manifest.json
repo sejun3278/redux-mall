@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/sejun-redux-mall/static/css/main.880b288b.chunk.css",
+    "main.js": "/sejun-redux-mall/static/js/main.a6ffd251.chunk.js",
+    "main.js.map": "/sejun-redux-mall/static/js/main.a6ffd251.chunk.js.map",
+    "runtime-main.js": "/sejun-redux-mall/static/js/runtime-main.02671ea1.js",
+    "runtime-main.js.map": "/sejun-redux-mall/static/js/runtime-main.02671ea1.js.map",
+    "static/js/2.5b5ac8d8.chunk.js": "/sejun-redux-mall/static/js/2.5b5ac8d8.chunk.js",
+    "static/js/2.5b5ac8d8.chunk.js.map": "/sejun-redux-mall/static/js/2.5b5ac8d8.chunk.js.map",
+    "index.html": "/sejun-redux-mall/index.html",
+    "precache-manifest.e073bd71e06c3a96e9e3cd2e06b129dc.js": "/sejun-redux-mall/precache-manifest.e073bd71e06c3a96e9e3cd2e06b129dc.js",
+    "service-worker.js": "/sejun-redux-mall/service-worker.js",
+    "static/css/main.880b288b.chunk.css.map": "/sejun-redux-mall/static/css/main.880b288b.chunk.css.map",
+    "static/js/2.5b5ac8d8.chunk.js.LICENSE.txt": "/sejun-redux-mall/static/js/2.5b5ac8d8.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.02671ea1.js",
+    "static/js/2.5b5ac8d8.chunk.js",
+    "static/css/main.880b288b.chunk.css",
+    "static/js/main.a6ffd251.chunk.js"
+  ]
+}

@@ -9,6 +9,7 @@ import * as signupAction from '../../Store/modules/signup';
 import signup_info from '../../config/info';
 import '../../css/responsive/signup.css';
 import img from '../../source/img/icon.json';
+import URL from '../../config/url';
 
 import $ from 'jquery';
 
@@ -38,7 +39,7 @@ class Signup extends Component {
     signupAction.signup_allow({ 'bool' : true });
     const data = { id : id, nick : nick, pw : pw };
 
-      const add_user = await axios('https://sejun-redux-server.herokuapp.com/add/signup', {
+      const add_user = await axios(URL + '/add/signup', {
         method : 'POST',
         headers: new Headers(),
         data : data
@@ -60,8 +61,7 @@ class Signup extends Component {
 
       } else {
         // 1차 회원가입 완료
-        console.log('회원가입 완료')
-        return window.location.replace('/signup/complate')
+        return window.location.replace(URL + '/signup/complate/' + id)
       }
     }
   }
@@ -102,7 +102,7 @@ class Signup extends Component {
         return false;
       }
 
-      const id_overlap_check = await axios('https://sejun-redux-server.herokuapp.com/check/user_id', {
+      const id_overlap_check = await axios(URL + '/check/user_id', {
         method : 'POST',
         headers: new Headers(),
         data : { id : data }
@@ -119,7 +119,7 @@ class Signup extends Component {
         return false;
       }
 
-      const nick_overlap_check = await axios('https://sejun-redux-server.herokuapp.com/check/nickname', {
+      const nick_overlap_check = await axios(URL + '/check/nickname', {
         method : 'POST',
         headers: new Headers(),
         data : { nick : data }

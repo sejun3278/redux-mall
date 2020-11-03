@@ -6,7 +6,7 @@
 
 #body_div {
     display: grid;
-    grid-template-columns: 10% 70% 10%;
+    grid-template-columns: 15% 70% 15%;
 }
 
 #main_header #main_header_center {
@@ -75,4 +75,67 @@
     width: 215px;
     position: absolute;
     margin: 3% 20% 4% 20%;
+}
+
+#signup_complate_div {
+    /* border: solid 2px #ababab; */
+    margin-top: 8%;
+    padding: 0px 0px 5px 0px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+
+#signup_complate_div h3 { 
+    border-bottom: solid 1px #ababab; 
+    border-width: 3px;
+    width: 50%;
+    margin : 0px 25% 0px 25%;
+    padding-bottom: 20px;
+}
+
+#signup_complate_div p { font-size: 13px; }
+#signup_complate_div #signup_complate_select_div {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin-top: 80px;
+    font-size: 15px;
+}
+
+#signup_complate_div #signup_complate_select_div div {
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
+#login_div h3 {
+    border-bottom: solid 1px white;
+    padding-bottom: 20px;
+    margin: 0px 0px 0px 0px;
+    font-size: 26px;
+}
+
+#login_div #login_form { margin-top: 30px; padding-bottom: 30px; border-bottom: solid 1px white; }
+#login_div #login_form div { margin-top: 40px; line-height: 10px; }
+#login_div #login_form div input { padding : 4px }
+
+#login_div #login_close_icon {
+    position: absolute;
+    width: 30px;
+    margin: -60px 0px 0px 165px;
+}
+
+#login_div #login_button_div button {
+    width: 100%;
+    background-color: white;
+    border: solid 1px white;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+#login_div #login_other_div {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 15% 25% 5% 45% 15%;
+    font-size: 13px;
 }

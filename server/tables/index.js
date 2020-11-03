@@ -21,13 +21,23 @@ let sequelize = new Sequelize(
       dialect: "mysql",
       
       port: "3306",
-    },
-    config,
-    {
+
+      dialectOptions: { charset: "utf8mb4", dateStrings: true, typeCast: true },
+
+      timezone: "+09:00",
+
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+      
       define: {
         charset: 'utf8',
         collate: 'utf8_general_ci',
-        freezeTableName: true
+        freezeTableName: true,
+        timestamps: false,
       }
     }
   );

@@ -11,12 +11,33 @@ AWS.config.loadFromPath(
     path.join(__dirname, 'config', 'awsConfig.json')
 );
 
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+
+const now_date = moment().format('YYYY-MM-DD HH:mm:ss');
+
 module.exports = {
     needs: () => upload,
     api : {
         test : (req, res) => {
             console.log('컨트롤러 연결 성공!')
             return res.send('컨트롤러 연결 성공!')
+        },
+
+        login : (req, res) => {
+            let body = req.body;
+            const hash_pw = hashing.enc(body.id, body.pw, salt);
+            
+            const data = { id : body.id, pw : hash_pw };
+            model.api.login( data, result => {
+                if(result === null) {
+                    return res.send(false)
+                }
+
+                console.log(result)
+                return res.send(true)
+            })
         },
     },
 
@@ -93,6 +114,7 @@ module.exports = {
                                 id : body.id,
                                 nick : body.nick,
                                 pw : hash_pw,
+                                signup_date : now_date
                             }
                             
                             model.add.signup( data, result => {
@@ -103,5 +125,5 @@ module.exports = {
                 }
             })
         }
-    }
+    },
 }

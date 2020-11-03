@@ -8,9 +8,8 @@ router.get('/get/allState', controller.get.allState);
 router.post('/check/user_id', controller.check.user_id);
 router.post('/check/nickname', controller.check.nickname);
 
-
 router.post('/add/signup', controller.add.signup);
 
-
+router.post('/api/login', controller.api.login);
 
 module.exports = router;

@@ -4,17 +4,17 @@ module.exports = (sequelize, DataTypes) => {
       {
        user_id: {
         type: DataTypes.STRING(20),
-        allowNull : true
+        allowNull : false
        },
 
        nickname: {
         type: DataTypes.STRING(20),
-        allowNull : true
+        allowNull : false
        },
 
        password: {
         type: DataTypes.STRING(150),
-        allowNull : true
+        allowNull : false
        },
 
        email: {
@@ -33,8 +33,23 @@ module.exports = (sequelize, DataTypes) => {
        },
 
        signup_date: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(20),
+        allowNull : false
+       },
+
+       modify_date: {
+        type: DataTypes.STRING(20),
         allowNull : true
+       },
+
+       connet_date: {
+        type: DataTypes.STRING(20),
+        allowNull : true
+       },
+
+       admin: {
+        type: DataTypes.STRING(5),
+        allowNull : false
        },
       },
       {

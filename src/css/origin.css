@@ -9,6 +9,7 @@
 /* 글씨 컬러 */
 .black { color: black; }
 .gray { color: #ababab; }
+.white { color : white }
 
 /* 글씨 굵게 */
 .bold { font-weight: bold; }
@@ -22,7 +23,8 @@
 /* 마우스커서 모음 */
 .pointer { cursor: pointer; } /* 포인터 */
 
-
+/* 밑줄 삭제 */
+.remove_underLine { text-decoration: none; } 
 
 /* 체크박스 디자인 1 */
 input[type='checkbox'].check_custom_1 {

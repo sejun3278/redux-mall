@@ -10,7 +10,9 @@
 
         "port": "3306",
 
-        "dialect": "mysql"
+        "dialect": "mysql",
+
+        "timezone" : "+09:00"
     },
 
     "salt" : "sf@asdsa#@FDSF546FAS1231%$#%!bxg$#%#WSDF"

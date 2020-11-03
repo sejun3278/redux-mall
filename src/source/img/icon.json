@@ -1,5 +1,6 @@
 {
     "icon" : {
-        "check" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/check_icon.png"
+        "check" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/check_icon.png",
+        "close_white" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_white.png"
     }
 }

@@ -1,13 +1,13 @@
 const sequelize = require('./tables').sequelize;
 sequelize.sync();
 
+const { now } = require('jquery');
 const {
   Connection,
   UserInfo,
   Sequelize: { Op }
 } = require('./tables');
 sequelize.query('SET NAMES utf8;');
-
 
 module.exports = {
     get : {
@@ -45,10 +45,23 @@ module.exports = {
                 email : "-",
                 phone : "-",
                 host : "-",
-                signup_date : "-"
+                signup_date : data.signup_date,
+                admin : "N"
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
         },
+    },
+
+    api : {
+        login : (data, callback) => {
+            UserInfo.findOne({
+                where : { 
+                    [Op.and] : { 'user_id' : data.id, 'password' : data.pw }
+                }
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
+        }
     }
 }

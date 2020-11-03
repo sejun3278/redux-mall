@@ -12,7 +12,7 @@ class Signup_complate extends Component {
       const { _pageMove, _modalToggle } = this.props;
       const id = this.props.match.params.id;
 
-        return(//
+        return(
             <div id='signup_complate_div'>
               <h3> 회원가입 완료 </h3>
 

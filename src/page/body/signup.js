@@ -61,7 +61,7 @@ class Signup extends Component {
 
       } else {
         // 1차 회원가입 완료
-        return window.location.replace(URL + '/signup/complate/' + id)
+        return window.location.replace('/signup/complate/' + id)
       }
     }
   }

@@ -7,16 +7,15 @@ import { bindActionCreators } from 'redux';
 import * as signupAction from '../../Store/modules/signup';
 import '../../css/responsive/signup.css';
 
-class Signup_complate extends Component {
-    render() {
-      const { _pageMove, _modalToggle } = this.props;
-      const id = this.props.match.params.id;
+const Signup_complate = (props) => {
+      const { _pageMove, _modalToggle } = props;
+      const id = props.match.params.id;
 
         return(
             <div id='signup_complate_div'>
               <h3> 회원가입 완료 </h3>
 
-              <p> <b> {id} </b> 님 회원가입을 환영합니다 ! </p>
+              <p> <b> {id} </b> 님의 회원가입을 환영합니다 !! </p>
 
               <div id='signup_complate_select_div'>
                 <div onClick={() => _pageMove('replace', '/')}> <u className='remove_underLine pointer'> 홈으로 </u></div>
@@ -31,7 +30,6 @@ class Signup_complate extends Component {
             </div>
         )
     }
-}
 
 Signup_complate.defaultProps = {
     id : "",

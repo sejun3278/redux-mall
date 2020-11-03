@@ -95,7 +95,7 @@ class App extends Component {
                         {...props} 
                       />}
               />
-              <Route path='/signup' component={Signup} />
+              <Route exact path='/signup' component={Signup} />
             </Switch>
           </div>
           <div id='body_div_right'> </div>

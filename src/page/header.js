@@ -20,7 +20,6 @@ class Header extends Component {
 
     render() {
         const { _pageMove, _modalToggle, login } = this.props;
-        console.log(login)
 
         return (
             <div id='main_header'> 

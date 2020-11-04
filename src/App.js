@@ -34,6 +34,7 @@ Modal.setAppElement('body')
 class App extends Component {
   componentDidMount() {
     this._callServerStatus();
+    console.log(sessionStorage)
   }
 
   _callServerStatus = async() => {
@@ -88,14 +89,14 @@ class App extends Component {
             </Modal>
 
             <Switch>
+              <Route exact path='/signup' component={Signup} />
               <Route path='/signup/complate/:id' 
                      render={(props) => <SignupComplate 
                         _pageMove={_pageMove} 
                         _modalToggle={_modalToggle}
                         {...props} 
-                      />}
+                />}
               />
-              <Route exact path='/signup' component={Signup} />
             </Switch>
           </div>
           <div id='body_div_right'> </div>

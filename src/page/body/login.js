@@ -33,6 +33,7 @@ class Login extends Component {
             return alert('비밀번호를 입력해주세요.')
         }   
         
+        signupAction.login_toggle({ 'bool' : false })
         const data = { id : id, pw : pw };
         const login_api = await axios(URL + '/api/login', {
           method : 'POST',
@@ -40,12 +41,19 @@ class Login extends Component {
           data : data
         })
 
-        if(!login_api.data) {
+        if(!login_api.data.bool) {
+            signupAction.login_toggle({ 'bool' : true })
             return alert('아이디 및 비밀번호를 다시 확인해주세요.');
+        
+        } else {
+            signupAction.login_toggle({ 'bool' : true })
+            sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
         }
     }
 
     render() {
+        const { login_able } = this.props;
+
         return(
             <div id='login_div' className='aCenter white'>
                 <h3> Login </h3>
@@ -76,7 +84,7 @@ class Login extends Component {
 
                 <div id='login_button_div'> 
                     <button className='pointer'
-                            onClick={this._logins}
+                            onClick={login_able ? this._logins : null}
                     > 
                         로그인 
                     </button>
@@ -102,6 +110,7 @@ class Login extends Component {
   
   export default connect(
     (state) => ({
+        login_able : state.signup.login_able
     }), 
   
     (dispatch) => ({

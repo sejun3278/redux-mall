@@ -4,11 +4,13 @@ const INPUTINFO = 'signup/input_info';
 const SETALERT = 'signup/set_alert';
 const SIGNUPALLOW = 'signup/sigunup_allow';
 const MODALTOGGLE = 'signup/modal_toggle';
+const LOGINTOGGLE = 'signup/login_toggle';
 
 export const input_info = createAction(INPUTINFO);
 export const set_alert = createAction(SETALERT);
 export const signup_allow = createAction(SIGNUPALLOW);
 export const modal_toggle = createAction(MODALTOGGLE);
+export const login_toggle = createAction(LOGINTOGGLE);
 
 const initialState = {
     id : "",
@@ -18,7 +20,8 @@ const initialState = {
     agree : false,
     alert_obj : { id : false, nick : false, pw : false, pw_check : false },
     signup_allow : true,
-    login_modal : false
+    login_modal : false,
+    login_able : true
 };
 
 export default handleActions({
@@ -57,6 +60,14 @@ export default handleActions({
       return {
         ...state,
         login_modal : data.payload.bool
+      }
+    },
+
+    [LOGINTOGGLE] : (state, data) => {
+
+      return {
+        ...state,
+        login_able : data.payload.bool
       }
     }
 

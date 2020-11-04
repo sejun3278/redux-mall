@@ -214,7 +214,7 @@ class Signup extends Component {
     }
   }
 
-  _inputInfo = (type) => {
+  _inputInfo = (type, bool) => {
     const { signupAction, id, nick, pw, pw_check } = this.props;
     const data = $('#signup_' + type + '_input').val();
     const agree = $('#agree_info_button').is(":checked");
@@ -240,11 +240,33 @@ class Signup extends Component {
       result.pw_check = data;
 
     } else if(type === 'agree') {
-      result.agree = !agree;
+      if(bool !== undefined) {
+        result.agree = bool;
+
+      } else {
+        result.agree = !agree;
+      }
     }
 
     signupAction.input_info(result);
     return this._eachCheck(type, null, result.agree);
+  }
+
+  _checkBox = () => {
+    const checkbox = $('#agree_info_button').is(":checked");
+    let bool = true;
+
+    // 활성화
+    if(!checkbox) { 
+      $("#agree_info_button").prop("checked", true);
+
+    } else if(checkbox) {
+    // 비활성화
+      $("#agree_info_button").prop("checked", false);
+      bool = false;
+    } 
+
+    return this._inputInfo('agree', bool);
   }
 
   render() {
@@ -305,7 +327,7 @@ class Signup extends Component {
                    defaultChecked={agree}
             />
 
-            <span className='check_toggle_1'> </span>
+            <span className='check_toggle_1' onClick={() => this._checkBox()}> </span>
             <label htmlFor='agree_info_button' className='pointer' id='signup_agree_input'
                    onClick={() => this._inputInfo('agree')}
             > 

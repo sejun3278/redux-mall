@@ -31,12 +31,14 @@ module.exports = {
             
             const data = { id : body.id, pw : hash_pw };
             model.api.login( data, result => {
-                if(result === null) {
-                    return res.send(false)
+                let result_obj = { 'bool' : false, 'data' : false };
+
+                if(result !== null) {
+                    result_obj.bool = true;
+                    result_obj.data = result.toJSON();
                 }
 
-                console.log(result)
-                return res.send(true)
+                return res.send(result_obj)
             })
         },
     },

@@ -22,8 +22,17 @@ class Login extends Component {
         return _pageMove('replace', '/signup')
     }
 
-    _logins = async () => {
+    _logins = async (bool) => {
         const { signupAction, configAction } = this.props; 
+
+        if(bool === false) {
+            if(window.confirm('로그아웃 하시겠습니까?')) {
+                sessionStorage.removeItem('login');
+                
+                return window.location.reload();
+            }
+            return;
+        }
 
         const id = String($('#login_id_input').val());
         const pw = String($('#login_pw_input').val());
@@ -50,10 +59,12 @@ class Login extends Component {
         } else {
             sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
 
-            signupAction.login_toggle({ 'bool' : false })
             configAction.login_and_logout({ 'bool' : true });
+            return window.location.reload();
         }
     }
+
+
 
     render() {
         const { login_able } = this.props;

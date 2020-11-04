@@ -1,8 +1,8 @@
 import { createAction, handleActions } from 'redux-actions';
 
-const CHANGENUMBER = 'test/change_number';
+const LOGINANDLOGOUT = 'config/login_and_logout';
 
-export const change_number = createAction(CHANGENUMBER);
+export const login_and_logout = createAction(LOGINANDLOGOUT);
 
 
 const initialState = {
@@ -10,19 +10,10 @@ const initialState = {
 };
 
 export default handleActions({
-   [CHANGENUMBER] : (state, data) => {
-      let num = state.num;
-
-      if(data.payload.bool === true) {
-         num = num + 1;
-
-      } else if(data.payload.bool === false) {
-         num = num - 1;
-      }
-
+   [LOGINANDLOGOUT] : (state, data) => {
       return {
         ...state,
-        num : num
+        login : data.payload.bool
       };
     }
 }, initialState);

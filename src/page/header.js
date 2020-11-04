@@ -1,33 +1,57 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import '../css/main.css';
+import * as configAction from '../Store/modules/config';
 
 import { Link } from 'react-router-dom';
 
-const Header = (props) => {
-    
-    return (
-        <div id='main_header'> 
-            <div id='main_header_left'> </div>
-            <div id='main_header_center'> 
-                { /* Center */ }
-                <h4 id='main_title'> <b onClick={() => props._pageMove('href', '/')} className='pointer'> Sejun's Mall </b> </h4>
-            </div>
+class Header extends Component {
+    render() {
+        const { _pageMove, _modalToggle, login } = this.props;
+        console.log(login)
 
-            <div id='main_header_right'> 
-                { /* Right */ }
-                <ul id='main_login_ul'>
-                    <li> 
-                        <u className='remove_underLine pointer'
-                           onClick={() => props._modalToggle(true)}
-                        > 
-                            로그인 
-                        </u> 
-                    </li>
-                    <li> <Link to='/signup'> 회원가입 </Link> </li>
-                </ul>
+        return (
+            <div id='main_header'> 
+                <div id='main_header_left'> </div>
+                <div id='main_header_center'> 
+                    { /* Center */ }
+                    <h4 id='main_title'> <b onClick={() => _pageMove('href', '/')} className='pointer'> Sejun's Mall </b> </h4>
+                </div>
+
+                <div id='main_header_right'> 
+                    { /* Right */ }
+                    <ul id='main_login_ul'>
+                        {!login 
+                        ? 
+                        <div>
+                            <li> 
+                                <u className='remove_underLine pointer'
+                                onClick={() => _modalToggle(true)}
+                                > 
+                                    로그인 
+                                </u> 
+                            </li>
+                            <li> 
+                                <Link to='/signup'> 회원가입 </Link> 
+                            </li>
+                        </div>
+                        
+                        : null }
+                    </ul>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
-export default Header;
+export default connect(
+    (state) => ({
+        login : state.config.login
+    }), 
+  
+    (dispatch) => ({
+        configAction : bindActionCreators(configAction, dispatch)
+    })
+  )(Header);

@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import { Route, Link, Switch } from 'react-router-dom';
 
 import * as signupAction from './Store/modules/signup';
+import * as configAction from './Store/modules/config';
 
 import Header from './page/header';
 import Signup from './page/body/signup';
@@ -33,8 +34,13 @@ Modal.setAppElement('body')
 
 class App extends Component {
   componentDidMount() {
+    const { configAction } = this.props;
+    
     this._callServerStatus();
-    console.log(sessionStorage)
+
+    if(JSON.parse(sessionStorage.getItem('login'))) {
+      configAction.login_and_logout({ 'bool' : true });
+    }
   }
 
   _callServerStatus = async() => {
@@ -114,6 +120,7 @@ export default connect(
     login_modal : state.signup.login_modal
   }), 
   (dispatch) => ({
-    signupAction : bindActionCreators(signupAction, dispatch)
+    signupAction : bindActionCreators(signupAction, dispatch),
+    configAction : bindActionCreators(configAction, dispatch)
   })
 )(App);

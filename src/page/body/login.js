@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as signupAction from '../../Store/modules/signup';
+import * as configAction from '../../Store/modules/config';
+
 import '../../css/responsive/signup.css';
 import img from '../../source/img/icon.json';
 import URL from '../../config/url';
@@ -21,7 +23,7 @@ class Login extends Component {
     }
 
     _logins = async () => {
-        const { signupAction, _pageMove } = this.props; 
+        const { signupAction, configAction } = this.props; 
 
         const id = String($('#login_id_input').val());
         const pw = String($('#login_pw_input').val());
@@ -46,8 +48,10 @@ class Login extends Component {
             return alert('아이디 및 비밀번호를 다시 확인해주세요.');
         
         } else {
-            signupAction.login_toggle({ 'bool' : true })
             sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
+
+            signupAction.login_toggle({ 'bool' : false })
+            configAction.login_and_logout({ 'bool' : true });
         }
     }
 
@@ -114,6 +118,7 @@ class Login extends Component {
     }), 
   
     (dispatch) => ({
-      signupAction : bindActionCreators(signupAction, dispatch)
+      signupAction : bindActionCreators(signupAction, dispatch),
+      configAction : bindActionCreators(configAction, dispatch)
     })
   )(Login);

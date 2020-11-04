@@ -1,7 +1,6 @@
 const sequelize = require('./tables').sequelize;
 sequelize.sync();
 
-const { now } = require('jquery');
 const {
   Connection,
   UserInfo,

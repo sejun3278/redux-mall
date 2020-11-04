@@ -22,17 +22,8 @@ class Login extends Component {
         return _pageMove('replace', '/signup')
     }
 
-    _logins = async (bool) => {
+    _logins = async () => {
         const { signupAction, configAction } = this.props; 
-
-        if(bool === false) {
-            if(window.confirm('로그아웃 하시겠습니까?')) {
-                sessionStorage.removeItem('login');
-                
-                return window.location.reload();
-            }
-            return;
-        }
 
         const id = String($('#login_id_input').val());
         const pw = String($('#login_pw_input').val());
@@ -52,6 +43,7 @@ class Login extends Component {
           data : data
         })
 
+        console.log(login_api)
         if(!login_api.data.bool) {
             signupAction.login_toggle({ 'bool' : true })
             return alert('아이디 및 비밀번호를 다시 확인해주세요.');

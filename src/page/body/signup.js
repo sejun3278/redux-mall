@@ -317,6 +317,8 @@ class Signup extends Component {
         </div>
 
         <div id='signup_center_height_line'> </div>
+        <div> </div>
+        
         <div id='signup_agree_div'> 
           <h4> 이용약관 동의 </h4>
 

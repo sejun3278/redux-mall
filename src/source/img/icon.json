@@ -1,6 +1,25 @@
 {
     "icon" : {
         "check" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/check_icon.png",
-        "close_white" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_white.png"
+        "close_white" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_white.png",
+        "category" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/category_icon.png",
+        "search" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/search_icon.png",
+        "user_icon" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/user_icon.png",
+        "modify_user_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/1.+modify_user_gray.png",
+        "modify_user_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/1.+modify_user_black.png",
+        "cart_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/2.+cart_gray.png",
+        "cart_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/2.+cart_black.png",
+        "order_list_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/3.+order_list_gray.png",
+        "order_list_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/3.+order_list_black.png",
+        "like_list_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/4.+like_list_gray.png",
+        "like_list_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/4.+like_list_black.png",
+        "QandA_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/5.+Q%26A_gray.png",
+        "QandA_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/5.+Q%26A_black.png",
+        "star_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/6.+star_gray.png",
+        "star_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/6.+star_black.png",
+        "se_bot_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/7.+se_bot_gray.png",
+        "se_bot_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/7.+se_bot_black.png",
+        "coupon_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_gray.png",
+        "coupon_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_black.png"
     }
 }

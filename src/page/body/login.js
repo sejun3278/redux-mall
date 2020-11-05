@@ -43,16 +43,25 @@ class Login extends Component {
           data : data
         })
 
-        console.log(login_api)
-
         if(!login_api.data.bool) {
             signupAction.login_toggle({ 'bool' : true })
             return alert('아이디 및 비밀번호를 다시 확인해주세요.');
         
         } else {
             sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
-
             configAction.login_and_logout({ 'bool' : true });
+
+            const url = ['/signup', '/myPage'];
+            let url_check = false;
+            url.forEach( (el) => {
+                if(window.location.pathname.includes(el)) {
+                    url_check = true;
+                }
+            })
+
+            if(url_check) {
+                return window.location.replace('/')
+            }
             return window.location.reload();
         }
     }

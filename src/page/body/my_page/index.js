@@ -1,0 +1,1 @@
+export { default as MyPageHome } from './home';

@@ -57,7 +57,8 @@ module.exports = {
             UserInfo.findOne({
                 where : { 
                     [Op.and] : { 'user_id' : data.id, 'password' : data.pw }
-                }
+                },
+                attributes : ['id', 'user_id', 'nickname', 'host', 'email', 'phone', 'signup_date']
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })

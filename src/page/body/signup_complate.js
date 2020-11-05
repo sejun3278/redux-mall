@@ -5,9 +5,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as signupAction from '../../Store/modules/signup';
+
 import '../../css/responsive/signup.css';
 
 class Signup_complate extends Component {
+
     render() {
       const { _pageMove, _modalToggle } = this.props;
       const id = this.props.match.params.id;

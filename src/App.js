@@ -10,10 +10,13 @@ import { Route, Link, Switch } from 'react-router-dom';
 import * as signupAction from './Store/modules/signup';
 import * as configAction from './Store/modules/config';
 
-import Header from './page/header';
-import Signup from './page/body/signup';
-import Login from './page/body/login';
-import SignupComplate from './page/body/signup_complate';
+// import Header from './page/header';
+// import Signup from './page/body/signup';
+// import Login from './page/body/login';
+// import SignupComplate from './page/body/signup_complate';
+
+import { MyPageHome } from './page/body/my_page/index'; 
+import { Header, Login, Signup, SignupComplate } from './page/index'; 
 
 import URL from './config/url.js';
 
@@ -67,9 +70,21 @@ class App extends Component {
     return signupAction.modal_toggle({ 'bool' : bool })
   }
 
+  // 로그인 체크
+  _checkLogin = () => {
+    let result = false;
+    const { login } = this.props;
+
+    if(sessionStorage.getItem('login') && login === true) {
+      result = true;
+    }
+
+    return result;
+  }
+
   render() {
     const { login_modal } = this.props;
-    const { _pageMove, _modalToggle } = this;
+    const { _pageMove, _modalToggle, _checkLogin } = this;
 
     return(
       <div className='App'>
@@ -103,6 +118,12 @@ class App extends Component {
                         {...props} 
                 />}
               />
+              <Route path='/myPage' 
+                     render={(props) => <MyPageHome 
+                      _checkLogin={_checkLogin}
+                        {...props} 
+                />}
+              />
             </Switch>
           </div>
           <div id='body_div_right'> </div>
@@ -117,7 +138,8 @@ App.defaultProps = {
 
 export default connect(
   (state) => ({
-    login_modal : state.signup.login_modal
+    login_modal : state.signup.login_modal,
+    login : state.config.login
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),

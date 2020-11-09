@@ -5,7 +5,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Route, Link, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import * as signupAction from './Store/modules/signup';
 import * as configAction from './Store/modules/config';
@@ -15,7 +15,7 @@ import * as configAction from './Store/modules/config';
 // import Login from './page/body/login';
 // import SignupComplate from './page/body/signup_complate';
 
-import { MyPageHome } from './page/body/my_page/index'; 
+import { MyPageHome, ModifyUser } from './page/body/my_page/index'; 
 import { Header, Login, Signup, SignupComplate } from './page/index'; 
 
 import URL from './config/url.js';
@@ -41,9 +41,45 @@ class App extends Component {
     
     this._callServerStatus();
 
-    if(JSON.parse(sessionStorage.getItem('login'))) {
+    const login_check = JSON.parse(sessionStorage.getItem('login'));
+    if(login_check) {
       configAction.login_and_logout({ 'bool' : true });
+
+      // 유저 정보 담기
+      this._getLoginInfo(login_check);
+
+      // 관리자 확인
+      this._checkAdmin(login_check)
     }
+  }
+
+  _checkAdmin = async (info) => {
+    const get_admin_info = await axios(URL + '/get/admin_info', {
+      method : 'POST',
+      headers: new Headers(),
+      data : { id : info.id, user_id : info.user_id }
+    })
+
+    if(get_admin_info.data === true) {
+      return this.props.configAction.save_admin_info({ 'info' : get_admin_info.data })
+    }
+  }
+
+  _getLoginInfo = async (info) => {
+    const get_user_info = await axios(URL + '/get/user_info', {
+      method : 'POST',
+      headers: new Headers(),
+      data : { id : info.id, user_id : info.user_id }
+    })
+
+    if(!get_user_info.data) {
+      alert('잘못된 로그인 방식입니다. \n다시 로그인을 시도해주세요.');
+      sessionStorage.removeItem('login');
+
+      return window.location.replace('/');
+    }
+
+    return this.props.configAction.save_user_info({ 'info' : JSON.stringify(get_user_info.data) })
   }
 
   _callServerStatus = async() => {
@@ -83,14 +119,16 @@ class App extends Component {
   }
 
   render() {
-    const { login_modal } = this.props;
+    const { login_modal, admin_info } = this.props;
     const { _pageMove, _modalToggle, _checkLogin } = this;
 
+    console.log(admin_info)
     return(
       <div className='App'>
         <Header 
           _pageMove={_pageMove}
           _modalToggle={_modalToggle}
+          admin_info={admin_info}
         />
 
         <div id='body_div'>
@@ -118,12 +156,20 @@ class App extends Component {
                         {...props} 
                 />}
               />
+
+              <Route path='/myPage/modify_user' 
+                     render={(props) => <ModifyUser
+                        {...props} 
+                />}
+              /> {/* 회원 정보 수정 */}
+
               <Route path='/myPage' 
                      render={(props) => <MyPageHome 
                       _checkLogin={_checkLogin}
                         {...props} 
                 />}
               />
+
             </Switch>
           </div>
           <div id='body_div_right'> </div>
@@ -139,7 +185,8 @@ App.defaultProps = {
 export default connect(
   (state) => ({
     login_modal : state.signup.login_modal,
-    login : state.config.login
+    login : state.config.login,
+    admin_info : state.config.admin_info
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),

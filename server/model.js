@@ -15,6 +15,30 @@ module.exports = {
             .then( result => { callback(result) })
             .catch( err => { throw err })
         },
+
+        user_info : (data, callback) => {
+            UserInfo.findOne({
+                where : { 
+                    [Op.and] : { 'user_id' : data.user_id, 'id' : data.id }
+                }
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
+        },
+
+        admin_info : (data, callback) => {
+            UserInfo.findOne({
+                where : {
+                    [Op.and] : {
+                        'user_id' : data.user_id,
+                        'id' : data.id,
+                        'admin' : 'Y'
+                    }
+                }
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
+        }
     },
 
     check : {
@@ -43,7 +67,9 @@ module.exports = {
                 password : data.pw,
                 email : "-",
                 phone : "-",
+                host_code : "-",
                 host : "-",
+                host_detail : "-",
                 signup_date : data.signup_date,
                 admin : "N"
             })
@@ -58,7 +84,17 @@ module.exports = {
                 where : { 
                     [Op.and] : { 'user_id' : data.id, 'password' : data.pw }
                 },
-                attributes : ['id', 'user_id', 'nickname', 'host', 'email', 'phone', 'signup_date']
+                attributes : ['id', 'user_id', 'nickname', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date']
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
+        }
+    },
+
+    update : {
+        login_date : (data, callback) => {
+            UserInfo.update({ login_date : data.date }, {
+                where : { user_id : data.id }
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })

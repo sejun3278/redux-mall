@@ -10,6 +10,16 @@ import '../../css/responsive/signup.css';
 
 class Signup_complate extends Component {
 
+  componentDidMount() {
+    const check = sessionStorage.getItem('signup')
+
+    if(!check) {
+      // return window.location.replace('/');
+    }
+
+    sessionStorage.removeItem('signup');
+  }
+
     render() {
       const { _pageMove, _modalToggle } = this.props;
       const id = this.props.match.params.id;
@@ -28,6 +38,13 @@ class Signup_complate extends Component {
                   > 
                     로그인 
                   </u> 
+                </div>
+                <div>
+                  <u className='remove_underLine pointer'
+                    onClick={() => window.location.replace('/myPage/modify_user')}
+                  > 
+                    회원정보 수정 
+                  </u>
                 </div>
               </div>
             </div>

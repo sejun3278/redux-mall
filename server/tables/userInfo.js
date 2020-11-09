@@ -27,8 +27,18 @@ module.exports = (sequelize, DataTypes) => {
         allowNull : true
        },
 
-       host: {
-        type: DataTypes.STRING(40),
+       host_code: {
+        type: DataTypes.STRING(10),
+        allowNull : true
+       },
+
+       host : {
+        type: DataTypes.STRING(30),
+        allowNull : true
+       },
+
+       host_detail : {
+        type: DataTypes.STRING(30),
         allowNull : true
        },
 
@@ -42,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull : true
        },
 
-       connet_date: {
+       login_date: {
         type: DataTypes.STRING(20),
         allowNull : true
        },

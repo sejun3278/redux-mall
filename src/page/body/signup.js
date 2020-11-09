@@ -61,6 +61,7 @@ class Signup extends Component {
 
       } else {
         // 1차 회원가입 완료
+        sessionStorage.setItem('signup', true);
         return window.location.replace('/signup/complate/' + id)
       }
     }
@@ -131,10 +132,10 @@ class Signup extends Component {
       }
 
     } else if(type === 'pw' || type === 'pw_check') {
-      const pass_check = /^[a-z]+[a-z0-9]{5,19}$/g; // 비밀번호 체크
+      const pass_check = /^[A-za-z]+[a-z0-9]{7,19}$/g; // 비밀번호 체크
 
       if(!pass_check.test(data)) {
-        this._alert(type, '영문자로 시작하는 6~20 글자 사이의 영문 또는 숫자를 입력해주세요.');
+        this._alert(type, '영문자로 시작하는 8~20 글자 사이의 영문 또는 숫자를 입력해주세요.');
         return false;
       }
 
@@ -318,7 +319,7 @@ class Signup extends Component {
 
         <div id='signup_center_height_line'> </div>
         <div> </div>
-        
+
         <div id='signup_agree_div'> 
           <h4> 이용약관 동의 </h4>
 

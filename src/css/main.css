@@ -100,7 +100,7 @@
 #signup_complate_div p { font-size: 13px; }
 #signup_complate_div #signup_complate_select_div {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 33% 33% 33%;
     margin-top: 80px;
     font-size: 15px;
 }
@@ -188,7 +188,7 @@
     text-align: center;
 }
 
-#main_header #header_other_mobile_div { display: none; }
+#main_header #header_other_mobile_div { display: none; background-color: white; }
 #header_other_mobile_div {
     display: grid;
     grid-template-columns: 5% 30% 30% 30% 5%;
@@ -198,17 +198,11 @@
     font-size: 14px;
 }
 
-#my_page_title_div {
-    border-bottom: solid 1px #ababab;
-    padding: 5px 0px 5px 0px;
-}
-
 #my_page_profile_div {
     display: grid;
     grid-template-columns: 2% 25% auto;
     padding: 5px 0px 10px 15px;
     margin-top: 20px;
-    border-bottom: solid 1px #ababab;
 }
 
 #user_thumbnail_div #user_thumbnail_img {
@@ -280,4 +274,97 @@
     background-position-y: 5px;
     background-position-x: 50%;
     margin-top: 10px;
+}
+
+#modify_user_info_waiting {
+    margin-top: 40px;
+}
+
+#modify_user_div_grid {
+    display: grid;
+    grid-template-columns: 30% auto 0%;
+    margin-top: 25px;
+}
+
+#modify_user_info_ul { line-height: 0px; }
+#modify_user_info_ul li { margin-bottom: 100px; }
+#modify_user_info_ul li input { width: 40%; padding : 5px; }
+#modify_user_info_ul li select { padding: 5px; }
+
+#modify_user_email_grid { display: grid; grid-template-columns: 25% 10% auto; }
+#modify_user_email_grid div input { width: 90%; }
+
+#modify_user_select_email_host_div { width: 100% !important; }
+#modify_user_email_input { margin-top: 5px; width: 70%; }
+
+#modify_user_phone_div input { width: 10% !important; }
+.modify_user_buttons {
+    background-color: white;
+    margin-left: 2.5%;
+    border-radius: 5px;
+    padding: 10px;
+    width: 50%;
+}
+
+#modify_user_other_div {
+    margin-top: 80px;
+    margin-bottom: 60px;
+    border-top: solid 1px #ababab;
+}
+
+#modify_user_other_div div {
+    margin-top: 20px;
+}
+
+.modify_user_alert {
+    margin : 15px 0px 0px 0px;
+    width: 100%;
+    line-height: 15px;
+}
+
+#modify_user_host_div {
+    margin-bottom: 70px !important;
+    width: 60%;
+}
+
+#daum_host_api {
+    border: solid 2px #ababab;
+    border-top: none;
+    margin : 0px 30% 80px -15%;
+}
+
+#search_first_host {
+    margin-left: 30px;
+    background-color: white;
+    color: #16697a;
+}
+
+#daum_host_api_close {
+    border: solid 1px #ababab;
+    border-top: none;
+    font-size: 14px;
+    line-height: 25px;
+    padding: 5px 0px 5px 15px;
+    background-color: #ababab;
+}
+
+#modify_user_detail_host_div { margin-top: 100px !important; }
+#modify_user_detail_host_div input {
+    width: 52% !important;
+}
+
+#modify_user_submit_div {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+#modify_user_submit_div input {
+    width: 55%;
+}
+
+#admin_icon {
+    position: absolute;
+    width: 25px;
+    margin-top: -50px;
+    margin-left: 70px;
 }

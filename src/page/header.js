@@ -6,10 +6,54 @@ import '../css/main.css';
 import * as configAction from '../Store/modules/config';
 
 import { Link } from 'react-router-dom';
-
 import img from '../source/img/icon.json';
 
+import $ from 'jquery';
+
 class Header extends Component {
+    componentDidMount() {
+        this._setScrollSize();
+        window.addEventListener("scroll", this._setScrollSize);
+        
+        let user = sessionStorage.getItem('login');
+        if(user) {
+            user = JSON.parse(user);
+            // 관리자 확인하기
+
+            
+        }
+    }
+    
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this._setScrollSize);
+    }
+
+    _setScrollSize = () => {
+        // 화면 스크롤 구하기
+        // const width_size = window.scrollX;
+        const height_size = window.scrollY;
+
+        if(height_size > 88) {
+            $('#header_other_div').css({ 
+                'position' : 'fixed',
+                'width' : '100%',
+                'marginTop' : '-81px'
+            })
+
+            $('#header_other_mobile_div').css({
+                'position' : 'fixed',
+                'width' : '100%',
+                'marginTop' : '-20px'
+            })
+
+        } else if(height_size <= 23) {
+            $('#header_other_div, #header_other_mobile_div').css({ 
+                'position' : 'relative',
+                'marginTop' : '0px',
+                'width' : 'auto',
+            })
+        }
+    }  
 
     _logout = () => {
         if(window.confirm('로그아웃 하시겠습니까?')) {
@@ -32,7 +76,7 @@ class Header extends Component {
     }
 
     render() {
-        const { _pageMove, _modalToggle, login } = this.props;
+        const { _pageMove, _modalToggle, login, admin_info } = this.props;
 
         return (
             <div id='main_header'> 
@@ -41,6 +85,15 @@ class Header extends Component {
                     <div id='main_header_center'> 
                         { /* Center */ }
                         <h4 id='main_title'> <b onClick={() => _pageMove('href', '/')} className='pointer'> Sejun's Mall </b> </h4>
+                        {admin_info ? 
+                            <div> 
+                                <img src={img.icon.admin}
+                                    id='admin_icon'
+                                    title='관리자 페이지'
+                                    className='pointer'
+                                />
+                            </div>
+                        : null}
                     </div>
 
                     <div id='main_header_right'> 
@@ -81,12 +134,12 @@ class Header extends Component {
 
                 <div id='header_other_div' className='white'>
                     <div id='header_category_div'> 
-                        <img src={img.icon.category} className='pointer' />
+                        <img src={img.icon.category} className='pointer' alt='' />
                         <b className='pointer'> 카테고리 </b>
                     </div>
                     <div id='header_search_div'> 
                         <input type='text' maxLength='20' />
-                        <img src={img.icon.search} id='header_search_icon' title='검색하기' className='pointer'/>
+                        <img alt='' src={img.icon.search} id='header_search_icon' title='검색하기' className='pointer'/>
                     </div>
                     <div id='header_myPage_div'>
                         <div> 장바구니 </div>
@@ -109,7 +162,9 @@ class Header extends Component {
 
 export default connect(
     (state) => ({
-        login : state.config.login
+        login : state.config.login,
+        window_width : state.config.window_width,
+        window_height : state.config.window_height
     }), 
   
     (dispatch) => ({

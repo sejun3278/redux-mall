@@ -36,6 +36,12 @@ module.exports = {
                 if(result !== null) {
                     result_obj.bool = true;
                     result_obj.data = result.toJSON();
+
+                    const update_data = { id : body.id, date : now_date }
+                    model.update.login_date(update_data, () => {
+                        
+                        return res.send(result_obj)
+                    })
                 }
 
                 return res.send(result_obj)
@@ -54,6 +60,25 @@ module.exports = {
                     result.db_state = true;
                 }
                 return res.send( result )
+            })
+        },
+        
+        user_info : (req, res) => {
+            const body = req.body;
+
+            model.get.user_info(body, result => {
+                return res.send(result);
+            })
+        },
+
+        admin_info : (req, res) => {
+            const body = req.body
+
+            model.get.admin_info(body, result => {
+                if(result === null) {
+                    return res.send(false)
+                }
+                return res.send(true);
             })
         }
     },
@@ -119,7 +144,7 @@ module.exports = {
                                 signup_date : now_date
                             }
                             
-                            model.add.signup( data, result => {
+                            model.add.signup( data, () => {
                                 return res.send(true)
                             })
                         }
@@ -128,4 +153,17 @@ module.exports = {
             })
         }
     },
+
+    update : {
+        user_info : (req, res) => {
+            let body = req.body;
+            body['nick'] = req.body.nickname;
+
+            console.log(body)
+            return res.send(true)
+            // model.update.user_info( body, () => {
+            //     return res.send(true)
+            // })
+        }
+    }
 }

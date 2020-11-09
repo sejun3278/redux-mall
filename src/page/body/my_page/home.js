@@ -16,6 +16,13 @@ class My_page_home extends Component {
     componentDidMount() {
         // 로그인 체크
         // const login_check = this.props._checkLogin();
+
+        if(!JSON.parse(sessionStorage.getItem('login'))) {
+            alert('로그아웃 되었습니다.');
+
+            return window.location.replace('/');
+        }
+        
         // if(!login_check) {
         //     alert('로그아웃 되었습니다.');
             
@@ -37,6 +44,11 @@ class My_page_home extends Component {
             $(target_el).css({ 'color' : '#ababab', 'fontWeight' : '400', 'borderBottom' : 'solid 1px #ababab' })
 
             img_el = target + '_gray';
+
+        } else if(type === 'move') {
+            const url = '/myPage/' + target;
+
+            return window.location.href = url;
         }
 
         $(target_img_div).css({ 'backgroundImage' : `url(${img.icon[img_el]})` })
@@ -46,18 +58,24 @@ class My_page_home extends Component {
         const { _iconToggle } = this; 
 
         const user_info = JSON.parse(sessionStorage.getItem('login'));
+
+        if(!user_info) {
+            return window.location.replace('/');
+        }
+
         const signup_date = user_info.signup_date.slice(0, 10);
-        
+
+
         return(
             <div id='my_page_div'>
-                <div id='my_page_title_div'>
+                <div id='my_page_title_div' className='my_page_title border_bottom'>
                     <h3 className='aCenter'> 마이 페이지 </h3>
                 </div>
 
-                <div id='my_page_profile_div'>
+                <div id='my_page_profile_div' className='border_bottom'>
                     <div> </div>
                     <div id='user_thumbnail_div'> 
-                        <img id='user_thumbnail_img' 
+                        <img id='user_thumbnail_img' alt=''
                             style={{ 'backgroundImage' : `url(${img.icon.user_icon})` }}
                         />
                         <div id='user_mobile_id_div'> 
@@ -108,6 +126,7 @@ class My_page_home extends Component {
                                  className='my_page_select_divs'
                                  onMouseEnter={() => _iconToggle('modify_user', 'mouseOver')}
                                  onMouseLeave={() => _iconToggle('modify_user', 'mouseLeave')}
+                                 onClick={() => _iconToggle('modify_user', 'move')}
                             >
                                 <div> 
                                     <u> 회원 정보 수정 </u> 

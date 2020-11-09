@@ -76,3 +76,14 @@ input[type='checkbox'].check_custom_1 {
     height: 20px;
 }
 .red_alert { color : #af2d2d; border-color: #af2d2d; }
+
+
+/* 마이페이지 제목 */
+.my_page_title { padding : 20px 0px 20px 0px }
+
+/* border 모음 */
+.border { border: solid 1px #ababab; } /* 전체 */
+.border_top { border-top: solid 1px #ababab; } /* 위 */
+.border_right { border-right: solid 1px #ababab; } /* 오른쪽 */
+.border_bottom { border-bottom: solid 1px #ababab; } /* 아래 */
+.border_left { border-left: solid 1px #ababab; } /* 왼쪽 */

@@ -12,6 +12,7 @@ import '../../../css/responsive/signup.css';
 
 import URL from '../../../config/url';
 import $ from 'jquery';
+import { resolve } from 'path';
 
 class Modify_user extends Component {
 
@@ -23,206 +24,291 @@ class Modify_user extends Component {
     }
   }
 
-  _ModifyUserInfo = (event) => {
-    // const arr = ['nickname', 'email_id', 'select_email_host', 'middle_phone_number', 'last_phone_number'];
-    const arr = ['nickname'];
-    const { host_code, host, modify_able } = this.props;
-    const form_data = event.target;
-
+  _updateUserInfo = (event) => {
     event.preventDefault();
+
+    const arr = ['nickname', 'email_id', 'select_email_host', 'middle_phone_number', 'last_phone_number'];
+    const form_data = event.target;
 
     let obj = { 'host_detail' : '-' };
     let final_result = true;
 
-    const val = form_data['nickname'].value;
-    
-    const each_result = this._eachCheck(arr[0], val, null);
+    arr.forEach( async (target) => {
+      const target_data = form_data[target].value;
+      const each_check_result = this._eachCheck(target, target_data);
 
-              // 닉네임 중복 체크
-              const nick_overlap_check = axios(URL + '/check/nickname', {
-                method : 'POST',
-                headers: new Headers(),
-                data : { 'nick' : val }
-              })
+      console.log(each_check_result)
+        // await this._eachCheck(target, target_data)
+        // .then( (el) => console.log(el) );
 
-              nick_overlap_check.then(el => {
-                 console.log(el)
-                if(el.data === false) {
-                  final_result = false;
-                }
-              })
+        // console.log(check_result)
+        // if(check_result === false) {
+        //   // 하나라도 false 라면 변경 불가
+        //   final_result = false;
+        // }
+    })
 
-              console.log(final_result)
+      // const test = await this._eachtest();
 
-
-    // arr.forEach( (el) => {
-    //   const data = form_data[el].value;
-
-    //   console.log(el, data)
-    //   // let result = this._eachCheck(el, data, null);
-    //   // result.then( el => el === false ? final_result = false : null );
-
-    //   const _promise = (el) => {
-        
-    //   }
-    // })
-
-    // arr.forEach( (el) => {
-    //   let custom_email = null;
-    //   if(el === 'host_detail') {
-    //     if(host_code === null || host === null) {
-    //       return true;
-    //     }
-    //   }
-
-    //   if(el === 'select_email_host') {
-    //   this._removeAlert('custom_email_host')
-    //   let email_host = '';
-
-    //     if(form_data[el].value !== 'custom') {
-    //       email_host = form_data[el].value;
-    //       data['email_host'] = email_host
-
-    //       return true;
-
-    //     } else {
-    //       custom_email = form_data['custom_email_host'].value
-    //       email_host = custom_email;
-    //     }
-    //     data['email_host'] = email_host
-    //   }
-    //   this._removeAlert(el)
-
-    //   const each_value = form_data[el].value;
-    //   data[el] = each_value;
-
-    //   const each_result = this._eachCheck(el, each_value, custom_email);
-
-    //   // if(each_result === false) {
-    //   //   final_result = false;
-
-    //   //   this.props.myPageAction.toggle_able({ 'bool' : false });
-    //   // }
-    // })
-
-
-    // if(modify_able) {
-    //   const modify_user_info = await axios(URL + '/update/user_info', {
-    //     method : 'POST',
-    //     headers: new Headers(),
-    //     data : data
-    //   })
-    // }
+      console.log(false)
   }
 
-  _eachCheck = async (type, val, custom_email) => {
-    if(!val) {
-      this._removeAlert(type)
-      val = $('input[name=' + type + ']').val();
+  _eachCheck = async (target, data) => {
+    let result = true;
+    let alert_ment = '';
 
-      // if(type === 'select_email_host') {
-      //   this._removeAlert('custom_email_host')
-      //   const select_result = $('select[name=select_email_host]').val();
+    const user_info = JSON.parse(sessionStorage.getItem('login'));
 
-      //   if(val === undefined && select_result === 'custom') {
-      //     custom_email = $('input[name=custom_email_host]').val();
-      //     val = $('input[name=custom_email_host]').val();
-      //   }
-      // }
+    if(data === null) {
+      data = $('input[name=' + target + ']').val();
     }
 
-    const user_info = JSON.parse(this.props.user_info); 
-    const id_check = /^[a-z]+[a-z0-9]{5,14}$/g; // 아이디 체크;
-    const email_host_check = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+    this._removeAlert(target);
 
-    var result = true;
+    if(target === 'nickname') {
+      // 닉네임은 필수로 체크해야 됨
 
-    if(type === 'nickname') {
-      if(val.length === 0 || (val.length !== 0 && val !== user_info.nickname)) {
-        if(val.length < 3 || val.length > 10) {
-          this._alert(type, '최소 3글자 이상, 10글자 이하로 입력해주세요.');
-          $('input[name=nickname]').focus();
-          
-          result = false;
-        
-        } else {
-          // 닉네임 중복 체크
-          const nick_overlap_check = await axios(URL + '/check/nickname', {
-            method : 'POST',
-            headers: new Headers(),
-            data : { 'nick' : val }
-          })
-    
-          if(nick_overlap_check.data === false) {
-            this._alert(type, '중복된 닉네임 입니다.');
-            $('input[name=nickname]').focus();
+      if(data.length === 0 || (data.length < 3)) {
+        // 빈칸일 경우          
+        result = false;
+        alert_ment = '최소 3글자 이상, 10 글자 이하로 입력해주세요.';
 
+      } else if(user_info.nickname !== data) {
+        // 닉네임 중복 체크
+        await axios(URL + '/check/nickname', {
+          method : 'POST',
+          headers: new Headers(),
+          data : { 'nick' : data }
+
+        }).then( (el) => {
+          if(el.data === false) {
             result = false;
+            alert_ment = '이미 사용중인 닉네임입니다.';
           }
-        }
+        })
+
+        // if(nick_overlap_check.data === false) {
+        //   result = false;
+        //   alert_ment = '이미 사용중인 닉네임입니다.';
+        // }
       }
 
     } else {
-
-      if(val.length === 0 && !custom_email && type !== 'host_detail') {
-        return result;
-      }
-      return;
-
-      if(type === 'email_id') {
-        if(!id_check.test(val)) {
-          this._alert(type, '영문자로 시작하는 6~15 글자 사이의 영문 또는 숫자를 입력해주세요.');
-          $('input[name=email_id]').focus();
-
-          result = false;
-
-        } else {
-          this._eachCheck('select_email_host', undefined, null)
-        }
-
-      } else if(type === 'select_email_host') {
-        const test_email_check = 'testemail@' + custom_email
-        $('input[name=custom_email_host]').focus();
-
-        if(custom_email !== null) {
-          this._eachCheck('email_id', null, custom_email)
-
-          if(!email_host_check.test(test_email_check)) {
-            this._alert('custom_email_host', '이메일 주소 형식을 바로 입력해주세요.');
-            $('input[name=custom_email_host]').focus();
-        
-            result = false;
-
-          } else {
-
-          }
-        }
-        
-      } else if(type === 'middle_phone_number' || type === 'last_phone_number') {
-          if(isNaN(Number(val))) {
-            this._alert(type, '숫자만 입력 가능합니다.');
-            $('input[name=' + type + ']').focus();
-        
-            result = false;
-
-          } else if(val.length !== 4) {
-            this._alert(type, '4자리 모두 입력해주세요.');
-            $('input[name=' + type + ']').focus();
-        
-            result = false;
-          }
-
-      } else if(type === 'host_detail') {
-          if(val.length === 0) {
-            this._alert(type, '상세 주소를 입력해주세요.');
-            $('input[name=' + type + ']').focus();
-        
-            result = false;
-          }
-      }
+      // nickname 을 제외한 나머지 부분
     }
+
+
+    if(result === false) {
+      this._alert(target, alert_ment);
+      $('input[name=' + target + ']').focus();
+    }
+
     return result;
-  };
+  }; // eachCheck 함수 끝
+
+  // _ModifyUserInfo = (event) => {
+  //   // const arr = ['nickname', 'email_id', 'select_email_host', 'middle_phone_number', 'last_phone_number'];
+  //   const arr = ['nickname'];
+  //   const { host_code, host, modify_able } = this.props;
+  //   const form_data = event.target;
+
+  //   event.preventDefault();
+
+  //   let obj = { 'host_detail' : '-' };
+  //   let final_result = true;
+
+  //   const val = form_data['nickname'].value;
+    
+  //   const each_result = this._eachCheck(arr[0], val, null);
+
+  //   // 닉네임 중복 체크
+  //   const nick_overlap_check = axios(URL + '/check/nickname', {
+  //     method : 'POST',
+  //     headers: new Headers(),
+  //     data : { 'nick' : val }
+  //   })
+
+  //             nick_overlap_check.then(el => {
+  //                console.log(el)
+  //               if(el.data === false) {
+  //                 final_result = false;
+  //               }
+  //             })
+
+  //             console.log(final_result)
+
+
+  //   // arr.forEach( (el) => {
+  //   //   const data = form_data[el].value;
+
+  //   //   console.log(el, data)
+  //   //   // let result = this._eachCheck(el, data, null);
+  //   //   // result.then( el => el === false ? final_result = false : null );
+
+  //   //   const _promise = (el) => {
+        
+  //   //   }
+  //   // })
+
+  //   // arr.forEach( (el) => {
+  //   //   let custom_email = null;
+  //   //   if(el === 'host_detail') {
+  //   //     if(host_code === null || host === null) {
+  //   //       return true;
+  //   //     }
+  //   //   }
+
+  //   //   if(el === 'select_email_host') {
+  //   //   this._removeAlert('custom_email_host')
+  //   //   let email_host = '';
+
+  //   //     if(form_data[el].value !== 'custom') {
+  //   //       email_host = form_data[el].value;
+  //   //       data['email_host'] = email_host
+
+  //   //       return true;
+
+  //   //     } else {
+  //   //       custom_email = form_data['custom_email_host'].value
+  //   //       email_host = custom_email;
+  //   //     }
+  //   //     data['email_host'] = email_host
+  //   //   }
+  //   //   this._removeAlert(el)
+
+  //   //   const each_value = form_data[el].value;
+  //   //   data[el] = each_value;
+
+  //   //   const each_result = this._eachCheck(el, each_value, custom_email);
+
+  //   //   // if(each_result === false) {
+  //   //   //   final_result = false;
+
+  //   //   //   this.props.myPageAction.toggle_able({ 'bool' : false });
+  //   //   // }
+  //   // })
+
+
+  //   // if(modify_able) {
+  //   //   const modify_user_info = await axios(URL + '/update/user_info', {
+  //   //     method : 'POST',
+  //   //     headers: new Headers(),
+  //   //     data : data
+  //   //   })
+  //   // }
+  // }
+
+  // _eachCheck = async (type, val, custom_email) => {
+
+  //   return true;
+
+  //   if(!val) {
+  //     this._removeAlert(type)
+  //     val = $('input[name=' + type + ']').val();
+
+  //     // if(type === 'select_email_host') {
+  //     //   this._removeAlert('custom_email_host')
+  //     //   const select_result = $('select[name=select_email_host]').val();
+
+  //     //   if(val === undefined && select_result === 'custom') {
+  //     //     custom_email = $('input[name=custom_email_host]').val();
+  //     //     val = $('input[name=custom_email_host]').val();
+  //     //   }
+  //     // }
+  //   }
+
+  //   const user_info = JSON.parse(this.props.user_info); 
+  //   const id_check = /^[a-z]+[a-z0-9]{5,14}$/g; // 아이디 체크;
+  //   const email_host_check = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+
+  //   var result = true;
+
+  //   if(type === 'nickname') {
+  //     if(val.length === 0 || (val.length !== 0 && val !== user_info.nickname)) {
+  //       if(val.length < 3 || val.length > 10) {
+  //         this._alert(type, '최소 3글자 이상, 10글자 이하로 입력해주세요.');
+  //         $('input[name=nickname]').focus();
+          
+  //         result = false;
+        
+  //       } else {
+  //         // 닉네임 중복 체크
+  //         const nick_overlap_check = await axios(URL + '/check/nickname', {
+  //           method : 'POST',
+  //           headers: new Headers(),
+  //           data : { 'nick' : val }
+  //         })
+    
+  //         if(nick_overlap_check.data === false) {
+  //           this._alert(type, '중복된 닉네임 입니다.');
+  //           $('input[name=nickname]').focus();
+
+  //           result = false;
+  //         }
+  //       }
+  //     }
+
+  //   } else {
+
+  //     if(val.length === 0 && !custom_email && type !== 'host_detail') {
+  //       return result;
+  //     }
+  //     return;
+
+  //     if(type === 'email_id') {
+  //       if(!id_check.test(val)) {
+  //         this._alert(type, '영문자로 시작하는 6~15 글자 사이의 영문 또는 숫자를 입력해주세요.');
+  //         $('input[name=email_id]').focus();
+
+  //         result = false;
+
+  //       } else {
+  //         this._eachCheck('select_email_host', undefined, null)
+  //       }
+
+  //     } else if(type === 'select_email_host') {
+  //       const test_email_check = 'testemail@' + custom_email
+  //       $('input[name=custom_email_host]').focus();
+
+  //       if(custom_email !== null) {
+  //         this._eachCheck('email_id', null, custom_email)
+
+  //         if(!email_host_check.test(test_email_check)) {
+  //           this._alert('custom_email_host', '이메일 주소 형식을 바로 입력해주세요.');
+  //           $('input[name=custom_email_host]').focus();
+        
+  //           result = false;
+
+  //         } else {
+
+  //         }
+  //       }
+        
+  //     } else if(type === 'middle_phone_number' || type === 'last_phone_number') {
+  //         if(isNaN(Number(val))) {
+  //           this._alert(type, '숫자만 입력 가능합니다.');
+  //           $('input[name=' + type + ']').focus();
+        
+  //           result = false;
+
+  //         } else if(val.length !== 4) {
+  //           this._alert(type, '4자리 모두 입력해주세요.');
+  //           $('input[name=' + type + ']').focus();
+        
+  //           result = false;
+  //         }
+
+  //     } else if(type === 'host_detail') {
+  //         if(val.length === 0) {
+  //           this._alert(type, '상세 주소를 입력해주세요.');
+  //           $('input[name=' + type + ']').focus();
+        
+  //           result = false;
+  //         }
+  //     }
+  //   }
+  //   return result;
+  // };
 
   _alert = (target, ment) => {
     const target_el = 'input[name=' + target + ']';
@@ -306,15 +392,8 @@ class Modify_user extends Component {
     }
   }
 
-  _test = () => {
-    const data = $('input[name=nickname]').val();
-
-    // let result = this._eachCheck('nickname', data, null);
-    // console.log(result)
-  }
-
     render() {
-      const { email_custom, host_open, host_code, host, modify_able } = this.props;
+      const { email_custom, host_open, host_code, host } = this.props;
       const user_info = JSON.parse(this.props.user_info);
 
         return(
@@ -334,7 +413,7 @@ class Modify_user extends Component {
                   <div id='modify_user_div_grid' className='border_bottom'>
                     <div />
                     <div>
-                      <form id='modify_user_info_form' onSubmit={this._ModifyUserInfo}>
+                      <form id='modify_user_info_form' onSubmit={this._updateUserInfo}>
                       <ul id='modify_user_info_ul' className='list_none'>
                         <li>
                           <h4> 아이디 </h4>

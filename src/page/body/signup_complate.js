@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -14,7 +14,7 @@ class Signup_complate extends Component {
     const check = sessionStorage.getItem('signup')
 
     if(!check) {
-      // return window.location.replace('/');
+      return window.location.replace('/');
     }
 
     sessionStorage.removeItem('signup');

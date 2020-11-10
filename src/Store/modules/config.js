@@ -4,11 +4,14 @@ const LOGINANDLOGOUT = 'config/login_and_logout';
 const RESIZEWINODW = 'config/resize_window';
 const SAVEUSERINFO = 'config/save_user_ifno';
 const SAVEADMININFO = 'config/save_admin_info';
+const SETALLCOOKIES = 'config/set_all_cookies';
+
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
 export const save_user_info = createAction(SAVEUSERINFO);
 export const save_admin_info = createAction(SAVEADMININFO);
+export const set_all_cookies = createAction(SETALLCOOKIES);
 
 
 const initialState = {
@@ -17,7 +20,8 @@ const initialState = {
     admin_info : false,
     window_width : 0,
     window_height : 0,
-    modify_user_check : false
+    modify_user_check : false,
+    all_cookies : {},
 };
 
 export default handleActions({
@@ -47,6 +51,13 @@ export default handleActions({
         return {
             ...state,
             admin_info : data.payload.info
+        }
+    },
+
+    [SETALLCOOKIES] : (state, data) => {
+        return {
+            ...state,
+            all_cookies : data.payload.obj
         }
     }
 

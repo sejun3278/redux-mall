@@ -65,7 +65,7 @@
 }
 
 @media ( max-width: 768px ) {
-    #signup_div { grid-template-columns: 0% 48% 5% 2% 45% !important; }
+    #signup_div { grid-template-columns: 4% 43% 5% 2% auto !important; }
     .alert { font-size: 12px !important; }
     #signup_complate_div { margin-top: 13%; }
     #header_other_div { grid-template-columns: 25% 35% 40% !important; }
@@ -141,8 +141,8 @@
     #main_header_right #main_login_ul{ margin-top: 28px !important; }
     .my_page_info_title_div div p { font-size: 14px !important; }
 
-    #user_thumbnail_div #user_thumbnail_img { width: 90px !important; height: 90px !important; margin-top: 8px; }
-    #my_page_profile_div { grid-template-columns: 0% 20% auto !important; }
+    /* #user_thumbnail_div #user_thumbnail_img { width: 90px !important; height: 90px !important; margin-top: 8px; } */
+    #my_page_profile_div { grid-template-columns: 0% 25% auto !important; }
 
     #header_other_mobile_div { grid-template-columns: 0% 33% 34% 33% 0% !important; }
     #my_page_select_div { grid-template-columns: 5% auto 5% !important; font-size: 14px; }
@@ -152,23 +152,28 @@
     #modify_user_info_ul { padding-left: 10px; }
 }
 
+  @media ( max-width: 435px ) {
+    #my_page_profile_div { grid-template-columns: 0% 28% auto !important; }
+
+  }
+
   @media ( max-width: 426px ) {
     #body_div { display: grid; grid-template-columns: 0% 100% 0% !important; }
-    #signup_div { margin-left: 5% !important; grid-template-columns: 0% 100% !important;}
+    #signup_div { margin-left: 16% !important; grid-template-columns: 0% 100% !important;}
 
     #signup_div div ul li input { width: 75% !important; }
     #signup_center_height_line { display: none; }
-    #signup_agree_div { width: 350px; }
+    #signup_agree_div { width: 110%; margin-left: -10% !important; }
     #signup_agree_div textarea { height: 150px !important; }
 
-    #signup_submit_button { margin: 80% 20% 4% 15% !important; }
+    #signup_submit_button { margin: 350px 20% 4% 8% !important; }
     #signup_complate_div { margin-top: 13% !important; }
 
     #header_other_mobile_div { font-size: 13px !important; }
     #main_header_div { grid-template-columns: 5% 30% auto !important;}
 
     #my_page_user_id, #my_page_user_nick { display: none; }
-    #my_page_profile_div { grid-template-columns: 0% 20% auto !important; }
+    #my_page_profile_div { grid-template-columns: 0% 28% auto !important; }
     .my_page_info_title_div { grid-template-columns: 50% 50% !important; }
     #user_mobile_id_div { display: block !important; font-size: 14px; }
 
@@ -188,12 +193,8 @@
   }
 
   @media ( max-width: 386px ) {
-    #signup_agree_div {
-        width: 300px;
-        margin-left: 10px;
-    }
+    #signup_agree_div { width: 110%; margin-left: -10% !important; }
 
-    #signup_submit_button { margin: 90% 20% 4% 0% !important; }
     #header_category_div img { width : 30px !important; margin-top: 10px !important;}
     #header_category_div b { font-size: 14px !important; margin-top: 1px; }
 
@@ -202,12 +203,13 @@
   
     #modify_user_info_ul li { margin-left: 40px; }
     #modify_user_host_div { width: 80% !important; }
-  
+    
+    #my_page_profile_div { grid-template-columns: 0% 35% auto !important; }
   }
 
   @media ( max-width: 376px ) {
     #signup_submit_button {
-        margin: 90% 20% 4% 15% !important;
+        margin: 350px 20% 6% 5% !important;
     }
 
     #login_div #login_close_icon { margin: -60px 0px 0px 135px; }
@@ -219,21 +221,18 @@
 
     #my_page_select_div { grid-template-columns: 1% auto 0% !important; font-size: 14px; padding : 0px !important; }
     .my_page_icon_img { background-size: 60% !important; }
-
-    #my_page_profile_div { grid-template-columns: 0% 28% auto !important; }
-
   }
 
   @media ( max-width: 342px ) {
     #main_login_ul { line-height: 30px !important; }
-    #signup_agree_div { width: 250px; margin-left: 20px; }
+    /* #signup_agree_div { width: 250px; margin-left: 20px; } */
 
     #modify_user_info_ul li { margin-left: 20px !important; }
     #modify_user_email_grid { grid-template-columns: 55% 10% auto !important; }
     #main_header_div { grid-template-columns: 0% 50% auto !important; }
 
     #login_div #login_close_icon { margin: -55px 0px 0px 115px !important; }
-
+    #my_page_profile_div { grid-template-columns: 0% 40% auto !important; }
   }
 
   @media ( max-width: 320px ) {
@@ -250,7 +249,7 @@
     }
 
     #signup_submit_button {
-        margin: 100% 0% 4% 10% !important;
+        margin: 350px 0% 8% 2% !important;
     }
 
     #login_div #login_close_icon { margin: -60px 0px 0px 115px; }

@@ -1,0 +1,13 @@
+#admin_check_code_div { margin: 50px 0px 0px 0px; }
+#admin_check_form { line-height: 45px; }
+#admin_check_form input { padding: 5px 10px 5px 10px; }
+#admin_check_form #admin_check_button { 
+    border: solid 1px black; 
+    background-color: white;
+    padding: 3px 5px 5px 5px;
+    margin: 0px 0px 0px 20px;
+}
+
+@media ( max-width: 350px ) {
+    #admin_check_code_div p { font-size: 14px; }
+}

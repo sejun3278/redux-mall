@@ -59,7 +59,7 @@ class Header extends Component {
         if(window.confirm('로그아웃 하시겠습니까?')) {
             sessionStorage.removeItem('login');
 
-            const url = ['/myPage'];
+            const url = ['/myPage', '/admin'];
             let url_check = false;
             url.forEach( (el) => {
                 if(window.location.pathname.includes(el)) {
@@ -91,6 +91,8 @@ class Header extends Component {
                                     id='admin_icon'
                                     title='관리자 페이지'
                                     className='pointer'
+                                    alt=''
+                                    onClick={() => window.location.href='/admin/pass_admin'}
                                 />
                             </div>
                         : null}

@@ -14,6 +14,15 @@ import URL from '../../config/url';
 import $ from 'jquery';
 
 class Signup extends Component {
+
+  componentDidMount() {
+    const { login, user_info } = this.props;
+    
+    if(user_info || login === true) {
+      window.location.replace('/')
+    }
+  }
+
   _signupCheck = async (event) => {
     const arr = ['id', 'nick', 'pw', 'pw_check', 'agree'];
     const { signupAction } = this.props;

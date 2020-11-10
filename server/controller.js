@@ -6,12 +6,16 @@ const salt = require(path.join(__dirname, 'config', 'db.json'))
  .salt
 
 const hashing = require(path.join(__dirname, 'config', 'hashing.js'))
+const mailer = require(path.join(__dirname, 'config', 'nodemailer.js'))
+// 메일 전송자 환경 설정
+const mailer_poster = mailer.mailer_poster();
 
 AWS.config.loadFromPath(
     path.join(__dirname, 'config', 'awsConfig.json')
 );
 
 const moment = require('moment');
+
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 
@@ -47,6 +51,15 @@ module.exports = {
                 return res.send(result_obj)
             })
         },
+
+        send_mail : (req, res) => {
+            const body = req.body;
+
+            const mailOption = mailer.mailOpt(body.email, body.title, body.contents);
+            mailer.sendMail(mailer_poster, mailOption)
+
+            return res.send(true)
+        },
     },
 
     get : {
@@ -80,6 +93,13 @@ module.exports = {
                 }
                 return res.send(true);
             })
+        },
+
+        admin_check : (req, res) => {
+            console.log(req.cookie)
+            // console.log(req.)
+
+            return res.send(false)
         }
     },
 
@@ -108,7 +128,7 @@ module.exports = {
                 
                 return res.send(true)
             })
-        }
+        },
     },
 
     add : {
@@ -151,6 +171,13 @@ module.exports = {
                     })
                 }
             })
+        },
+
+        admin_check : (req, res) => {
+            // 관리자 쿠키 추가
+            res.cookie('admin', true, { maxAge: 1000*60*60*24*7, httpOnly: true });
+
+            return res.send(true)
         }
     },
 
@@ -159,7 +186,6 @@ module.exports = {
             let body = req.body;
             body['nick'] = req.body.nickname;
 
-            console.log(body)
             return res.send(true)
             // model.update.user_info( body, () => {
             //     return res.send(true)

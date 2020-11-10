@@ -15,8 +15,9 @@ import * as configAction from './Store/modules/config';
 // import Login from './page/body/login';
 // import SignupComplate from './page/body/signup_complate';
 
-import { MyPageHome, ModifyUser } from './page/body/my_page/index'; 
-import { Header, Login, Signup, SignupComplate } from './page/index'; 
+import { MyPageHome, ModifyUser } from './page/body/my_page/index';
+import { AdminHome } from './page/body/admin/index';
+import { Header, Login, Signup, SignupComplate } from './page/index';
 
 import URL from './config/url.js';
 
@@ -40,6 +41,7 @@ class App extends Component {
     const { configAction } = this.props;
     
     this._callServerStatus();
+    this._getAllCookies()
 
     const login_check = JSON.parse(sessionStorage.getItem('login'));
     if(login_check) {
@@ -53,6 +55,10 @@ class App extends Component {
     }
   }
 
+  componentDidUpdate() {
+    this._checkLogin();
+  }
+
   _checkAdmin = async (info) => {
     const get_admin_info = await axios(URL + '/get/admin_info', {
       method : 'POST',
@@ -61,8 +67,10 @@ class App extends Component {
     })
 
     if(get_admin_info.data === true) {
-      return this.props.configAction.save_admin_info({ 'info' : get_admin_info.data })
+      this.props.configAction.save_admin_info({ 'info' : get_admin_info.data })
+      return true;
     }
+    return false;
   }
 
   _getLoginInfo = async (info) => {
@@ -108,24 +116,41 @@ class App extends Component {
 
   // 로그인 체크
   _checkLogin = () => {
-    let result = false;
-    const { login } = this.props;
+    const login_check = JSON.parse(sessionStorage.getItem('login'));
+    if(login_check) {
+      this.props.configAction.login_and_logout({ 'bool' : true });
 
-    if(sessionStorage.getItem('login') && login === true) {
-      result = true;
+      // 유저 정보 담기
+      this._getLoginInfo(login_check);
+
+      // 관리자 확인
+      this._checkAdmin(login_check)
     }
+  }
 
-    return result;
+  // 모든 쿠키 정보 가져오기
+  _getAllCookies = async () => {
+    const get_cookies = await axios.get(URL + '/get/all_cookies');
+
+    this.props.configAction.set_all_cookies({ 'obj' : JSON.stringify(get_cookies.data) })
+    return get_cookies.data
   }
 
   render() {
-    const { login_modal, admin_info } = this.props;
-    const { _pageMove, _modalToggle, _checkLogin } = this;
+    const { login_modal, admin_info, login } = this.props;
+    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _getAllCookies } = this;
 
-    console.log(admin_info)
+    const user_info = JSON.parse(sessionStorage.getItem('login'));
+
     return(
       <div className='App'>
-        <Header 
+        {user_info && !login
+        
+        ? <div> </div>
+        
+        :
+        <div>
+          <Header 
           _pageMove={_pageMove}
           _modalToggle={_modalToggle}
           admin_info={admin_info}
@@ -148,7 +173,25 @@ class App extends Component {
             </Modal>
 
             <Switch>
-              <Route exact path='/signup' component={Signup} />
+              <Route path='/admin'
+                     render={(props) => <AdminHome 
+                      login={login}
+                      user_info={user_info}
+                      _checkAdmin={_checkAdmin}
+                      admin_info={admin_info}
+                      _checkLogin={_checkLogin}
+                      _getAllCookies={_getAllCookies}
+                    {...props} 
+              />}
+            />
+
+              <Route exact path='/signup' 
+                     render={(props) => <Signup 
+                      login={login}
+                      user_info={user_info}
+                        {...props} 
+                />}
+              />
               <Route path='/signup/complate/:id' 
                      render={(props) => <SignupComplate 
                         _pageMove={_pageMove} 
@@ -164,16 +207,18 @@ class App extends Component {
               /> {/* 회원 정보 수정 */}
 
               <Route path='/myPage' 
-                     render={(props) => <MyPageHome 
-                      _checkLogin={_checkLogin}
+                     render={(props) => <MyPageHome
+                     login={login}
+                     user_info={user_info}
                         {...props} 
                 />}
               />
-
             </Switch>
           </div>
           <div id='body_div_right'> </div>
+          </div>
         </div>
+      }
       </div>
     )
   }

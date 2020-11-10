@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as signupAction from '../../../Store/modules/signup';
-import * as configAction from '../../../Store/modules/config';
+// import * as configAction from '../../../Store/modules/config';
 
 import img from '../../../source/img/icon.json';
 
@@ -15,19 +15,11 @@ class My_page_home extends Component {
 
     componentDidMount() {
         // 로그인 체크
-        // const login_check = this.props._checkLogin();
+        const { user_info, login } = this.props;
 
-        if(!JSON.parse(sessionStorage.getItem('login'))) {
-            alert('로그아웃 되었습니다.');
-
+        if(!user_info || !login) {
             return window.location.replace('/');
         }
-        
-        // if(!login_check) {
-        //     alert('로그아웃 되었습니다.');
-            
-        //     return window.location.replace('/');
-        // }
     }
 
     _iconToggle = (target, type) => {

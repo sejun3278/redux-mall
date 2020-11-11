@@ -1,0 +1,27 @@
+{
+    "admin_page" : [
+        {
+            "name" : "상품 관리",
+            "url" : "/admin/goods",
+            "word" : ["admin", "goods"]
+        },
+
+        {
+            "name" : "주문 관리",
+            "url" : "/admin/order",
+            "word" : ["order"]
+        },
+
+        {
+            "name" : "배송 관리",
+            "url" : "/admin/delivery",
+            "word" : ["delivery"]
+        },
+
+        {
+            "name" : "회원 관리",
+            "url" : "/admin/user",
+            "word" : ["user"]
+        }
+    ]
+}

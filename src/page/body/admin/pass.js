@@ -92,7 +92,9 @@ class PassAdmin extends Component {
         if(admin_code === check_code) {
             await axios.get(URL + '/add/admin_check');
 
-            return alert('관리자 권한 인증 성공');
+            alert('관리자 권한 인증 성공');
+
+            return window.location.replace('/admin');
 
         } else {
             return alert('일치하지 않는 코드입니다.');

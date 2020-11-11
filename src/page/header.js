@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import axios from 'axios';
+
 import '../css/main.css';
 import * as configAction from '../Store/modules/config';
 
@@ -9,6 +11,7 @@ import { Link } from 'react-router-dom';
 import img from '../source/img/icon.json';
 
 import $ from 'jquery';
+import URL from '../config/url';
 
 class Header extends Component {
     componentDidMount() {
@@ -19,8 +22,6 @@ class Header extends Component {
         if(user) {
             user = JSON.parse(user);
             // 관리자 확인하기
-
-            
         }
     }
     
@@ -55,7 +56,7 @@ class Header extends Component {
         }
     }  
 
-    _logout = () => {
+    _logout = async () => {
         if(window.confirm('로그아웃 하시겠습니까?')) {
             sessionStorage.removeItem('login');
 
@@ -67,6 +68,13 @@ class Header extends Component {
                 }
             })
 
+            // 쿠키 삭제
+            await axios(URL + '/remove/cookie', {
+                method : 'POST',
+                headers: new Headers(),
+                data : { 'cookie' : 'admin' }
+              })
+
             if(url_check) {
                 return window.location.replace('/')
             }
@@ -76,10 +84,10 @@ class Header extends Component {
     }
 
     render() {
-        const { _pageMove, _modalToggle, login, admin_info } = this.props;
+        const { _pageMove, _modalToggle, login, admin_info, admin_state } = this.props;
 
         return (
-            <div id='main_header'> 
+            <div id='main_header'>
                 <div id='main_header_div'>
                     <div id='main_header_left'> </div>
                     <div id='main_header_center'> 
@@ -92,13 +100,13 @@ class Header extends Component {
                                     title='관리자 페이지'
                                     className='pointer'
                                     alt=''
-                                    onClick={() => window.location.href='/admin/pass_admin'}
+                                    onClick={() => (window.location.href='/admin')}
                                 />
                             </div>
                         : null}
                     </div>
 
-                    <div id='main_header_right'> 
+                    <div id='main_header_right'>
                         { /* Right */ }
                         <ul id='main_login_ul'>
                             {!login 
@@ -166,7 +174,8 @@ export default connect(
     (state) => ({
         login : state.config.login,
         window_width : state.config.window_width,
-        window_height : state.config.window_height
+        window_height : state.config.window_height,
+        admin_state : state.admin.admin_state
     }), 
   
     (dispatch) => ({

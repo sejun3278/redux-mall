@@ -2,6 +2,7 @@
     "icon" : {
         "check" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/check_icon.png",
         "close_white" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_white.png",
+        "close_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_black.png",
         "category" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/category_icon.png",
         "search" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/search_icon.png",
         "user_icon" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/user_icon.png",
@@ -21,6 +22,7 @@
         "se_bot_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/7.+se_bot_black.png",
         "coupon_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_gray.png",
         "coupon_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_black.png",
-        "admin" : "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../assets/preview/2012/png/iconmonstr-gear-1.png&r=0&g=0&b=0"
+        "admin" : "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../assets/preview/2012/png/iconmonstr-gear-1.png&r=0&g=0&b=0",
+        "select_page" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/select_page.png"
     }
 }

@@ -9,6 +9,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import * as signupAction from './Store/modules/signup';
 import * as configAction from './Store/modules/config';
+import * as adminAction from './Store/modules/admin';
 
 // import Header from './page/header';
 // import Signup from './page/body/signup';
@@ -16,7 +17,7 @@ import * as configAction from './Store/modules/config';
 // import SignupComplate from './page/body/signup_complate';
 
 import { MyPageHome, ModifyUser } from './page/body/my_page/index';
-import { AdminHome } from './page/body/admin/index';
+import { AdminHome, AdminCategory } from './page/body/admin/index';
 import { Header, Login, Signup, SignupComplate } from './page/index';
 
 import URL from './config/url.js';
@@ -130,18 +131,25 @@ class App extends Component {
 
   // 모든 쿠키 정보 가져오기
   _getAllCookies = async () => {
+    const { adminAction } = this.props;
     const get_cookies = await axios.get(URL + '/get/all_cookies');
 
     this.props.configAction.set_all_cookies({ 'obj' : JSON.stringify(get_cookies.data) })
-    return get_cookies.data
+    if(get_cookies.data.admin) {
+      adminAction.login_admin({ 'bool' : true })
+
+    } else {
+      adminAction.login_admin({ 'bool' : false })
+    }
+
+    return get_cookies.data;
   }
 
   render() {
-    const { login_modal, admin_info, login } = this.props;
+    const { login_modal, admin_info, login, admin_state } = this.props;
     const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _getAllCookies } = this;
 
     const user_info = JSON.parse(sessionStorage.getItem('login'));
-
     return(
       <div className='App'>
         {user_info && !login
@@ -157,7 +165,21 @@ class App extends Component {
         />
 
         <div id='body_div'>
-          <div id='body_div_left'> </div>
+          <div id='body_div_left'>
+            {user_info && login && admin_state ?
+            <div>
+              <Route path='/admin' 
+                    render={(props) => <AdminCategory 
+                      _pageMove={_pageMove}
+                    {...props} 
+              />}
+              />
+            </div>
+            : null}
+
+          </div>
+          {/* */}
+
           <div id='body_div_center'>
             <Modal
               isOpen={login_modal}
@@ -181,6 +203,7 @@ class App extends Component {
                       admin_info={admin_info}
                       _checkLogin={_checkLogin}
                       _getAllCookies={_getAllCookies}
+                      _pageMove={_pageMove}
                     {...props} 
               />}
             />
@@ -231,10 +254,12 @@ export default connect(
   (state) => ({
     login_modal : state.signup.login_modal,
     login : state.config.login,
-    admin_info : state.config.admin_info
+    admin_info : state.config.admin_info,
+    admin_state : state.admin.admin_state,
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),
-    configAction : bindActionCreators(configAction, dispatch)
+    configAction : bindActionCreators(configAction, dispatch),
+    adminAction : bindActionCreators(adminAction, dispatch)
   })
 )(App);

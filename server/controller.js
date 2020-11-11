@@ -175,7 +175,7 @@ module.exports = {
 
         admin_check : (req, res) => {
             // 관리자 쿠키 추가
-            res.cookie('admin', true, { maxAge: 1000*60*60*24*7, httpOnly: true });
+            res.cookie('admin', true, { maxAge: 3600000, httpOnly: true });
 
             return res.send(true)
         }
@@ -190,6 +190,14 @@ module.exports = {
             // model.update.user_info( body, () => {
             //     return res.send(true)
             // })
+        }
+    },
+
+    remove : {
+        cookie : (req, res) => {
+            res.clearCookie(req.body.cookie);
+
+            return res.send(true)
         }
     }
 }

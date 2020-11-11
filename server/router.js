@@ -23,5 +23,7 @@ router.post('/api/send_mail', controller.api.send_mail);
 
 router.post('/update/user_info', controller.update.user_info);
 
+router.post('/remove/cookie', controller.remove.cookie);
+
 
 module.exports = router;

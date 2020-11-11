@@ -8,6 +8,67 @@
     margin: 0px 0px 0px 20px;
 }
 
+#admin_category_div { padding: 10px; }
+#admin_cateogry_ul { line-height: 50px; padding-left: 0px; }
+#admin_cateogry_ul li u { text-decoration: none; cursor: pointer; }
+
+#admin_list_close_button { width: 25px; position: absolute; margin : -100px 0px 0px 280px; }
+
+#admin_goods_other_div { display: grid; grid-template-columns: 40% 20% 20% 20%; padding : 10px 0px 0px 0px; min-width: 320px; }
+#admin_goods_other_div div { margin-right: 30px; margin-top: 10px; }
+#admin_goods_other_div div u { text-decoration: none; cursor: pointer; }
+#mobile_admin_category_div { height: 102px; }
+
+#select_page_icon { width: 15px; margin-right: 10px; }
+
+@media ( max-width: 1024px ) {
+    /* #admin_cateogry_ul { padding-left: 20px; } */
+}
+
+@media ( max-width: 880px ) {
+    #admin_category_div { display: none; }
+    #responsive_admin_category_div { display: block; }
+    #responsive_admin_category_div div { display: block; }
+
+    /* #body_div_left { display: none; } */
+    #body_div { grid-template-columns: 0% auto 0% !important; }
+    /* #admin_page_div { width: 90%; } */
+    #admin_home_grid_div { display: grid; grid-template-columns: 15% auto; }
+}
+
+@media ( max-width: 700px ) {
+    /* #body_div { grid-template-columns: 1% auto 0% !important; } */
+
+    /* #body_div { grid-template-columns: 0% auto 0% !important; } */
+    /* #admin_home_grid_div { display: grid; grid-template-columns: 15% auto; } */
+}
+
+@media ( max-width: 596px ) {
+    #admin_home_grid_div, #mobile_admin_category_div { display: block; }
+    #responsive_admin_category_div { display: none !important; }
+    #admin_list_modal_div #admin_category_div { display: block; }
+
+    #admin_contents_div { display: grid; grid-template-columns: 15% auto;}
+    #mobile_admin_category_div { line-height: 100px; font-size: 14px; }
+    #admin_list_modal_div h4 { padding-bottom: 30px; }
+
+    #admin_page_contents_div { position: absolute; width: 100%; margin-top: 100px; }
+    /* #admin_goods_other_div { grid-template-columns: 30% 20% 25% 25%; } */
+}
+
+@media ( max-width: 507px ) {
+    #admin_goods_other_div { grid-template-columns: 25% 15% 30% 30%; font-size: 14px; }
+}
+
+@media ( max-width: 426px ) {
+    #admin_category_div { font-size: 13px; }
+    #admin_list_modal_div #admin_category_div { font-size: 16px; }
+}
+
+@media ( max-width: 342px ) {
+    /* #admin_goods_other_div { grid-template-columns: 20% 15% 32.5% 32.5%; text-align: center; font-size: 14px; } */
+}
+
 @media ( max-width: 350px ) {
     #admin_check_code_div p { font-size: 14px; }
 }

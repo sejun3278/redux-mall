@@ -68,12 +68,8 @@ class Header extends Component {
                 }
             })
 
-            // 쿠키 삭제
-            await axios(URL + '/remove/cookie', {
-                method : 'POST',
-                headers: new Headers(),
-                data : { 'cookie' : 'admin' }
-              })
+            // admin Session 삭제
+            sessionStorage.removeItem('admin');
 
             if(url_check) {
                 return window.location.replace('/')

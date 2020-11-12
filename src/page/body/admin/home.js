@@ -32,7 +32,7 @@ const customStyles = {
 
 class AdminHome extends Component {
     componentDidMount() {
-        const { login, user_info, _checkAdmin, _checkLogin } = this.props;
+        const { login, user_info, _checkAdmin, _checkLogin, adminAction } = this.props;
         _checkLogin();
 
         if(!user_info || !login) {
@@ -49,15 +49,24 @@ class AdminHome extends Component {
                     }
                 }
                 check_admin_fn();
+
+                if(sessionStorage.getItem('admin')) {
+                    adminAction.login_admin({ 'bool' : true })
+
+                } else {
+                    // adminAction.login_admin({ 'bool' : false })
+                }
             }
         }
     }
 
     _getAdminCheck = async () => {
         // 관리자 인증 확인하기
-        const all_cookies = await this.props._getAllCookies();
+        // const all_cookies = await this.props._getAllCookies();
 
-        if(all_cookies.admin) {
+        const admin_session = sessionStorage.getItem('admin');
+
+        if(admin_session) {
             return true;
         }
         return false;
@@ -72,7 +81,7 @@ class AdminHome extends Component {
 
     render() {
         const { 
-            admin_info, user_info, _checkAdmin, login, _checkLogin, _getAllCookies, admin_state, _pageMove,
+            admin_info, user_info, _checkAdmin, login, _checkLogin, admin_state, _pageMove,
             list_modal
         } = this.props;
 
@@ -91,7 +100,7 @@ class AdminHome extends Component {
             <div id='admin_page_div'>
                 {user_info && admin_info
                 
-                ? admin_state === false ? 
+                ? admin_state === null ? 
                                         <div>
                                             <PassAdmin 
                                                 user_info={user_info}
@@ -99,7 +108,6 @@ class AdminHome extends Component {
                                                 _checkLogin={_checkLogin}
                                                 login={login}
                                                 admin_info={admin_info}
-                                                _getAllCookies={_getAllCookies}
                                             />
                                         </div>
 

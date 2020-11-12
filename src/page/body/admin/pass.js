@@ -90,7 +90,7 @@ class PassAdmin extends Component {
         }
 
         if(admin_code === check_code) {
-            await axios.get(URL + '/add/admin_check');
+            sessionStorage.setItem('admin', user_info.user_id)
 
             alert('관리자 권한 인증 성공');
 

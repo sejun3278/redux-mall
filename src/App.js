@@ -42,7 +42,6 @@ class App extends Component {
     const { configAction } = this.props;
     
     this._callServerStatus();
-    this._getAllCookies()
 
     const login_check = JSON.parse(sessionStorage.getItem('login'));
     if(login_check) {
@@ -129,25 +128,9 @@ class App extends Component {
     }
   }
 
-  // 모든 쿠키 정보 가져오기
-  _getAllCookies = async () => {
-    const { adminAction } = this.props;
-    const get_cookies = await axios.get(URL + '/get/all_cookies');
-
-    this.props.configAction.set_all_cookies({ 'obj' : JSON.stringify(get_cookies.data) })
-    if(get_cookies.data.admin) {
-      adminAction.login_admin({ 'bool' : true })
-
-    } else {
-      adminAction.login_admin({ 'bool' : false })
-    }
-
-    return get_cookies.data;
-  }
-
   render() {
     const { login_modal, admin_info, login, admin_state } = this.props;
-    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _getAllCookies } = this;
+    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin } = this;
 
     const user_info = JSON.parse(sessionStorage.getItem('login'));
     return(
@@ -202,7 +185,6 @@ class App extends Component {
                       _checkAdmin={_checkAdmin}
                       admin_info={admin_info}
                       _checkLogin={_checkLogin}
-                      _getAllCookies={_getAllCookies}
                       _pageMove={_pageMove}
                     {...props} 
               />}

@@ -17,7 +17,7 @@ import * as adminAction from './Store/modules/admin';
 // import SignupComplate from './page/body/signup_complate';
 
 import { MyPageHome, ModifyUser } from './page/body/my_page/index';
-import { AdminHome, AdminCategory } from './page/body/admin/index';
+import { AdminHome, AdminCategory, AdminGoodsWriteOther } from './page/body/admin/index';
 import { Header, Login, Signup, SignupComplate } from './page/index';
 
 import URL from './config/url.js';
@@ -220,7 +220,8 @@ class App extends Component {
               />
             </Switch>
           </div>
-          <div id='body_div_right'> </div>
+
+          <div id='body_div_right'></div>
           </div>
         </div>
       }

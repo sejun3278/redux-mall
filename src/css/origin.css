@@ -8,6 +8,10 @@
   position: absolute;
 }
 
+/* ul li 한줄로 만들기 */
+.display_inline { display : inline } 
+.display_block { display: block; }
+
 /* 글씨 컬러 */
 .black { color: black; }
 .gray { color: #ababab; }
@@ -90,8 +94,28 @@ input[type='checkbox'].check_custom_1 {
 .border_bottom { border-bottom: solid 1px #ababab; } /* 아래 */
 .border_left { border-left: solid 1px #ababab; } /* 왼쪽 */
 
+
+/* border 크기 조정 */
+.border_size_2 { border-width: 2px; }
+
 /* 안보이기 */
 .display_none { display: none; }
 
 /* 현재 선택 페이지 */
 #now_page { font-weight: bold; color: #16a596 !important; }
+
+/* 페이지 이동 u */
+.page_move { text-decoration: none; cursor: pointer; }
+
+/* margin-top 크기 */
+.marginTop_5 { margin-top: 5px !important; }
+.marginTop_10 { margin-top: 10px !important; }
+.marginTop_15 { margin-top: 15px !important; }
+.marginTop_20 { margin-top: 20px !important; }
+.marginTop_80 { margin-top: 60px !important; }
+
+/* padding */
+.padding_3 { padding : 3px }
+
+/* grid 50% 50% */
+.grid_half { display: grid; grid-template-columns: 50% 50%; }

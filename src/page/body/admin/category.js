@@ -32,31 +32,13 @@ class AdminCategory extends Component {
                                 <u onClick={() => _pageMove('href', el.url)}
                                     id={word_check ? 'now_page' : null}
                                 >
-                                {word_check ? <img src={img.icon.select_page} id='select_page_icon'/> 
+                                {word_check ? <img src={img.icon.select_page} id='select_page_icon' alt=''/> 
                                             : null }
                                 {el.name}
                                 </u>
                             </li>
                         )
                     })}
-{/* 
-                    <li>    
-                        <u onClick={() => _pageMove('href', '/admin/goods')}
-                           id={now_url === 'goods' || now_url === 'admin' ? 'now_page' : null}
-                        > 
-                            상품 관리 
-                        </u> 
-                    </li>
-
-                    <li> 
-                        <u onClick={() => _pageMove('href', '/admin/order')}
-                            id={now_url === 'order' ? 'now_page' : null}
-                        > 
-                            주문 관리 
-                        </u> 
-                    </li>
-                    <li> 배송 관리 </li>
-                    <li> 회원 관리 </li> */}
                 </ul>
             </div>
         )

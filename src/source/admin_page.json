@@ -1,27 +1,105 @@
 {
     "admin_page" : [
         {
+            "index" : 0,
             "name" : "상품 관리",
             "url" : "/admin/goods",
-            "word" : ["admin", "goods"]
+            "word" : ["admin", "goods", "goods_write"]
         },
 
         {
+            "index" : 1,
             "name" : "주문 관리",
             "url" : "/admin/order",
             "word" : ["order"]
         },
 
         {
+            "index" : 2,
             "name" : "배송 관리",
             "url" : "/admin/delivery",
             "word" : ["delivery"]
         },
 
         {
+            "index" : 3,
             "name" : "회원 관리",
             "url" : "/admin/user",
             "word" : ["user"]
         }
-    ]
+    ],
+
+    "page_title" : {
+        "admin" : "상품 관리",
+        "goods" : "상품 관리",
+        "write" : "상품 등록"
+    },
+
+    "first_category" : {
+        "category" : [
+            { "name" : "음식", "value" : "food" },
+            { "name" : "남성 의류", "value" : "man_clothing" },
+            { "name" : "여성 의류", "value" : "woman_clothing" },
+            { "name" : "화장품", "value" : "beauty" },
+            { "name" : "도서 / 문구", "value" : "book" },
+            { "name" : "장난감", "value" : "toy" },
+            { "name" : "기타", "value" : "other" }
+        ]
+    },
+
+    "last_category" : {
+        "food" : [
+            { "name" : "과일", "value" : "fruit" },
+            { "name" : "농산물", "value" : "vagetable" },
+            { "name" : "축산물", "value" : "meat" },
+            { "name" : "과자 / 간식", "value" : "snack" },
+            { "name" : "음료", "value" : "drink" },
+            { "name" : "즉석 식품", "value" : "instant" }
+        ],
+
+        "man_clothing" : [
+            { "name" : "반팔티", "value" : "man_short_tee" },
+            { "name" : "맨투맨", "value" : "man_long_tee" },
+            { "name" : "셔츠", "value" : "man_shirt" },
+            { "name" : "외투", "value" : "man_outdoor" },
+            { "name" : "바지", "value" : "man_pants" },
+            { "name" : "아동복", "value" : "man_child" }
+        ],
+
+        "woman_clothing" : [
+            { "name" : "반팔티", "value" : "woman_short_tee" },
+            { "name" : "맨투맨", "value" : "woman_long_tee" },
+            { "name" : "셔츠", "value" : "woman_shirt" },
+            { "name" : "외투", "value" : "woman_outdoor" },
+            { "name" : "바지", "value" : "woman_pants" },
+            { "name" : "아동복", "value" : "woman_child" }
+        ],
+
+        "beauty" : [
+            { "name" : "스킨", "value" : "skin" },
+            { "name" : "클렌징", "value" : "cleansing" },
+            { "name" : "마스크팩", "value" : "maskpack" },
+            { "name" : "메이크업", "value" : "makeup" },
+            { "name" : "향수", "value" : "perfume" }
+        ],
+
+        "book" : [
+            { "name" : "소설", "value" : "novel" },
+            { "name" : "만화", "value" : "cartoon" },
+            { "name" : "아동 문학", "value" : "childBook" },
+            { "name" : "학용품", "value" : "stationery" }
+        ],
+
+        "toy" : [
+            { "name" : "장난감 세트", "value" : "toy_set" },
+            { "name" : "인형", "value" : "doll" },
+            { "name" : "블록", "value" : "block" },
+            { "name" : "보드게임", "value" : "board_game" },
+            { "name" : "교육용 완구", "value" : "edu_toy" }
+        ],
+
+        "other" : [
+            { "name" : "기타", "value" : "other" }
+        ]
+    }
 }

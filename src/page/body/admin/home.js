@@ -9,7 +9,7 @@ import '../../../css/responsive/admin.css';
 
 import { Route, Switch } from 'react-router-dom';
 import { 
-    PassAdmin, AdminLogin, AdminCategory, AdminGoods, AdminOrder
+    PassAdmin, AdminGoodsWrite, AdminCategory, AdminGoods, AdminOrder
 } from './index';
 
 import img from '../../../source/img/icon.json'
@@ -63,7 +63,6 @@ class AdminHome extends Component {
     _getAdminCheck = async () => {
         // 관리자 인증 확인하기
         // const all_cookies = await this.props._getAllCookies();
-
         const admin_session = sessionStorage.getItem('admin');
 
         if(admin_session) {
@@ -92,6 +91,9 @@ class AdminHome extends Component {
         if(now_url === 'admin' || now_url === 'goods') {
             page_name = '상품 관리';
 
+        } else if(now_url === 'goods_write') {
+            page_name = '상품 등록';
+        
         } else if(now_url === 'order') {
             page_name = '주문 관리';
         }
@@ -139,7 +141,7 @@ class AdminHome extends Component {
                                                     </div>
                                                 </ Modal>
 
-                                                <div className='my_page_title'>
+                                                <div className='my_page_title' id='admin_page_titles'>
                                                     <h3> {page_name} </h3>
                                                 </div>
 
@@ -147,12 +149,21 @@ class AdminHome extends Component {
                                                     <Switch>
                                                         <Route path='/admin' exact
                                                             render={(props) => <AdminGoods
+                                                                        _pageMove={_pageMove}
+                                                                        {...props} 
+                                                            />}
+                                                        />
+
+                                                        <Route path='/admin/goods/goods_write'
+                                                            render={(props) => <AdminGoodsWrite
+                                                                        _pageMove={_pageMove}
                                                                         {...props} 
                                                             />}
                                                         />
 
                                                         <Route path='/admin/goods'
                                                             render={(props) => <AdminGoods
+                                                                        _pageMove={_pageMove}
                                                                         {...props} 
                                                             />}
                                                         />

@@ -60,44 +60,50 @@ class PassAdmin extends Component {
 
     _checkAdmin = async (event) => {
         event.preventDefault();
-        const { admin_code, login, _checkLogin, _checkAdmin } = this.props;
+        const { admin_code, login, _checkLogin, _checkAdmin, admin_check, adminAction } = this.props;
 
         const check_code = event.target['admin_code'].value;
         _checkLogin();
 
         const user_info = JSON.parse(sessionStorage.getItem('login'));
-
-        if(!login || !user_info) {
-            alert('로그아웃 된 아이디 입니다.');
-
-            return window.location.replace('/');
-
-        } else {
-            // 관리자 재 확인하기
-            const recheck_admin = await _checkAdmin(user_info);
-
-            if(recheck_admin.data === false) {
-                alert('로그인 및 관리자 권한을 다시 확인해주세요.')
     
+        adminAction.admin_check_toggle({ 'bool' : true  })
+        if(admin_check === false) {
+            if(!login || !user_info) {
+                alert('로그아웃 된 아이디 입니다.');
+
                 return window.location.replace('/');
+
+            } else {
+                // 관리자 재 확인하기
+                const recheck_admin = await _checkAdmin(user_info);
+
+                if(recheck_admin.data === false) {
+                    alert('로그인 및 관리자 권한을 다시 확인해주세요.')
+        
+                    return window.location.replace('/');
+                }
             }
-        }
 
-        if(check_code.length === 0) {
-            alert('인증 코드를 입력해주세요.')
+            if(check_code.length === 0) {
+                alert('인증 코드를 입력해주세요.')
 
-            return $('input[name=admin_code]').focus();
-        }
+                adminAction.admin_check_toggle({ 'bool' : false  })
+                return $('input[name=admin_code]').focus();
+            }
 
-        if(admin_code === check_code) {
-            sessionStorage.setItem('admin', user_info.user_id)
+            if(admin_code === check_code) {
+                sessionStorage.setItem('admin', user_info.user_id)
 
-            alert('관리자 권한 인증 성공');
+                alert('관리자 권한 인증 성공');
 
-            return window.location.replace('/admin');
+                return window.location.replace('/admin');
 
-        } else {
-            return alert('일치하지 않는 코드입니다.');
+            } else {
+                
+                adminAction.admin_check_toggle({ 'bool' : false  })
+                return alert('일치하지 않는 코드입니다.');
+            }
         }
     }
 
@@ -127,7 +133,8 @@ PassAdmin.defaultProps = {
   
   export default connect(
     (state) => ({
-        admin_code : state.admin.admin_code
+        admin_code : state.admin.admin_code,
+        admin_check : state.admin.admin_check
     }), 
   
     (dispatch) => ({

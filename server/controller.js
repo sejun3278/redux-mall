@@ -1,10 +1,13 @@
 const path = require('path');
 const AWS = require('aws-sdk');
+const fs = require('fs');
+
 const model = require('./model');
 
 const salt = require(path.join(__dirname, 'config', 'db.json'))
  .salt
 
+const S3_info = require(path.join(__dirname, 'config', 's3_upload'))
 const hashing = require(path.join(__dirname, 'config', 'hashing.js'))
 const mailer = require(path.join(__dirname, 'config', 'nodemailer.js'))
 // 메일 전송자 환경 설정
@@ -13,9 +16,10 @@ const mailer_poster = mailer.mailer_poster();
 AWS.config.loadFromPath(
     path.join(__dirname, 'config', 'awsConfig.json')
 );
+AWS.config.region = 'ap-northeast-2';
+const S3 = new AWS.S3(require(path.join(__dirname, 'config', 'awsConfig.json')));
 
 const moment = require('moment');
-
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 
@@ -60,6 +64,81 @@ module.exports = {
 
             return res.send(true)
         },
+
+        save_file : (req, res) => {
+            let result = { 'result' : false, 'ment' : "" };
+            const files = req.files.files;
+
+            const dir = path.normalize(__dirname + '/..');
+            const file_type = files.mimetype.split('/');
+
+            const date = moment().format('YYYY-MM-DD,HH_mm_ss');
+            const file = date + '_' + files.md5 + '.' + file_type[1];
+
+            const fileUpload = req.files.files;
+            fileUpload.mv(
+                `${dir}/upload/goods/origin/${file}`,
+
+                function(err) {
+                    if(err) { 
+                        result['result'] = false;
+                        result['ment'] = err;
+
+                        console.log(err)
+                        return res.send(result);
+                    }
+                }
+            )
+
+            result['result'] = true;
+            result['ment'] = file;
+
+            return res.send(result);
+        },
+
+        upload_file : async (req, res) => {
+            const body = req.body;
+            let result = { 'result' : false, 'ment' : '' }
+
+            // 사이즈 조절하기
+            const filename = body.filename;
+            // const file_arr = filename.split('.');
+            // const file_type = file_arr[file_arr.length - 1];
+
+            // const file_path = path.normalize(__dirname + '/../upload/' + body.origin_path); // 원본 파일이 있는 경로
+            // const thumb_dir = path.normalize(__dirname + '/../upload/' + body.thumb_path) // 변환된 썸네일을 저장할 경로
+
+            // const target_file = file_path + '/' + filename;
+            // const thumb_name = filename + '_thumb.' + file_type
+
+            const params_files = path.normalize(__dirname + '/..') + '/upload/goods/origin/' + filename
+            const bucket_params = S3_info.create_bucket(params_files, filename);
+
+            const _s3_upload = async () => {
+                await S3.upload(bucket_params, function(err, data) {
+    
+                    if(err) {
+                        result['ment'] = err;
+    
+                    } else {
+                        result['result'] = true;
+                        result['ment'] = data.Location;
+                    }
+                    
+                    return res.send(result);
+                })
+            }
+
+            return await _s3_upload();
+        },
+
+        s3_upload : (req, res) => {
+            const body = req.body;
+            let result = { 'result' : false, 'ment' : '' }
+
+            // S3 에 업로드하기
+            
+        }
     },
 
     get : {
@@ -178,6 +257,17 @@ module.exports = {
             res.cookie('admin', true, { maxAge: 3600000, httpOnly: true });
 
             return res.send(true)
+        },
+
+        goods : (req, res) => {
+            const body = req.body;
+            
+            model.add.goods( body, now_date, result => {
+                if(!result) {
+                    return res.send(false);
+                }
+                return res.send(true);
+            })
         }
     },
 

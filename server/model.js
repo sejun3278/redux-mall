@@ -4,6 +4,7 @@ sequelize.sync();
 const {
   Connection,
   UserInfo,
+  Goods,
   Sequelize: { Op }
 } = require('./tables');
 sequelize.query('SET NAMES utf8;');
@@ -76,6 +77,25 @@ module.exports = {
             .then( result => { callback(result) })
             .catch( err => { throw err })
         },
+
+        goods : (data, now_date, callback) => {
+            Goods.create({
+                name : data.name,
+                first_cat : data.first_cat,
+                last_cat : data.last_cat,
+                thumbnail : data.thumbnail,
+                origin_price : data.origin_price,
+                discount_price : data.discount_price,
+                result_price : data.result_price,
+                stock : data.stock,
+                bonus_img : data.bonus_img,
+                img_where : data.img_where,
+                contents : data.contents,
+                date : now_date
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
+        }
     },
 
     api : {

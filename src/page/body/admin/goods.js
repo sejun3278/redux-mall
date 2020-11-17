@@ -16,6 +16,7 @@ class AdminGoods extends Component {
     }
 
     render() {
+        const { _pageMove } = this.props;
 
         return(
             <div id='admin_goods_div'>
@@ -28,7 +29,11 @@ class AdminGoods extends Component {
                     </div>
                     <div> </div>
                     <div> <u> 상품 삭제 </u> </div>
-                    <div> <u> 상품 등록 </u> </div>
+                    <div className='page_move'> 
+                        <u onClick={() => _pageMove('href', '/admin/goods/goods_write')}> 
+                            상품 등록 
+                        </u> 
+                    </div>
                 </div>
             </div>
         )

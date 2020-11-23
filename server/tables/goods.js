@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
        },
 
        thumbnail: { 
-        type: DataTypes.STRING(200), 
+        type: DataTypes.STRING(256), 
         allowNull : false
        },
 
@@ -61,6 +61,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(20),
         allowNull : false
        },
+
+       state : {
+        type: DataTypes.BOOLEAN(), 
+        allowNull : false
+       }
       },
       {
         charset: 'utf8',

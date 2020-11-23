@@ -1,5 +1,8 @@
+/* 왼쪽 정렬 */
+.aLeft { text-align: left; }
+
 /* 가운데 정렬 */
-.aCenter { text-align: center; }
+.aCenter { text-align: center !important; }
 
 /* 오른쪽 정렬 */
 .aRight { text-align: right; }
@@ -16,9 +19,16 @@
 .black { color: black; }
 .gray { color: #ababab; }
 .white { color : white }
+.red { color : #fd3a69 }
 
 /* 글씨 굵게 */
 .bold { font-weight: bold; }
+
+/* 글씨 크기 */
+.font_15 { font-size: 15px; }
+.font_14 { font-size: 14px; }
+.font_13 { font-size: 13px; }
+.font_12 { font-size: 12px; }
 
 /* li 포인트 없애기 */
 .list_none { list-style: none; }
@@ -94,6 +104,10 @@ input[type='checkbox'].check_custom_1 {
 .border_bottom { border-bottom: solid 1px #ababab; } /* 아래 */
 .border_left { border-left: solid 1px #ababab; } /* 왼쪽 */
 
+/* border 없애기 */
+.border_none { border: none !important; }
+.border_none_right { border-right: solid 0px !important; }
+
 
 /* border 크기 조정 */
 .border_size_2 { border-width: 2px; }
@@ -112,10 +126,24 @@ input[type='checkbox'].check_custom_1 {
 .marginTop_10 { margin-top: 10px !important; }
 .marginTop_15 { margin-top: 15px !important; }
 .marginTop_20 { margin-top: 20px !important; }
+.marginTop_30 { margin-top: 30px !important; }
+.marginTop_40 { margin-top: 40px !important; }
 .marginTop_80 { margin-top: 60px !important; }
+
+/* margin-bottom 크기 */
+.marginBottom_20 { margin-bottom: 20px !important; }
+
+/* margin-left 크기 */
+.marginLeft_5 { margin-left: 5px !important; }
+.marginLeft_10 { margin-left: 10px !important; }
+.marginLeft_20 { margin-left: 20px !important; }
+.marginLeft_30 { margin-left: 30px !important; }
+.marginLeft_40 { margin-left: 40px !important; }
+.marginLeft_50 { margin-left: 50px !important; }
 
 /* padding */
 .padding_3 { padding : 3px }
+.padding_5 { padding : 5px }
 
 /* grid 50% 50% */
 .grid_half { display: grid; grid-template-columns: 50% 50%; }

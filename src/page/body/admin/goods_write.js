@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import queryString from 'query-string';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -16,6 +17,15 @@ import { CKEditor } from '../../../config/index';
 class AdminGoodsWrite extends Component {
 
     componentDidMount() {
+        // const modify_id = ;
+        const modify_id = queryString.parse(this.props.location.search).modify_id 
+            ? queryString.parse(this.props.location.search).modify_id
+            : null;
+        
+        if(modify_id !== null) {
+            this._getGoodsData(modify_id);
+        }
+        
         $('#admin_page_titles').css({
             'padding' : '0px'
         })
@@ -28,6 +38,49 @@ class AdminGoodsWrite extends Component {
 
     componentWillUnmount() {
         window.removeEventListener("scroll", this._setScrollSize);
+    }
+
+    // 수정하려는 상품 데이터 가져오기
+    _getGoodsData = async (id) => {
+        const { adminAction } = this.props;
+
+        const goods_data = await axios(URL + '/get/write_goods_data', {
+            method : 'POST',
+            headers: new Headers(),
+            data : {
+                'id' : id
+            }
+        })
+
+        $('input[name=goods_name').val(goods_data.data.name)
+        $('input[name=origin_price]').val(Number(goods_data.data.origin_price));
+        $('input[name=discount_price]').val(Number(goods_data.data.discount_price));
+        $('input[name=goods_stock]').val(Number(goods_data.data.stock));
+        $('select[name=goods_first_category]').val(goods_data.data.first_cat).prop("selected", true);
+
+        $('#admin_goods_write_img_top_div').prop('checked', false);
+        $('#admin_goods_write_img_' + goods_data.data.img_where + '_div').prop('checked', true);
+
+        const img_obj = { }
+        img_obj['thumb'] = goods_data.data.thumbnail;
+        img_obj['bonus'] = JSON.parse(goods_data.data.bonus_img);
+        // const img_obj = { 'thumb' :  , "bonus" :  }
+        // write_img_collect : JSON.stringify({ "thumb" : '', "bonus" : ['', '', ''] }),
+
+        const data = {
+            "goods_data" : JSON.stringify(goods_data.data),
+            "origin_price" : goods_data.data.origin_price,
+            "discount_price" : goods_data.data.discount_price,
+            "result_price" : goods_data.data.result_price,
+            "first_cat" : goods_data.data.first_cat,
+            "last_cat" : goods_data.data.last_cat,
+            "where" : goods_data.data.img_where,
+            "contents" : goods_data.data.contents,
+            "img_obj" : JSON.stringify(img_obj)
+        }
+
+        adminAction.modify_check({ 'bool' : true })
+        return adminAction.save_write_goods({ 'data' : data })
     }
 
     _setScrollSize = () => {
@@ -268,9 +321,10 @@ class AdminGoodsWrite extends Component {
     // 상품 등록
     _addGoods = async (event) => {
         event.preventDefault();
+
         const { 
             write_first_cat, write_last_cat, write_img_collect, write_origin_price,
-            write_discount_price, write_result_price, write_select_img_where, write_contents
+            write_discount_price, write_result_price, write_select_img_where, write_contents, modify_check
         } = this.props; 
 
         const formData = event.target;
@@ -314,7 +368,7 @@ class AdminGoodsWrite extends Component {
             'name' : goods_name,
             'first_cat' : write_first_cat,
             'last_cat' : write_last_cat,
-            'thumbnail' : JSON.stringify(image_obj['thumb']),
+            'thumbnail' : image_obj['thumb'],
             'origin_price' : write_origin_price,
             'discount_price' : write_discount_price,
             'result_price' : write_result_price,
@@ -324,27 +378,49 @@ class AdminGoodsWrite extends Component {
             'contents' : write_contents
         }
 
-        const add_goods = await axios(URL + '/add/goods', {
-            method : 'POST',
-            headers: new Headers(),
-            data : data
-        })
+        if(modify_check) {
+            // 상품 수정
+            if(!window.confirm('해당 상품을 수정하시겠습니까?')) {
+                return;
+            }
 
-        if(add_goods.data) {
-            alert('상품 등록이 완료되었습니다.');
+            data['id'] = queryString.parse(this.props.location.search).modify_id;
+            const update_goods = await axios(URL + '/update/goods', {
+                method : 'POST',
+                headers: new Headers(),
+                data : data
+            })
 
-            return window.location.replace('/admin/goods');
+            if(update_goods.data) {
+                alert('상품 수정이 완료되었습니다.');
+
+                return window.location.replace('/admin/goods');
+            }
+
+        } else {
+            // 상품 등록
+            const add_goods = await axios(URL + '/add/goods', {
+                method : 'POST',
+                headers: new Headers(),
+                data : data
+            })
+
+            if(add_goods.data) {
+                alert('상품 등록이 완료되었습니다.');
+
+                return window.location.replace('/admin/goods');
+            }
         }
-
     }
 
     render() {
-        const { write_first_cat, write_origin_price, write_discount_price, 
-            write_result_price, write_modify, write_img_type, write_img_collect } = this.props;
+        const { write_first_cat, write_origin_price, write_discount_price, write_contents, modify_check,
+            write_result_price, write_modify, write_img_type, write_img_collect, write_goods_data } = this.props;
         const { _setCategory, _selectRadioToggle, _setPrice, _setModifyState, _cancelPageMove, _addGoods, _saveContents } = this;
 
         const first_category_list = category_list.first_category.category;
         let last_category_list = null;
+
         if(write_first_cat !== '') {
             last_category_list = category_list.last_category[write_first_cat];
         }
@@ -353,6 +429,8 @@ class AdminGoodsWrite extends Component {
 
         let cover_write_img_type = JSON.parse(write_img_type);
         let cover_write_img_collect = JSON.parse(write_img_collect);
+
+        // const cover_write_goods_data = JSON.parse(write_goods_data);
 
         return(
             <div id='admin_goods_write_div'>
@@ -370,7 +448,7 @@ class AdminGoodsWrite extends Component {
                     </div>
 
                     <div className='aCenter'> 
-                        <h3> 상품 등록 </h3> 
+                        <h3> {!modify_check ? "상품 등록" : "상품 수정"}  </h3> 
                     </div>
                 </div>
 
@@ -383,7 +461,7 @@ class AdminGoodsWrite extends Component {
                     </div>
 
                     <div className='pointer'> 
-                        <input type='submit' value='등록' className='admin_goods_submit_button pointer'/>
+                        <input type='submit' value={!modify_check ? "등록" : "수정"} className='admin_goods_submit_button pointer'/>
                     </div>
                 </div>
 
@@ -407,7 +485,7 @@ class AdminGoodsWrite extends Component {
                                 <li> 
                                     <b> 카테고리 * </b>
                                     <div className='list_none admin_goods_write_inline' id='admin_goods_write_category_div'>
-                                        <div> 
+                                        <div>
                                             1차 카테고리
                                                 <select name='goods_first_category' 
                                                         onChange={()=> _setCategory('first')}
@@ -417,7 +495,8 @@ class AdminGoodsWrite extends Component {
                                                     <option value=''> - 선택 </option>-
                                                     {first_category_list.map( (el, key) => {
                                                         return(
-                                                            <option value={el.value} key={key}> {el.name} </option>
+                                                            <option value={el.value} key={key}
+                                                            > {el.name} </option>
                                                         )
                                                     })}
                                                 </select>
@@ -429,6 +508,7 @@ class AdminGoodsWrite extends Component {
                                                         onChange={() => _setCategory('last')}
                                                         className='pointer'
                                                         title='지정된 상위 카테고리의 하위 카테고리를 지정합니다.'
+                                                        // defaultValue={goods_data.last_cat}
                                                 >
                                                     {write_first_cat === '' 
                                                         ? <option value=''> --------- </option>
@@ -641,10 +721,17 @@ class AdminGoodsWrite extends Component {
                                     <div id='admin_write_ckeditor_div'>
                                         <CKEditor 
                                             _saveContents={_saveContents}
+                                            default_contents={write_contents}
                                         />
                                     </div>
                                 </li>
                             </ul>
+
+                            <div id='admin_write_bottom_div'>
+                                <input type='submit' value={!modify_check ? "등록" : "수정"} className='pointer'
+
+                                />
+                            </div>
                         </div>
 
                         <div> </div>
@@ -669,7 +756,9 @@ class AdminGoodsWrite extends Component {
         write_select_img_where : state.admin.write_select_img_where,
         write_img_type : state.admin.write_img_type,
         write_img_collect : state.admin.write_img_collect,
-        write_contents : state.admin.write_contents
+        write_contents : state.admin.write_contents,
+        write_goods_data : state.admin.write_goods_data,
+        modify_check : state.admin.modify_check
     }), 
   
     (dispatch) => ({

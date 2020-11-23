@@ -13,6 +13,9 @@ const ADMINCHECKTOGGLE = 'admin/admin_check_toggle';
 const SETIMAGETYPEOBJ = 'admin/set_image_type_obj';
 const SETIMAGEOBJ = 'admin/set_image_obj';
 const WRITECONTENTS = 'admin/write_contents';
+const SETGOODSDATA = 'admin/set_goods_data';
+const SAVEWRITEGOODS = 'admin/save_write_goods';
+const MODIFYCHECK = 'admin/modify_check';
 
 export const set_admin_code = createAction(SETADMINCODE);
 export const login_admin = createAction(LOGINADMIN);
@@ -27,6 +30,9 @@ export const admin_check_toggle = createAction(ADMINCHECKTOGGLE);
 export const set_image_type_obj = createAction(SETIMAGETYPEOBJ);
 export const set_image_obj = createAction(SETIMAGEOBJ);
 export const write_contents = createAction(WRITECONTENTS);
+export const set_goods_data = createAction(SETGOODSDATA);
+export const save_write_goods = createAction(SAVEWRITEGOODS);
+export const modify_check = createAction(MODIFYCHECK);
 
 const initialState = {
     admin_code : "",
@@ -47,6 +53,10 @@ const initialState = {
     write_img_type : JSON.stringify({ "thumb" : "direct", "bonus" : ['direct', 'direct', 'direct'] }),
     write_img_collect : JSON.stringify({ "thumb" : '', "bonus" : ['', '', ''] }),
     write_contents : "",
+    goods_loading : false,
+    goods_data : JSON.stringify([]),
+    modify_check : false,
+    write_goods_data : JSON.stringify({}),
 };
 
 export default handleActions({
@@ -146,6 +156,37 @@ export default handleActions({
       return {
         ...state,
         write_contents : data.payload.contents
+      }
+    },
+
+    [SETGOODSDATA] : (state, data) => {
+      return {
+        ...state,
+        goods_data : data.payload.data,
+        goods_loading : true
+      }
+    },
+
+    [SAVEWRITEGOODS] : (state, data) => {
+      
+      return {
+        ...state,
+        write_goods_data : data.payload.data.goods_data,
+        write_origin_price : data.payload.data.origin_price,
+        write_discount_price : data.payload.data.discount_price,
+        write_result_price : data.payload.data.result_price,
+        write_first_cat : data.payload.data.first_cat,
+        write_last_cat : data.payload.data.last_cat,
+        write_select_img_where : data.payload.data.where,
+        write_contents : data.payload.data.contents,
+        write_img_collect : data.payload.data.img_obj
+      }
+    },
+
+    [MODIFYCHECK] : (state, data) => {
+      return {
+        ...state,
+        modify_check : data.payload.bool
       }
     }
 

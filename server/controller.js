@@ -179,6 +179,58 @@ module.exports = {
             // console.log(req.)
 
             return res.send(false)
+        },
+
+        goods_data : (req, res) => {
+            const body = req.body;
+            
+            let obj = { 'result' : false, 'data' : null, 'cnt' : 0 };
+
+            model.get.goods_count( body, cnt => {
+                // goods 총 갯수 가져오기
+                if(cnt < 0) {
+                    // 하나도 없을 경우 false 리턴
+                    return res.send(obj);
+
+                } else {
+                    obj['cnt'] = cnt;
+
+                    model.get.goods_data( body, result => {
+                        if(result) {
+                            obj['result'] = true;
+                            obj['data'] = result;
+                        }
+        
+                    return res.send(obj);
+                    })
+                }
+            })
+        },
+
+        write_goods_data : (req, res) => {
+            const body = req.body;
+
+            model.get.write_goods_data(body, result => {
+                return res.send(result)
+            })
+        },
+
+        user_data : (req, res) => {
+            const body = req.body;
+            const result_obj = { cnt : 0, data : null, bool : false }
+
+            model.get.get_user_data(body, data => {
+
+                if(data.cnt <= 0) {
+                    return res.send(result_obj);
+
+                } else {
+                    result_obj['cnt'] = data.cnt;
+                    result_obj['data'] = data.data;
+
+                    return res.send(result_obj);
+                }
+            })
         }
     },
 
@@ -280,6 +332,23 @@ module.exports = {
             // model.update.user_info( body, () => {
             //     return res.send(true)
             // })
+        },
+
+        goods_state : (req, res) => {
+            const body = req.body;
+
+            model.update.goods_state( body, () => {
+                return res.send(true)
+            })
+        },
+
+        goods : (req, res) => {
+            const body = req.body;
+
+            model.update.goods( body, now_date, () => {
+                return res.send(true)
+            })
+            return res.send(true)
         }
     },
 
@@ -288,6 +357,16 @@ module.exports = {
             res.clearCookie(req.body.cookie);
 
             return res.send(true)
+        }
+    },
+
+    delete : {
+        goods : (req, res) => {
+            const body = req.body;
+
+            model.delete.goods( body, result => {
+                return res.send(true)
+            })
         }
     }
 }

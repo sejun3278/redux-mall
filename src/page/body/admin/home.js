@@ -9,12 +9,13 @@ import '../../../css/responsive/admin.css';
 
 import { Route, Switch } from 'react-router-dom';
 import { 
-    PassAdmin, AdminGoodsWrite, AdminCategory, AdminGoods, AdminOrder
+    PassAdmin, AdminGoodsWrite, AdminCategory, AdminGoods, AdminOrder, AdminUser
 } from './index';
 
 import img from '../../../source/img/icon.json'
 
 import Modal from 'react-modal';
+import { now } from 'jquery';
 const customStyles = {
     content : {
       top                   : '230px',
@@ -78,26 +79,21 @@ class AdminHome extends Component {
         adminAction.list_modal_toggle({ 'bool' : bool })
     }
 
+    // 숫자에 컴마 입력
+    price_comma = (price) => {
+        const change = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        return change;
+    }
+
     render() {
         const { 
             admin_info, user_info, _checkAdmin, login, _checkLogin, admin_state, _pageMove,
-            list_modal
+            list_modal, cat_name, _searchCategoryName
         } = this.props;
 
-        let now_url = document.location.href.split('/');
-        now_url = now_url[now_url.length - 1];
-
-        let page_name = '';
-        if(now_url === 'admin' || now_url === 'goods') {
-            page_name = '상품 관리';
-
-        } else if(now_url === 'goods_write') {
-            page_name = '상품 등록';
+        const { price_comma } = this;
         
-        } else if(now_url === 'order') {
-            page_name = '주문 관리';
-        }
-
         return(
             <div id='admin_page_div'>
                 {user_info && admin_info
@@ -137,12 +133,15 @@ class AdminHome extends Component {
                                                         <img src={img.icon.close_black} id='admin_list_close_button' className='pointer'
                                                              onClick={() => this._listModalToggle(false)}
                                                         />
-                                                        <AdminCategory _pageMove={_pageMove} /> 
+                                                        <AdminCategory                                                             
+                                                            cat_name={cat_name}
+                                                            _pageMove={_pageMove}
+                                                        /> 
                                                     </div>
                                                 </ Modal>
 
                                                 <div className='my_page_title' id='admin_page_titles'>
-                                                    <h3> {page_name} </h3>
+                                                    <h3> {cat_name} </h3>
                                                 </div>
 
                                                 <div id='admin_page_contents_div'>
@@ -150,26 +149,46 @@ class AdminHome extends Component {
                                                         <Route path='/admin' exact
                                                             render={(props) => <AdminGoods
                                                                         _pageMove={_pageMove}
+                                                                        _searchCategoryName={_searchCategoryName}
+                                                                        price_comma={price_comma}
                                                                         {...props} 
                                                             />}
                                                         />
 
-                                                        <Route path='/admin/goods/goods_write'
+                                                        <Route  path='/admin/goods/goods_write/?modify_id'
+                                                                path='/admin/goods/goods_write'
                                                             render={(props) => <AdminGoodsWrite
                                                                         _pageMove={_pageMove}
                                                                         {...props} 
                                                             />}
                                                         />
 
+                                                        <Route path='/admin/goods/?search'
+                                                               path='/admin/goods'
+                                                            render={(props) => <AdminGoods
+                                                                        _pageMove={_pageMove}
+                                                                        _searchCategoryName={_searchCategoryName}
+                                                                        price_comma={price_comma}
+                                                                        {...props} 
+                                                            />}
+                                                        />
+{/* 
                                                         <Route path='/admin/goods'
                                                             render={(props) => <AdminGoods
                                                                         _pageMove={_pageMove}
                                                                         {...props} 
                                                             />}
-                                                        />
+                                                        /> */}
 
                                                         <Route path='/admin/order'
                                                             render={(props) => <AdminOrder
+                                                                        {...props} 
+                                                            />}
+                                                        />
+
+                                                        <Route  path='/admin/user/?search'
+                                                                path='/admin/user'
+                                                            render={(props) => <AdminUser
                                                                         {...props} 
                                                             />}
                                                         />

@@ -15,17 +15,15 @@ class AdminCategory extends Component {
     }
 
     render() {
-        const { _pageMove } = this.props;
+        const { _pageMove, cat_name } = this.props;
 
-        let now_url = document.location.href.split('/');
-        now_url = now_url[now_url.length - 1];
-
+        console.log(cat_name)
         return(
             <div id='admin_category_div'>
                 <ul className='list_none aCenter' id='admin_cateogry_ul'> 
 
                     {admin_page.map( (el, key) => {
-                        const word_check = el.word.includes(now_url);
+                        const word_check = el.name === cat_name;
 
                         return(
                             <li key={key}>

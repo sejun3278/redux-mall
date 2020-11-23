@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull : false
        },
 
+       name : {
+        type: DataTypes.STRING(20),
+        allowNull : true
+       },
+
        email: {
         type: DataTypes.STRING(50),
         allowNull : true
@@ -57,10 +62,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull : true
        },
 
+       disable_date: {
+        type: DataTypes.STRING(20),
+        allowNull : true
+       },
+
        admin: {
         type: DataTypes.STRING(5),
         allowNull : false
        },
+
+       state : {
+        type: DataTypes.INTEGER(5),
+        allowNull : false 
+       }
+
       },
       {
         charset: 'utf8',

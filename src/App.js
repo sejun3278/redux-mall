@@ -20,6 +20,8 @@ import { MyPageHome, ModifyUser } from './page/body/my_page/index';
 import { AdminHome, AdminCategory, AdminGoodsWriteOther } from './page/body/admin/index';
 import { Header, Login, Signup, SignupComplate } from './page/index';
 
+import category_list from './source/admin_page.json';
+
 import URL from './config/url.js';
 
 const customStyles = {
@@ -128,11 +130,62 @@ class App extends Component {
     }
   }
 
+  // category 이름 찾기
+  _searchCategoryName = (val, type, first) => {
+    //category_list
+    let result = '';
+    let foreach_target = '';
+    if(type === 'first') {
+      foreach_target = category_list.first_category.category;
+
+    } else if(type === 'last') {
+      foreach_target = category_list.last_category[first];
+    }
+
+    foreach_target.forEach( (el) => {
+      if(val === el.value) {
+        result = el.name;
+      }
+    })
+
+    return result;
+  };
+
   render() {
     const { login_modal, admin_info, login, admin_state } = this.props;
-    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin } = this;
+    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName } = this;
 
     const user_info = JSON.parse(sessionStorage.getItem('login'));
+
+    const now_url = document.location.href.split('/');
+    let cat_name = '';
+
+    let detail_url = '';
+
+    if(now_url[4] !== undefined) {
+      detail_url = now_url[4].split('?')[0];
+    }
+
+    if(now_url[3] === 'admin') {
+      if(now_url[4] === undefined || detail_url === 'goods') {
+        cat_name = '상품 관리';
+
+      } else if(now_url[5] === 'goods_write') {
+        cat_name = '상품 등록';
+      
+      } else if(now_url[4] === 'order' || detail_url === 'order') {
+        cat_name = '주문 관리';
+      
+      } else if(now_url[4] === 'delivery') {
+        cat_name = '배송 관리';
+
+      } else if(now_url[4] === 'user') {
+        cat_name = '회원 관리';
+      }
+  }
+
+  console.log(cat_name)
+  
     return(
       <div className='App'>
         {user_info && !login
@@ -152,7 +205,8 @@ class App extends Component {
             {user_info && login && admin_state ?
             <div>
               <Route path='/admin' 
-                    render={(props) => <AdminCategory 
+                    render={(props) => <AdminCategory
+                      cat_name={cat_name}
                       _pageMove={_pageMove}
                     {...props} 
               />}
@@ -180,12 +234,14 @@ class App extends Component {
             <Switch>
               <Route path='/admin'
                      render={(props) => <AdminHome 
+                      cat_name={cat_name}
                       login={login}
                       user_info={user_info}
                       _checkAdmin={_checkAdmin}
                       admin_info={admin_info}
                       _checkLogin={_checkLogin}
                       _pageMove={_pageMove}
+                      _searchCategoryName={_searchCategoryName}
                     {...props} 
               />}
             />

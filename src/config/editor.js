@@ -7,13 +7,18 @@ import '../css/ck.css';
 
 class CKeditor extends Component {
     render() {
-        const { _saveContents } = this.props;
+        const { _saveContents, default_contents } = this.props;
+        
+        let cover_default = '<p> </p>';
+        if(default_contents) { 
+            cover_default = JSON.parse(default_contents);
+        }
 
         return (
             <div>
                 <CKEditor
                     editor={ ClassicEditor }
-                    data="<p></p>"
+                    data={cover_default}
                     onReady={ editor => {
                         // You can store the "editor" and use when it is needed.
                         // console.log( 'Editor is ready to use!', editor );

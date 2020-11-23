@@ -34,26 +34,26 @@ class Header extends Component {
         // const width_size = window.scrollX;
         const height_size = window.scrollY;
 
-        if(height_size > 88) {
-            $('#header_other_div').css({ 
-                'position' : 'fixed',
-                'width' : '100%',
-                'marginTop' : '-81px'
-            })
+        // if(height_size > 88) {
+        //     $('#header_other_div').css({ 
+        //         // 'position' : 'fixed',
+        //         'width' : '100%',
+        //         'marginTop' : '-81px'
+        //     })
 
-            $('#header_other_mobile_div').css({
-                'position' : 'fixed',
-                'width' : '100%',
-                'marginTop' : '-20px'
-            })
+        //     $('#header_other_mobile_div').css({
+        //         'position' : 'fixed',
+        //         'width' : '100%',
+        //         'marginTop' : '-20px'
+        //     })
 
-        } else if(height_size <= 23) {
-            $('#header_other_div, #header_other_mobile_div').css({ 
-                'position' : 'relative',
-                'marginTop' : '0px',
-                'width' : 'auto',
-            })
-        }
+        // } else if(height_size <= 23) {
+        //     $('#header_other_div, #header_other_mobile_div').css({ 
+        //         'position' : 'relative',
+        //         'marginTop' : '0px',
+        //         'width' : 'auto',
+        //     })
+        // }
     }  
 
     _logout = async () => {
@@ -80,7 +80,7 @@ class Header extends Component {
     }
 
     render() {
-        const { _pageMove, _modalToggle, login, admin_info, admin_state } = this.props;
+        const { _pageMove, _modalToggle, login, admin_info } = this.props;
 
         return (
             <div id='main_header'>

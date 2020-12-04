@@ -4,22 +4,22 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as signupAction from '../../../Store/modules/signup';
-// import * as configAction from '../../../Store/modules/config';
+import * as configAction from '../../../Store/modules/config';
 
 import img from '../../../source/img/icon.json';
 
 import '../../../css/responsive/signup.css';
 import $ from 'jquery';
 
-class My_page_home extends Component {
+class MyPageHome extends Component {
 
     componentDidMount() {
         // 로그인 체크
-        const { user_info, login } = this.props;
+        // const { user_info, login } = this.props;
 
-        if(!user_info || !login) {
-            return window.location.replace('/');
-        }
+        // if(!user_info || !login) {
+        //     window.location.replace('/');
+        // }
     }
 
     _iconToggle = (target, type) => {
@@ -47,19 +47,17 @@ class My_page_home extends Component {
     }
 
     render() {
+        const { user_info } = this.props;
         const { _iconToggle } = this; 
 
-        const user_info = JSON.parse(sessionStorage.getItem('login'));
-
-        if(!user_info) {
-            return window.location.replace('/');
+        let signup_date;
+        if(user_info) { 
+            signup_date = user_info.signup_date.slice(0, 10);
         }
-
-        const signup_date = user_info.signup_date.slice(0, 10);
-
 
         return(
             <div id='my_page_div'>
+                {user_info ? <div>
                 <div id='my_page_title_div' className='my_page_title border_bottom'>
                     <h3 className='aCenter'> 마이 페이지 </h3>
                 </div>
@@ -80,7 +78,7 @@ class My_page_home extends Component {
                         <div className='my_page_info_title_div'> 
                             <div id='my_page_user_id'> 
                                 아이디
-                                <p> {user_info.user_id} </p>
+                                <p className='bold'> {user_info.user_id} </p>
                             </div>
 
                             <div> 
@@ -236,12 +234,14 @@ class My_page_home extends Component {
                     </div>
                     <div> </div>
                 </div>
+
+                </div> : null}
             </div>
         )
     }
 }
 
-My_page_home.defaultProps = {
+MyPageHome.defaultProps = {
     id : "",
     nick : "",
     pw : "",
@@ -259,6 +259,7 @@ My_page_home.defaultProps = {
     }), 
   
     (dispatch) => ({
-      signupAction : bindActionCreators(signupAction, dispatch)
+      signupAction : bindActionCreators(signupAction, dispatch),
+      configAction : bindActionCreators(configAction, dispatch)
     })
-  )(My_page_home);
+  )(MyPageHome);

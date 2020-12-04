@@ -15,19 +15,24 @@
 @media ( max-width: 1240px ) {
     #my_page_select_div { grid-template-columns: 10% auto 10% !important; }
     #modify_user_div_grid { grid-template-columns: 20% auto 0% !important; }
-    #modify_user_info_ul li { margin: 0px 10% 0px 15%; }
-    /* #modify_user_info_ul li input { width: 50% !important; } */
+    /* #modify_user_info_ul li { margin: 0px 10% 0px 15%; } */
+    /* #modify_user_info_ul li input { width: 35% !important; } */
 
-    #modify_user_email_grid { grid-template-columns: 40% 10% auto !important; }
-    #modify_user_email_grid div input { width: 80% !important; }
+    /* #modify_user_email_grid { grid-template-columns: 40% 10% auto !important; } */
+    /* #modify_user_email_grid div input { width: 80% !important; } */
 
-    #modify_user_submit_div { text-align: center; margin-left: -150px !important; }
-    #daum_host_api { border: solid 2px #ababab; margin : 0px 15% 70px -15% !important; }
+    #modify_user_submit_div { text-align: center; }
+    /* #modify_user_submit_div input { width: 40% !important; } */
+
+    #daum_host_api { border: solid 2px #ababab; }
 }
 
 @media ( max-width: 1024px ) {
-    #signup_div { grid-template-columns: 3% 48% 3% 3% 40% !important; }
-    #signup_submit_button { margin: 3% 20% 4% 21% !important; }
+    /* #signup_submit_button { margin: 3% 20% 4% 21% !important; } */
+
+    #signup_info_div { margin-right: 10px !important; margin-left: 10px !important; }
+    #signup_agree_div { margin-left: 40px !important; }
+
     #signup_complate_div { margin-top: 10%; }
     #header_other_div { grid-template-columns: 25% 35% 40% !important; }
     #header_search_div input { width: 60% !important; }
@@ -38,12 +43,11 @@
     #modify_user_phone_div .modify_user_phone_input { width: 15% !important; text-align: center; }
 
     #modify_user_email_input input { width: 80% !important; }
-    #daum_host_api { margin : 0px 10% 70px -5% !important; }
-    #modify_user_submit_div { margin-left: 30px !important; width: 80%;}
+    /* #daum_host_api { margin : 0px 10% 70px -5% !important; } */
+    /* #modify_user_submit_div { margin-left: 30px !important; width: 80%;} */
   }
 
 @media ( max-width: 991px ) {
-    #signup_div { grid-template-columns: 1% 50% 3% 2% 44% !important; }
     #header_myPage_div { text-align: center; }
 }
 
@@ -52,7 +56,10 @@
     #body_div_left { border-right : none !important }
     #body_div_right { border-left : none !important }
 
-    #modify_user_submit_div { margin-left: 10px !important; width: 85%;}
+    #signup_agree_div { margin-left: 60px !important; }
+
+
+    /* #modify_user_submit_div { margin-left: 10px !important; width: 85%;} */
 }
 
 @media ( max-width: 831px ) {
@@ -65,16 +72,18 @@
 }
 
 @media ( max-width: 768px ) {
-    #signup_div { grid-template-columns: 4% 43% 5% 2% auto !important; }
+    /* #signup_div_grid { grid-template-columns: 4% 43% 5% 2% auto !important; } */
     .alert { font-size: 12px !important; }
     #signup_complate_div { margin-top: 13%; }
     #header_other_div { grid-template-columns: 25% 35% 40% !important; }
     #header_search_div input { width: 70% !important; }
     #header_myPage_div { font-size: 12px !important; text-align: center; }
-    #my_page_select_div { grid-template-columns: 8% auto 8% !important; }
+    #my_page_select_div { grid-template-columns: 6% auto 6% !important; }
 }
 
 @media ( max-width: 743px ) {
+  #signup_email_li div { grid-template-columns: 45% auto; }
+
     /* #main_login_ul {
         margin-top: 28px !important;
         line-height: 30px !important;
@@ -83,13 +92,21 @@
 
   @media ( max-width: 720px ) {
     #main_header_div { grid-template-columns: 10% 40% 50% !important; }
-    #signup_div div ul li input {  width: 75% !important; }
-    #signup_info_div ul { padding-left: 0px; }
+
+    #signup_div_grid div ul li input {  width: 75% !important; }
+    /* #signup_div_grid #signup_email_li input { width : 35% !important; } */
+
+    /* #signup_info_div ul { padding-left: 0px; } */
+
     #modify_user_div_grid { grid-template-columns: 5% auto 0% !important; }
 
   }
 
   @media ( max-width: 654px ) {
+
+    #signup_info_div { margin-right: 0px !important; margin-left: 0px !important; }
+    #signup_agree_div { margin-left: 40px !important; margin-right: 0px !important; }
+
     #body_div { grid-template-columns: 0% 100% 0% !important; }
     #header_other_div { grid-template-columns: 45% 55% 0% !important; }
     #header_myPage_div { display: none !important; }
@@ -101,10 +118,32 @@
 
     .my_page_info_title_div { text-align: center;}
     .my_page_info_title_div div p { font-size: 15px !important; }
+
+  #signup_email_li div { grid-template-columns: 40% auto; }
+
+  }
+
+  @media ( max-width : 600px ) {
+    .modify_user_responsive_div input { width: 40% !important; }
+    #modify_user_email_grid input { width: 20% !important; }
+
+    #signup_div_grid { display: block !important; }
+    #signup_info_div { border-right: none !important; }
+    #signup_agree_div { margin-left: 0px !important; padding-left: 40px; margin-top: 60px !important; border-top: solid 1px #ababab; border-bottom: solid 1px #ababab; padding-bottom: 40px; }
+    #signup_agree_div h4 { margin-top: 50px; }
+    #signup_agree_div textarea { min-height: 250px; }
+
+    #signup_title_div { border-bottom: solid 1px #ababab; padding-bottom: 30px; }
+
+    #signup_div_grid div ul li input { width: 85% !important; }
+  #signup_email_li div { grid-template-columns: 60% auto; }
+
+    /* #signup_div_grid #signup_email_li input { width : 58% !important; } */
+
   }
 
   @media ( max-width: 570px ) {
-    #main_header_div { grid-template-columns: 15% 25% 60% !important; }
+    #main_header_div { grid-template-columns: 5% 40% auto !important; }
     #user_thumbnail_div #user_thumbnail_img { width: 100px; height: 100px }
 
     #modify_user_div_grid { grid-template-columns: 3% auto 0% !important; padding-left: 20px !important; }
@@ -120,7 +159,7 @@
   }
 
   @media ( max-width: 502px ) {
-    #main_header_div { grid-template-columns: 10% 25% auto !important; }
+    #main_header_div { grid-template-columns: 5% 40% auto !important; }
     #signup_argee_checkbox_div label { font-size: 12px !important; }
     #header_other_div { grid-template-columns: 40% 60% 0% !important; }
     .my_page_info_title_div div p { font-size: 15px !important; }
@@ -136,7 +175,7 @@
   }
 
 @media ( max-width: 467px ) {
-    #main_header_div { display: grid; grid-template-columns: 10% 30% 60% !important; }
+    #main_header_div { grid-template-columns: 0% 45% auto !important; }
     #main_login_ul li { float: center !important; margin-left: 30px !important; }
     #main_header_right #main_login_ul{ margin-top: 28px !important; }
     .my_page_info_title_div div p { font-size: 14px !important; }
@@ -145,11 +184,15 @@
     #my_page_profile_div { grid-template-columns: 0% 25% auto !important; }
 
     #header_other_mobile_div { grid-template-columns: 0% 33% 34% 33% 0% !important; }
-    #my_page_select_div { grid-template-columns: 5% auto 5% !important; font-size: 14px; }
+    #my_page_select_div { grid-template-columns: 0% auto 0% !important; font-size: 14px; }
     .my_page_icon_img { background-size: 60% !important; }
 
-    #modify_user_host_div { width: 70% !important; }
+    /* #modify_user_host_div { width: 70% !important; } */
     #modify_user_info_ul { padding-left: 10px; }
+    #signup_email_li div { grid-template-columns: 55% auto; }
+
+    /* #signup_div_grid #signup_email_li input { width : 50% !important; } */
+
 }
 
   @media ( max-width: 435px ) {
@@ -159,18 +202,12 @@
 
   @media ( max-width: 426px ) {
     #body_div { display: grid; grid-template-columns: 0% 100% 0% !important; }
-    #signup_div { margin-left: 16% !important; grid-template-columns: 0% 100% !important;}
+    #signup_agree_div { padding-left: 30px !important; }
 
-    #signup_div div ul li input { width: 75% !important; }
-    #signup_center_height_line { display: none; }
-    #signup_agree_div { width: 110%; margin-left: -10% !important; }
-    #signup_agree_div textarea { height: 150px !important; }
-
-    #signup_submit_button { margin: 350px 20% 4% 8% !important; }
     #signup_complate_div { margin-top: 13% !important; }
 
     #header_other_mobile_div { font-size: 13px !important; }
-    #main_header_div { grid-template-columns: 5% 30% auto !important;}
+    #main_header_div { grid-template-columns: 0% 45% auto !important; margin-left: 10px !important;}
 
     #my_page_user_id, #my_page_user_nick { display: none; }
     #my_page_profile_div { grid-template-columns: 0% 28% auto !important; }
@@ -178,61 +215,87 @@
     #user_mobile_id_div { display: block !important; font-size: 14px; }
 
     #modify_user_div_grid { grid-template-columns: 0% auto 0% !important; }
-    #modify_user_email_grid { grid-template-columns: 55% 10% auto !important; }
     #modify_user_info_ul { padding: 0px 0px 0px 0px; }
     #modify_user_phone_div .modify_user_phone_input { width: 20% !important; text-align: center; }
     #modify_user_phone_div { margin-right: 0px !important; }
 
-    #modify_user_email_input { width: 108% !important; }
-    #modify_user_submit_div { width: 95%;}
+    /* #modify_user_info_ul li input { width: 50% !important; } */
+    #modify_user_email_grid { grid-template-columns: 55% 10% auto !important; }
+    #modify_user_email_grid input { width: 20% !important; }
 
-    #signup_complate_div #signup_complate_select_div { display: block !important; }
-    #signup_complate_select_div div { border: solid 1px #ababab; line-height: 30px; margin-top: 20px; border-radius: 5px; padding: 5px 0px 5px 0px; }
+    #signup_complate_div #signup_complate_select_div { display: block !important; margin-top: 30px !important; text-align: center; font-size: 14px !important;}
+    #signup_complate_select_div div { border: solid 1px #ababab; line-height: 30px; margin: 20px 40px 0px 40px; border-radius: 5px; padding: 5px 0px 5px 0px; }
 
-    #login_div #login_close_icon { margin: -55px 0px 0px 135px !important; }
+    #login_div div #login_close_icon { margin-left: 345px !important; }
   }
 
   @media ( max-width: 386px ) {
-    #signup_agree_div { width: 110%; margin-left: -10% !important; }
-
     #header_category_div img { width : 30px !important; margin-top: 10px !important;}
     #header_category_div b { font-size: 14px !important; margin-top: 1px; }
 
-    #my_page_select_div { grid-template-columns: 3% auto 3% !important; font-size: 14px; }
+    #my_page_select_div { display: block !important; font-size: 14px; }
     .my_page_icon_img { background-size: 60% !important; background-position-y: 70% !important; }
   
-    #modify_user_info_ul li { margin-left: 40px; }
-    #modify_user_host_div { width: 80% !important; }
+    /* #modify_user_info_ul li { margin-left: 40px; } */
+    /* #modify_user_host_div { width: 80% !important; } */
     
     #my_page_profile_div { grid-template-columns: 0% 35% auto !important; }
+
+    #signup_email_li div { grid-template-columns: 50% auto; }
+
+    #login_div div #login_close_icon { margin-left: 325px !important; }
+    /* #signup_div_grid #signup_email_li input { width : 42% !important; } */
+
   }
 
   @media ( max-width: 376px ) {
-    #signup_submit_button {
-        margin: 350px 20% 6% 5% !important;
-    }
-
-    #login_div #login_close_icon { margin: -60px 0px 0px 135px; }
     #header_other_div { grid-template-columns: 50% 50% 0% !important; }
-    #main_header_div { grid-template-columns: 5% 45% auto !important;}
+    #main_header_div { grid-template-columns: 0% 60% auto !important;}
     #main_header_right #main_login_ul { line-height: 30px !important; margin-top: 10px !important; font-size: 13px; }
     #header_other_mobile_div { grid-template-columns: 0% 33% 34% 33% 0% !important; }
+
+    #signup_info_div ul { padding-left: 30px ; }
+    #signup_div_grid #signup_info_div #signup_email_custom_input_div input[name=email_custom_input]
+    { width: 75% !important; }
     /* #main_login_ul div li { margin-top: -16px; line-height: 50px; } */
 
-    #my_page_select_div { grid-template-columns: 1% auto 0% !important; font-size: 14px; padding : 0px !important; }
+    .my_page_select_grid_div { grid-template-columns: 33% 33% 34% !important; }
+    #my_page_select_div { padding : 0px !important; }
     .my_page_icon_img { background-size: 60% !important; }
+
+    #login_div #login_button_div input { width: 85% !important; margin-left: 28px !important; }
+    
+  }
+
+  @media ( max-width: 370px ) {
+    .login_form_grid { grid-template-columns: 23% auto !important; }
+    .login_form_grid div { text-align: center; }
+
+    .login_other_title_div { text-align: right !important; }
+    .login_form_grid input { margin-left: 0px !important; }
+    /* .login_form_grid input { text-align: left !important;  width: 60% !important; } */
   }
 
   @media ( max-width: 342px ) {
     #main_login_ul { line-height: 30px !important; }
     /* #signup_agree_div { width: 250px; margin-left: 20px; } */
 
-    #modify_user_info_ul li { margin-left: 20px !important; }
+    /* #modify_user_info_ul li { margin-left: 20px !important; } */
     #modify_user_email_grid { grid-template-columns: 55% 10% auto !important; }
-    #main_header_div { grid-template-columns: 0% 50% auto !important; }
 
-    #login_div #login_close_icon { margin: -55px 0px 0px 115px !important; }
     #my_page_profile_div { grid-template-columns: 0% 40% auto !important; }
+
+    #signup_email_li div { grid-template-columns: 45% auto; }
+
+    #signup_info_div ul { padding-left: 25px !important; }
+
+    /* #signup_div_grid #signup_email_li input { width : 35% !important; } */
+    #login_div div #login_close_icon { margin-left: 300px !important; }
+
+    #login_div #login_button_div input { width: 77% !important; margin-left: 45px !important; }
+    .login_form_grid { grid-template-columns: 28% auto !important; } 
+    .login_form_grid input { width: 75% !important; margin-left: -25px !important; }
+    #login_button_div div u { margin-left: -10px !important; }
   }
 
   @media ( max-width: 320px ) {
@@ -244,14 +307,6 @@
     #header_other_mobile_div { grid-template-columns: 0% 35% 30% 35% 0% !important; }
 
     #admin_icon { margin: -44px 0px 0px 125px !important; }
-    #signup_div div ul li input { 
-        width: 80% !important;
-    }
-
-    #signup_submit_button {
-        margin: 350px 0% 8% 2% !important;
-    }
-
     #login_div #login_close_icon { margin: -60px 0px 0px 115px; }
 
     body {

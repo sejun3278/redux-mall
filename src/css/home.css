@@ -1,0 +1,221 @@
+#top_category_div { border-bottom: solid 1px #ababab;  height: 60px; line-height: 60px;}
+#top_category_list_grid_div { display: grid; font-size: 15px; }
+#top_category_list_grid_div div img { width: 17px; margin-right: 5px; }
+
+#top_category_index_div { display: grid; grid-template-columns: 8% 84% 8%; border-bottom: solid 2px black; }
+#open_top_category_div { z-index: 1000; position: absolute; background-color: white; font-size: 13px; display: grid; grid-template-columns: 8% 84% 8%; width: 100%; border-bottom: solid 3px black; }
+
+#top_category_contents_div { display: grid; }
+ul { padding-left: 0px !important; }
+.select_cat, .select_last_cat { font-weight: bold; color: #16a596; font-size: 14px; border-bottom: solid 1px #16a596; }
+
+.slick-track { width: 100% !important; }
+
+#top_category_reponsive_div { border-bottom: solid 1px #ababab; }
+#top_category_reponsive_div ul li { min-width: 40px; margin : 0px 5% 0px 5% }
+
+#search_bar_div { margin-top: 50px; padding-bottom: 30px; }
+#search_bar_div #search_input { padding: 5px; padding-left: 10px; margin-left: 15px; width: 30%; }
+#search_bar_div #search_img { position: absolute; width: 20px; border: solid 1px black; padding : 3px; margin-left: 5px; margin-top: 1px; }
+
+#search_result_div { margin : 25px 0px 0px 30px }
+#search_result_div img { width: 25px; position: absolute; }
+#search_result_div b { margin: -5px 0px 0px 40px; }
+
+#search_result_str_div { margin-top: 8px !important; }
+/* #search_data_result_div { padding-bottom: 10px; } */
+
+#search_contents_div { margin-top: 70px !important; padding-bottom: 70px; }
+#search_result_null_div div { display: inline-block; border: solid 1px black; padding : 3px; width: 300px; height: 300px; background-size: cover; }
+/* #search_result_str_div div { margin-left: 20% !important;  } */
+#search_album_div .search_contents_each_list { float: left; width: 23%; margin : 5px 0px 80px 8%; }
+.search_contents_thumb_list { padding: 5px; min-height: 180px !important; background-repeat: no-repeat; background-size: contain; background-position-x: center; background-position-y: center; }
+.search_goods_name { height: auto; }
+.search_price_div { margin-top: 10px; }
+
+.serach_each_div { border-left: none; border-right: none; padding: 5px; }
+.search_album_goods_number { margin-bottom: 3px !important; }
+
+
+#search_filter_div { margin-top: 30px !important; }
+#search_price_filter_title { padding-bottom: 5px; }
+
+#search_price_filter_grid_div { text-align: right; margin-right: 55px; margin-bottom: 15px; }
+#search_price_filter_grid_div input { padding : 3px; padding-left: 5px; }
+/* #search_price_filter_grid_div div { float: left; } */
+#search_price_filter_submit { width: 20px; position: absolute; margin: -2px 0px 0px 10px; border: solid 1px black; padding: 2px; }
+
+/* #search_price_filter_div { margin-right: 55px; word-spacing: 5px; margin-bottom: 20px; }
+#search_price_filter_div form input[type=number] { padding : 2px; padding-left: 5px; }
+#search_price_filter_div #search_price_filter_submit { position : absolute; width: 20px; margin: -1px 0px 0px 10px; border: solid 1px black; padding: 2px; } */
+
+#search_view_filter_div { display: inline-block; }
+#search_view_filter_div div { float: left; margin-right: 25px; margin-left: 25px; padding :5px; }
+#search_view_filter_div div img { width: 20px !important; position: absolute; }
+#search_view_filter_div div p { margin-left: 25px; margin-top: 0px; }
+
+#search_view_select { color : #52BFFF; font-weight: bold; }
+.search_album_each_div { display : grid; grid-template-columns: 10% 80% 10%; }
+.search_album_grid_div { display: grid; grid-template-columns: 30% auto !important; }
+
+.search_album_thumbnail { width: auto; height: 150px; background-repeat: no-repeat; background-position-x: center !important; background-position-y: center !important; background-size: contain; padding : 5px }
+.search_album_category_div { padding : 10px }
+
+.search_album_name_and_price_grid { display: grid; grid-template-columns: 75% auto !important; }
+.search_album_name_and_price { padding : 5px; font-size: 14px; margin : 15px 0px 0px 10px; width: 90%; }
+.search_album_name_and_price p { margin-top: -10px; margin-left: 5px; }
+.search_album_name_div { height: 100%; }
+
+#search_option_div { margin-top: 70px; }
+#search_option_title_div { border-bottom: solid 1px #ababab; padding-bottom: 10px; font-weight: bold; padding-left: 20px; color: #ababab; }
+#search_option_list_div { word-spacing: 4px; line-height: 25px; margin-left: 0px; margin-bottom: 10px; }
+.search_option_list b { margin-left: 0px !important; }
+.search_option_grid_div div img { width: 15px !important; position: absolute; margin: 6px 0px 0px 15px; cursor: pointer; }
+
+.search_option_grid_div { margin-top: 5px; display: grid; grid-template-columns: 15% auto; }
+.search_option_value_div { margin-left: 15px; }
+
+.category_responsive { display: none }
+#category_responsive_grid_div { display: grid !important; grid-template-columns: 20% auto; }
+#category_responsive_first_cat_div div { border-bottom: dotted 1px #ababab; }
+
+#category_responsive_close_button { background-color: #16697a; width: 100%; color: white; margin-top: 8px; position : absolute; padding: 5px 0px 5px 0px; border: solid 3px #16697a;}
+#category_responsive_last_cat_div { border-bottom: solid 1px #ababab; }
+#category_responsive_last_cat_div div { padding-left: 15px; height: 60.7px !important; }
+#category_responsive_bottom_div { height: 50px; background-color: white; margin-bottom: 0px; }
+
+.select_cat_responsive { background-color: rgb(22, 165, 150); color: white; border-color: rgb(22, 165, 150); font-weight: bold; font-size: 14px; }
+#close_category_border_div { position : absolute; height: 60px; width: 100%; margin-top : 450px }
+.select_each_last_cat { color: orange; border-bottom: solid 2px orange; }
+
+#close_category_button { display: inline-block; width: 100%; position: absolute; margin-top: 451px; height: 35px; background-color: black; border : none; line-height: 25px; }
+#search_show_last_cat_title { width: 100px !important; }
+
+#search_show_category_list_div 
+{ display: grid; grid-template-columns: 120px auto; padding: 10px 0px 15px 15px; font-size: 14px; height: 20px; line-height: 25px; overflow: hidden; }
+#search_show_last_list { display: grid; width: 100% !important; overflow-y: hidden; }
+#search_show_last_list::-webkit-scrollbar { display: none }
+#search_show_last_list div { width: auto; margin-right: 50px; margin-left: 20px; }
+#search_select_angel { width: 15px; margin: 5px 0px 0px -10px;}
+
+@media (max-width : 1200px) {
+    #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
+
+    #search_album_div .search_contents_each_list { margin-left: 6% !important; width: 25%; }
+    .search_album_each_div { grid-template-columns: 10% 80% 10% !important;  }
+}
+
+@media (max-width : 1100px) {
+    .search_option_grid_div { grid-template-columns: 20% auto; }
+}
+
+@media (max-width : 1024px) {
+    .top_category_grid_div { overflow-x: auto; white-space: nowrap; grid-template-columns: 0% 100% 0% !important; }
+    .top_category_grid_div div { display: inline-block !important; width: 70%; }
+
+    /* #top_category_list_grid_div { overflow-x: scroll; width: 100%; } */
+    #open_top_category_div { grid-template-columns: 0% 100% 0% !important; }
+    .select_cat, .select_last_cat { border-bottom: solid 2px #16a596; }
+    /* #top_category_contents_div { width: 49% !important; } */
+}
+
+@media (max-width : 950px) {
+    #search_album_div .search_contents_each_list { margin-left: 5% !important; width: 26.5%; }
+    .search_album_each_div { grid-template-columns: 5% 90% 5% !important; }
+
+}
+
+@media (max-width : 880px) {
+    #search_bar_div form { width: 95% !important; }
+    #search_input { width: 50% !important; }
+
+}
+
+@media (max-width : 800px) {
+    .each_last_cat { display : none !important }
+    #top_category_reponsive_div { display: block !important; }
+    #top_category_contents_div { display: none }
+
+    .category_list_default { display: none; }
+    .category_responsive { display: block; }
+    #category_responsive_div { display: block; }
+}
+
+@media (max-width : 700px) {
+    .search_contents_thumb_list { min-height: 140px !important; }
+}
+
+@media (max-width : 600px) {
+    .top_category_grid_div div { width: 70% !important; }
+    #top_category_contents_div { grid-template-columns: 25% auto !important; }
+
+    #search_bar_div form { width: 90% !important; }
+    #search_input { width: 55% !important; }
+
+    .search_goods_category { font-size: 10.5px; }
+    #search_album_div .search_contents_each_list { margin-left: 3.5% !important; width: 29%; }
+    .search_album_each_div { grid-template-columns: 3% 94% 3% !important; }
+}
+
+@media (max-width : 550px) {
+    #category_responsive_grid_div { grid-template-columns: 26% auto; }
+    /* #search_price_filter_div { text-align: center; margin-right: 0px; } */
+}
+
+@media (max-width : 500px) {
+    .top_category_grid_div div { width: 75% !important; }
+    /* #top_category_contents_div { width: 57% !important; } */
+
+    #search_album_div { display: none; }
+    #search_album_div { display: block; }
+
+    #search_view_filter_div { display: none; }
+    #search_album_div { display: none; }
+
+    .search_album_thumbnail { height: 130px; }
+    .search_album_each_div { grid-template-columns: 0% 100% 0% !important; }
+    .serach_each_div { margin-bottom: 35px !important; padding-left: 0px; padding-right: 0px; }
+    .search_album_grid_div { border: solid 2px black; border-left: none !important; border-right: none !important; }
+    .search_album_goods_number { margin-left: 15px; }
+
+    /* #search_option_div { margin-left: 0px; } */
+    #search_board_div { display: block }
+
+    #search_filter_div { padding-bottom: 15px; }
+    #search_price_title_div { display: block; text-align: left; margin: 10px 0px 0px 20px; }
+    #search_price_input_div { display: block !important; margin-right: 20px; }
+    #search_price_filter_grid_div { margin-right: 35px; }
+}
+
+@media (max-width : 426px) {
+    #top_category_contents_div { grid-template-columns: 30% auto !important; }
+    .search_option_grid_div { grid-template-columns: 30% auto; }
+
+    #category_responsive_grid_div { grid-template-columns: 30% auto; }
+
+}
+
+@media (max-width : 400px) {
+    #search_option_div { padding-left: 0px; width: 100%; margin-left: 0px; margin-top: 50px; ; }
+    #search_option_title_div { padding-left: 20px; }
+
+    #search_option_list_div { margin-left: 10px; }
+
+    #search_price_input_max_div { display: block; }
+    #search_price_filter_grid_div { margin-right: 0px; border-top: 1px #ababab dotted; padding-top: 20px; }
+    #search_price_input_div { margin-right: 25%;}
+    #search_price_input_div input[type=number] { width: 60%; margin-bottom: 5px; }
+    #search_price_filter_submit { margin: -62px 0px 0px 10px; width: 48px; }
+}
+
+@media (max-width : 350px) {
+    .top_category_grid_div div { width: 80% !important; }
+    #top_category_contents_div { grid-template-columns: 35% auto !important; }
+
+    .search_option_grid_div { grid-template-columns: 33% auto; }
+
+    #category_responsive_grid_div { grid-template-columns: 33% auto; }
+
+
+    /* #top_category_contents_div { width: 65% !important; } */
+}

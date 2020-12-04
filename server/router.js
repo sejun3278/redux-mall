@@ -16,8 +16,7 @@ router.post('/get/goods_data', controller.get.goods_data);
 router.post('/get/write_goods_data', controller.get.write_goods_data);
 router.post('/get/user_data', controller.get.user_data);
 
-
-router.post('/check/user_id', controller.check.user_id);
+router.post('/check/user_data', controller.check.user_data);
 router.post('/check/nickname', controller.check.nickname);
 
 router.post('/add/signup', controller.add.signup);
@@ -27,6 +26,7 @@ router.post('/api/login', controller.api.login);
 router.post('/api/send_mail', controller.api.send_mail);
 router.post('/api/save_file', controller.api.save_file);
 router.post('/api/upload_file', controller.api.upload_file);
+router.post('/api/query', controller.api.query);
 
 router.post('/update/user_info', controller.update.user_info);
 router.post('/update/goods_state', controller.update.goods_state);

@@ -1,0 +1,84 @@
+#modify_user_info_ul li .alert { width: 100% !important; }
+
+#modify_other_divs h3 { padding-bottom: 30px; }
+#modify_other_close { position: absolute; width: 20px; margin: -90px 0px 0px 81%; }
+
+#search_id_and_pw_title { padding-bottom: 20px; margin-bottom: 0px;}
+#search_id_and_pw_div #login_close_icon { width: 20px; position: absolute; margin: -55px 0px 0px 370px; }
+/* #select_search_type_div { margin-top: 10px; } */
+#select_search_type_style_div {height: 40px; line-height: 40px; }
+#select_search_type_div div { cursor: pointer; font-size: 13px; }
+#search_id_div { border-right: solid 1px #ababab; }
+
+.search_contents_div_style { display: grid; grid-template-columns: 5% auto 5% !important; margin-top: 20px; }
+.search_contents_grid_div { display: grid; grid-template-columns: 20% auto; margin-top: 20px !important; margin-left: 20px; font-size: 13px; }
+.search_contents_grid_div input { padding: 3px; width: 95%; }
+
+.search_email_input_div input { width: 37% !important; }
+
+.search_submit_div { margin-top: 40px; padding-bottom: 30px; font-size: 13px !important; }
+.search_submit_div input { width: 100%; cursor: pointer; border: solid 1px black; padding: 5px 0px 5px 0px; background-color: black; color : white }
+#search_id_result_div { margin-top: 50px; font-size: 15px; }
+
+#search_other_div { margin-top: 50px; padding-top: 20px; }
+.search_pw_title_style h3 { 
+    border-bottom: solid 1px #ababab; padding-top: 10px; padding-bottom: 25px; font-size: 15px;
+    font-family: 'TmoneyRoundWindExtraBold';
+}
+#search_pw_email_contents_div { line-height: 10px; margin-top: 30px; padding-bottom: 20px;}
+#search_pw_comfirm_div { margin-top: 40px; }
+#search_pw_comfirm_div form input[name=confirm_number] { margin-left: -40px;}
+#email_confirm_button { background-color: black; color: white; padding : 2px 5px 2px 5px; position: absolute; margin : 0px 0px 0px 10px; }
+
+.change_pw_divs { display: grid; grid-template-columns: 30% auto; margin-left: 20px; margin-top: 25px; font-size: 13px;}
+.change_pw_divs input { padding : 3px; margin-top : -2px; margin-left: 20px; width: 50%; position: absolute; }
+#change_password_button { background-color: black; color: white; padding : 3px; height: 30px; width: 100%; margin-top: 35px; margin-bottom: 20px; }
+
+#change_pw_result_div h4 { margin-top: 40px; padding-bottom: 40px; }
+#change_pw_other_div { font-size: 14px; }
+
+#close_disable_user_icon { position : absolute; width: 20px; margin: -70px 0px 0px 370px; }
+#disable_div h3 { padding-bottom: 30px; margin-bottom: 0px; }
+#disable_index_div { display: grid; grid-template-columns: 33% 34% 33%; font-size: 13px; }
+#disable_index_div div { padding: 15px 0px 15px 0px; border-bottom: solid 1px #ababab; }
+#disable_select_index { color: #03506f; border-bottom: solid 2px #03506f !important; font-weight: bold; cursor : default }
+
+#disable_first_confirm_div { margin: 15px 0px 0px 20px; }
+#disable_contents_div { margin-top: 30px; }
+.disable_grid_divs { display : grid; grid-template-columns: 25% auto; }
+.disable_grid_divs div { margin-bottom: 20px; font-size: 14px; line-height: 30px; }
+.disable_grid_divs div input { padding: 3px; width: 80%; }
+
+.submit_button { background-color: black; color: white; border: none; width: 100%; padding: 5px 0px 5px 0px; margin-left: -10px !important; margin-top: 20px; cursor: pointer; }
+
+#disable_second_confirm_div { margin-top: 40px; }
+#disable_second_submit_div { margin-top: 45px; }
+#disable_second_submit_div input[type=submit], 
+#disable_last_confirm_div input[type=submit]
+{ background-color: black; color: white; border : none; width: 100%; padding : 3px 0px 3px 0px; margin-top: 30px; }
+#disable_last_confirm_div input { padding: 10px !important; margin-top: 50px !important; }
+
+@media (max-width : 400px) {
+    #login_close_icon { margin-left: 350px !important; }
+    .change_pw_divs input { width: 45%; }
+
+    #close_disable_user_icon { margin-left: 350px; }
+    #disable_first_confirm_div { margin-left: 30px; }
+    .submit_button { margin-left: -15px !important; }
+    .disable_grid_divs { grid-template-columns: 20% auto !important; margin-left: 30px; }
+    .disable_grid_divs div input { width: 70% !important; }
+}
+
+@media (max-width : 370px) {
+    .search_contents_grid_div { grid-template-columns: 18% auto !important; margin-left: 30px !important; }
+    .search_contents_grid_div div input { width: 85% !important; }
+    .search_contents_grid_div .search_email_input_div input { width: 33% !important; }
+
+    #close_disable_user_icon { margin-left: 330px; }
+
+}
+
+@media (max-width : 350px) {
+    #login_close_icon { margin-left: 330px !important; }
+    .change_pw_divs input { width: 42.5%; }
+}

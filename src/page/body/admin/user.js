@@ -44,6 +44,10 @@ class AdminUser extends Component {
         if(search_opt) {
             query_str = ' WHERE ' + search_opt + ' LIKE ' + '"%' + search + '%"';
 
+            if(search_opt === 'id') {
+                query_str = ' WHERE ' + search_opt + ' = ' + search;
+            }
+
             obj['query']['count'] += query_str;
             obj['query']['select'] += query_str;
 
@@ -63,18 +67,6 @@ class AdminUser extends Component {
 
         obj['query']['count'] += filter_str + filter;
         obj['query']['select'] += filter_str + filter;
-
-        // if(filter) {
-            // let where_qry = '';
-
-        //     if(!search_opt) {
-        //         where_qry = ' WHERE '; 
-        //     }
-
-        //     where_qry = search_opt + ' IS NOT NULL';
-            
-
-        // }
 
         obj[search_opt] = search;
 
@@ -178,7 +170,6 @@ class AdminUser extends Component {
         return(
             <div id='admin_user_state_div'>
                 {/* 유저 관리 페이지 */}
-
                 {user_loading ? 
                 <div>
                     <form name='admin_user_info_search' onSubmit={_search}>
@@ -259,9 +250,9 @@ class AdminUser extends Component {
                                     let email_id = '';
                                     let email_host = '';
 
-                                    if(email_check.length > 3) {
-                                        email_id = el.email.split('@')[0];
-                                        email_host = el.email.split('@')[1];
+                                    if(email_check !== null && email_check !== '-') {
+                                        email_id = email_check.split('@')[0];
+                                        email_host = email_check.split('@')[1];
                                     }
 
                                     return(

@@ -33,6 +33,68 @@ module.exports = {
             return res.send('컨트롤러 연결 성공!')
         },
 
+        query : (req, res) => {
+            const body = req.body;
+
+            let qry = "";
+            if(!body.qry) {
+                // 타입 설정 (// SELECT, UPDATE, DELETE, INSERT)
+                qry += (body.type + " ");
+
+                // 검색 컬럼 설정 // 없으면 *
+                let columns = "* "
+                if(body.columns) {
+                    columns = "";
+                    body.columns.forEach( (el, key) => {
+                        columns += "`" + el + "`";
+
+                        if(body.columns.length !== (key + 1)) {
+                            columns += ", ";
+                        }
+                    })
+                }
+                qry += columns
+
+                // SELECT 타입
+                if(body.type === 'SELECT') {
+                    qry += ' FROM `' + body.table + '` WHERE ';
+                }
+
+                let where = "";
+                body.where.forEach( (el, cnt) => {
+                    let result_entries = Object.entries(el);
+
+                    for (let [key, value] of result_entries) {
+                        // where += key + " = '" + value + "'"
+                        if(key === 'result_price') {
+                            where += "result_price >= " + value[0] + " AND ";
+                            where += "result_price <= " + value[1];
+
+                        } else {
+                            where += key + " " + body.option[key] + " '" + value + "' ";
+                        }
+
+                        if(body.where.length !== (cnt + 1)) {
+                            where += "AND ";
+                        }
+                    }
+                })
+                qry += where;
+
+            } else {
+                qry = body.qry;
+            }
+
+            // let qry = "SELECT * FROM `goods` WHERE ";
+
+            model.api.query(qry, body.type, result => {
+                if(result) {
+                    return res.send(result);
+                }
+                return res.send(false);
+            })
+        },
+
         login : (req, res) => {
             let body = req.body;
             const hash_pw = hashing.enc(body.id, body.pw, salt);
@@ -231,16 +293,65 @@ module.exports = {
                     return res.send(result_obj);
                 }
             })
-        }
+        },
     },
 
     check : {
-        user_id : (req, res) => {
-            // 아이디 중복 검색
+        user_data : (req, res) => {
+            // 회원 정보 중복 체크
             const body = req.body;
 
-            model.check.user_id( body, result => {
-                if(result !== null) {
+            let columns = '*';
+            if(body[0]['columns']) {
+                columns = "";
+                for(let key in body[0]['columns']) {
+                    columns += body[0]['columns'][key];
+
+                    if((body[0]['columns'].length - 1) > 0 && Number(key) < (body[0]['columns'].length - 1)) {
+                        columns += ', ';
+                    }
+                }
+            }
+
+            let qry = "SELECT " + columns + " FROM `userInfo` WHERE ";
+            body.forEach( (el, key2) => {
+                let result_entries = Object.entries(el);
+
+                for (let [key, value] of result_entries) {
+                    if(key === 'columns') {
+                        return;
+                    }
+
+                    if(key === 'password') {
+                        const hash_pw = hashing.enc(value[1], value[0], salt);
+                        qry += 'password = "' + hash_pw + '" AND user_id = "' + value[1] + '"';
+
+                        if(value[2]) {
+                            qry += ' AND id =' + value[2];
+                        }
+                        return;
+                    }
+
+                    qry += key + ' = "' + value + '" ';
+
+                    if(body.length > 0 && key2 !== (body.length - 1)) {
+                        qry += 'AND ';
+                    }
+                }
+            })
+
+            let result_obj = { 'result' : false, 'data' : null }
+            model.check.user_data(qry, result => {
+                if(body[0]['columns']) {
+                    // columns 이 있는 경우
+                    result_obj['data'] = result;
+                    if(result.length > 0) {
+                        result_obj['result'] = true
+                    }
+                    return res.send(result_obj);
+                }
+
+                if(result.length === 0) {
                     return res.send(false)
                 }
 
@@ -265,42 +376,20 @@ module.exports = {
     add : {
         signup : (req, res) => {
             // 1차 회원가입
-            let body = req.body;
+            const body = req.body;
             const hash_pw = hashing.enc(body.id, body.pw, salt);
 
-            var result_obj = { 'id' : true, 'nick' : true }
-
-            // 아이디 체크
-            model.check.user_id( body, result => {
-                if(result !== null) {
-                    result_obj.id = false;
-                    res.send(result_obj)
-
-                    return
-
-                } else {
-                    // 닉네임 체크
-                    model.check.nickname( body, result_nick => {
-                        if(result_nick !== null) {
-                            result_obj.nick = false;
-                            res.send(result_obj)
-
-                            return
-
-                        } else {
-                            const data = {
-                                id : body.id,
-                                nick : body.nick,
-                                pw : hash_pw,
-                                signup_date : now_date
-                            }
-                            
-                            model.add.signup( data, () => {
-                                return res.send(true)
-                            })
-                        }
-                    })
-                }
+            const data = {
+                id : body.id,
+                nick : body.nick,
+                name : body.name,
+                email : body.email,
+                pw : hash_pw,
+                signup_date : now_date
+            }
+            
+            model.add.signup( data, () => {
+                return res.send(true)
             })
         },
 
@@ -325,13 +414,43 @@ module.exports = {
 
     update : {
         user_info : (req, res) => {
-            let body = req.body;
-            body['nick'] = req.body.nickname;
+            const body = req.body;
 
-            return res.send(true)
-            // model.update.user_info( body, () => {
-            //     return res.send(true)
-            // })
+            let cnt = 0;
+            let max = Number(body.max);
+            let update_qry = "UPDATE `userInfo` SET ";
+
+            for(let key in body) {
+                if(key !== 'id' && key!== 'user_id' && key !== 'max') {
+                    if(key !== 'modify_date') {
+                        if(key === 'password') {
+                            update_qry += "`password`= '" + hashing.enc(body.user_id, body.password, salt) + "'";
+
+                        } else {
+                            update_qry += "`" + key + "`= '" + body[key] + "'";
+                        }
+
+                    } else if(key === 'modify_date') {
+                        update_qry += "`modify_date`= '" + now_date + "'";
+
+                    }
+                    cnt += 1;
+
+                    if(cnt < max) {
+                        update_qry += ', ';
+                    }
+                }
+            }
+
+            let where_str = ' WHERE '
+            if(body.id) {
+                update_qry += ' WHERE id = ' + body.id
+                where_str = ' AND '
+            }
+
+            model.update.user_info( update_qry, () => {
+                return res.send(true)
+            })
         },
 
         goods_state : (req, res) => {

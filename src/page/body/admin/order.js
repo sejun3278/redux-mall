@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as adminAction from '../../../Store/modules/admin';
-import '../../../css/responsive/admin.css';
+import '../../../css/home.css';
 
 // import $ from 'jquery';
 // import URL from '../../../config/url';

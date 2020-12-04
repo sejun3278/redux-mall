@@ -25,6 +25,22 @@
         "coupon_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_black.png",
         "admin" : "https://iconmonstr.com/wp-content/g/gd/makefg.php?i=../assets/preview/2012/png/iconmonstr-gear-1.png&r=0&g=0&b=0",
         "select_page" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/select_page.png",
-        "search_option" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_option.png"
+        "search_option" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_option.png",
+        "window_icon" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_all.png",
+        "close_circle" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle.png",
+        "close_circle_white" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle_white.png",
+        "close_circle_gray" : " https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle_gray.png"
+    },
+
+    "search_icon" : {
+        "search_result" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_result.png",
+        "search_album_default" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_album_default.png",
+        "search_album_select" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_album_select.png",
+        "search_board_default" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_board_default.png",
+        "search_board_select" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/search_board_select.png"
+    },
+
+    "angel" : {
+        "angel_right_orange" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/orange_right_angel.png"
     }
 }

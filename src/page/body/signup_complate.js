@@ -11,42 +11,72 @@ import '../../css/responsive/signup.css';
 class Signup_complate extends Component {
 
   componentDidMount() {
-    const check = sessionStorage.getItem('signup')
+    // const { user_info } = this.props;
+    // const check = sessionStorage.getItem('signup')
 
-    if(!check) {
+    // if(!check) {
+    //   alert('허용되지 않는 접근입니다.');
+
+    //   return window.location.replace('/');
+    // }
+
+    // sessionStorage.removeItem('signup');
+  }
+
+  // 회원 정보 수정 클릭시
+  _moveModifyUserInfo = () => {
+    const { user_info, _modalToggle, signupAction } = this.props;
+
+    if(user_info) {
+      // 이미 로그인된 상태라면
+      alert('정상적인 접근이 아닙니다.');
+
       return window.location.replace('/');
-    }
 
-    sessionStorage.removeItem('signup');
+    } else {
+      signupAction.set_login_after({ 'url' : '/myPage/modify_user' })
+
+      _modalToggle(true);
+    }
   }
 
     render() {
       const { _pageMove, _modalToggle } = this.props;
+      const { _moveModifyUserInfo } = this;
       const id = this.props.match.params.id;
+
+      const check = sessionStorage.getItem('signup')
 
         return(
             <div id='signup_complate_div'>
-              <h3> 회원가입 완료 </h3>
+              {check ? 
+              <div>
+                <h3> 회원가입 완료 </h3>
 
-              <p> <b> {id} </b> 님 회원가입을 환영합니다 ! </p>
+                <p> 
+                  <b> {id} </b> 님 회원가입을 환영합니다 ! 
+                </p>
 
-              <div id='signup_complate_select_div'>
-                <div onClick={() => _pageMove('replace', '/')}> <u className='remove_underLine pointer'> 홈으로 </u></div>
-                <div>
-                  <u className='remove_underLine pointer'
-                     onClick={() => _modalToggle(true)}
-                  > 
-                    로그인 
-                  </u> 
-                </div>
-                <div>
-                  <u className='remove_underLine pointer'
-                    onClick={() => window.location.replace('/myPage/modify_user')}
-                  > 
-                    회원정보 수정 
-                  </u>
+                <div id='signup_complate_select_div' className='aCenter'>
+                  <div onClick={() => _pageMove('replace', '/')}> <u className='remove_underLine pointer'> 홈으로 </u></div>
+                  <div>
+                    <u className='remove_underLine pointer'
+                      onClick={() => _modalToggle(true)}
+                    > 
+                      로그인 
+                    </u> 
+                  </div>
+                  <div>
+                    <u className='remove_underLine pointer'
+                      onClick={() => _moveModifyUserInfo()}
+                    > 
+                      회원정보 수정 
+                    </u>
+                  </div>
                 </div>
               </div>
+
+              : null}
             </div>
         )
     }

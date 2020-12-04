@@ -11,15 +11,21 @@
   position: absolute;
 }
 
-/* ul li 한줄로 만들기 */
+/* display 제어 */
 .display_inline { display : inline } 
 .display_block { display: block; }
+.display_none { display: none; } /* 안보이기 */
+
+/* float 제어 */
+.float_left { float: left; }
+.float_right { float: right; }
 
 /* 글씨 컬러 */
 .black { color: black; }
 .gray { color: #ababab; }
 .white { color : white }
 .red { color : #fd3a69 }
+.orange { color : orange !important }
 
 /* 글씨 굵게 */
 .bold { font-weight: bold; }
@@ -38,6 +44,7 @@
 
 /* 마우스커서 모음 */
 .pointer { cursor: pointer; } /* 포인터 */
+.default { cursor: default; } /* 디폴트 */
 
 /* 밑줄 삭제 */
 .remove_underLine { text-decoration: none; } 
@@ -112,9 +119,6 @@ input[type='checkbox'].check_custom_1 {
 /* border 크기 조정 */
 .border_size_2 { border-width: 2px; }
 
-/* 안보이기 */
-.display_none { display: none; }
-
 /* 현재 선택 페이지 */
 #now_page { font-weight: bold; color: #16a596 !important; }
 
@@ -132,6 +136,7 @@ input[type='checkbox'].check_custom_1 {
 
 /* margin-bottom 크기 */
 .marginBottom_20 { margin-bottom: 20px !important; }
+.marginBottom_60 { margin-bottom: 60px !important; }
 
 /* margin-left 크기 */
 .marginLeft_5 { margin-left: 5px !important; }
@@ -147,3 +152,25 @@ input[type='checkbox'].check_custom_1 {
 
 /* grid 50% 50% */
 .grid_half { display: grid; grid-template-columns: 50% 50%; }
+
+@font-face {
+  font-family: 'TmoneyRoundWindExtraBold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/TmoneyRoundWindExtraBold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.t_money_font {
+  font-family: 'TmoneyRoundWindExtraBold';
+}
+
+/* 글자수 제한하기 */
+.cut_multi_line {
+  /* 한 줄 자르기 */ 
+  display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  
+  /* 여러 줄 자르기 추가 스타일 */ 
+  white-space: normal; line-height: 1.2; height: 2.5em; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+
+.search_line { background-color: #ff8e71; padding : 0px 5px 0px 5px; color: white; }

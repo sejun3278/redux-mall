@@ -15,7 +15,6 @@ import {
 import img from '../../../source/img/icon.json'
 
 import Modal from 'react-modal';
-import { now } from 'jquery';
 const customStyles = {
     content : {
       top                   : '230px',
@@ -36,6 +35,7 @@ class AdminHome extends Component {
         const { login, user_info, _checkAdmin, _checkLogin, adminAction } = this.props;
         _checkLogin();
 
+        console.log(user_info, login)
         if(!user_info || !login) {
             return window.location.replace('/');
 
@@ -79,20 +79,11 @@ class AdminHome extends Component {
         adminAction.list_modal_toggle({ 'bool' : bool })
     }
 
-    // 숫자에 컴마 입력
-    price_comma = (price) => {
-        const change = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        return change;
-    }
-
     render() {
         const { 
             admin_info, user_info, _checkAdmin, login, _checkLogin, admin_state, _pageMove,
-            list_modal, cat_name, _searchCategoryName
+            list_modal, cat_name, _searchCategoryName, price_comma
         } = this.props;
-
-        const { price_comma } = this;
         
         return(
             <div id='admin_page_div'>
@@ -189,6 +180,7 @@ class AdminHome extends Component {
                                                         <Route  path='/admin/user/?search'
                                                                 path='/admin/user'
                                                             render={(props) => <AdminUser
+                                                                        user_info={user_info}
                                                                         {...props} 
                                                             />}
                                                         />
@@ -211,7 +203,7 @@ AdminHome.defaultProps = {
   export default connect(
     (state) => ({
         admin_state : state.admin.admin_state,
-        list_modal : state.admin.list_modal
+        list_modal : state.admin.list_modal,
     }), 
   
     (dispatch) => ({

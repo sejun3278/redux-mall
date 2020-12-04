@@ -37,13 +37,13 @@
 
     "first_category" : {
         "category" : [
-            { "name" : "음식", "value" : "food" },
-            { "name" : "남성 의류", "value" : "man_clothing" },
-            { "name" : "여성 의류", "value" : "woman_clothing" },
-            { "name" : "화장품", "value" : "beauty" },
-            { "name" : "도서 / 문구", "value" : "book" },
-            { "name" : "장난감", "value" : "toy" },
-            { "name" : "기타", "value" : "other" }
+            { "name" : "음식", "value" : "food", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_food.png" },
+            { "name" : "남성 의류", "value" : "man_clothing", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_man_clothing.png" },
+            { "name" : "여성 의류", "value" : "woman_clothing", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_girl_clothing.png" },
+            { "name" : "화장품", "value" : "beauty", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_beauty.png" },
+            { "name" : "도서 / 문구", "value" : "book", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_book.png" },
+            { "name" : "장난감", "value" : "toy", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_toy.png" },
+            { "name" : "기타", "value" : "other", "img" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_other.png" }
         ]
     },
 

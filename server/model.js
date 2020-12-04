@@ -22,7 +22,8 @@ module.exports = {
             UserInfo.findOne({
                 where : { 
                     [Op.and] : { 'user_id' : data.user_id, 'id' : data.id }
-                }
+                },
+                attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date']
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
@@ -104,13 +105,15 @@ module.exports = {
 
             let result = {};
 
-            const count_query = await sequelize.query(data.query.count, {
-                logging: console.log,
-                plain: false,
-                raw: false,
-                type: QueryTypes.COUNT
-            })
-            result['cnt'] = count_query[0][0].count;
+            if(data.query.count) {
+                const count_query = await sequelize.query(data.query.count, {
+                    logging: console.log,
+                    plain: false,
+                    raw: false,
+                    type: QueryTypes.COUNT
+                })
+                result['cnt'] = count_query[0][0].count;
+            }
 
             const select_query = await sequelize.query(data.query.select, {
                 logging: console.log,
@@ -122,75 +125,20 @@ module.exports = {
             result['data'] = select_query;
 
             callback(result);
-
-            // UserInfo.count({
-            //     where : {
-            //         user_id : {
-            //             [Op.like] : "%" + data.user_id + "%"
-            //         },
-
-            //         // nickname : {
-            //         //     [Op.like] : "%" + data.nickname + "%"
-            //         // },
-
-            //         // name : {
-            //         //     [Op.like] : "%" + data.name + "%"
-            //         // },
-                    
-            //         // phone : {
-            //         //     [Op.like] : "%" + data.phone + "%"
-            //         // },
-                    
-            //         // email : {
-            //         //     [Op.like] : "%" + data.email + "%"
-            //         // },
-            //     }
-            // })
-            // .then( result => { callback(result) })
-            // .catch( err => { throw err })
-        },
-
-        user_data : async (data, callback) => {
-
-
-            // callback(select_query[0][0].count);
-
-
-            // UserInfo.findAll({
-            //     where: {
-            //         user_id : {
-            //             [Op.like] : "%" + data.user_id + "%"
-            //         },
-
-                    // nickname : {
-                    //     [Op.like] : "%" + data.nickname + "%"
-                    // },
-
-                    // name : {
-                    //     [Op.like] : "%" + data.name + "%"
-                    // },
-                    
-                    // phone : {
-                    //     [Op.like] : "%" + data.phone + "%"
-                    // },
-                    
-                    // email : {
-                    //     [Op.like] : "%" + data.email + "%"
-                    // },
-            //     }
-            // })
-            // .then( result => { callback(result) })
-            // .catch( err => { throw err })
         }
     },
 
     check : {
-        user_id : (data, callback) => {
-            UserInfo.findOne({
-                where : { user_id : data.id }
+        user_data : async (qry, callback) => {
+
+            const get_user_data = await sequelize.query(qry, {
+                logging: console.log,
+                plain: false,
+                raw: false,
+                type: QueryTypes.SELECT
             })
-            .then( result => { callback(result) })
-            .catch( err => { throw err })
+
+            callback(get_user_data);
         },
 
         nickname : (data, callback) => {
@@ -207,13 +155,9 @@ module.exports = {
             UserInfo.create({
                 user_id : data.id,
                 nickname : data.nick,
+                name : data.name,
+                email : data.email,
                 password : data.pw,
-                name : "-",
-                email : "-",
-                phone : "-",
-                host_code : "-",
-                host : "-",
-                host_detail : "-",
                 signup_date : data.signup_date,
                 admin : "N",
                 state : 1
@@ -249,10 +193,21 @@ module.exports = {
                 where : { 
                     [Op.and] : { 'user_id' : data.id, 'password' : data.pw }
                 },
-                attributes : ['id', 'user_id', 'nickname', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date']
+                attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date']
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
+        },
+
+        query : async (query, types, callback) => {
+            const set_query = await sequelize.query(query, {
+                logging: console.log,
+                plain: false,
+                raw: false,
+                type: QueryTypes.types
+            })
+
+            callback(set_query);
         }
     },
 
@@ -263,6 +218,18 @@ module.exports = {
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
+        },
+
+        user_info : async (qry, callback) => {
+
+            const update_user_info = await sequelize.query(qry, {
+                logging: console.log,
+                plain: false,
+                raw: false,
+                type: QueryTypes.UPDATE
+            })
+
+            callback(update_user_info);
         },
 
         goods_state : (data, callback) => {

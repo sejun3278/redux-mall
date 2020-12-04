@@ -22,6 +22,8 @@
     color: black;
 }
 
+.ReactModal__Overlay { background-color: rgb(0, 0, 0, 0.75) !important; }
+
 #main_login_ul {
     list-style: none;
     margin-top: 28px;
@@ -38,17 +40,29 @@
     text-decoration: none;
 }
 
-#signup_div {
-    display: grid;
-    grid-template-columns: 8% 42% 8% 2% 37%;
-}
+#signup_email_li div { margin-top: 0px !important; }
+#signup_div_grid #signup_email_li input { width : 90% !important; }
+#signup_email_host_select { padding : 5px }
+
+/* #signup_email_custom_input_div input { width: 20% !important; } */
+#signup_info_div #signup_email_custom_input_div { margin-left: 20px; margin-top: 20px !important; }
+#signup_info_div #signup_email_custom_input_div input[name=email_custom_input] 
+{ width: 60% !important; }
+
+#signup_div { margin-top: 20px !important; }
+
+#signup_div_grid { display: grid; grid-template-columns: 50% 50%; }
+#signup_info_div { margin-left: 50px; margin-right: 0px; line-height: 25px; border-right: solid 1px #ababab; }
+#signup_info_div ul li { margin-bottom: 60px !important; }
 
 #signup_center_height_line { border-left: solid 1px #ababab; }
+#signup_agree_div { margin-left: 80px; margin-right: 20px; }
+#signup_agree_div textarea { height: 85% !important; }
 
-#signup_div div { margin-top: 30px; }
-#signup_div div ul li { margin-bottom: 40px; }
-#signup_div div ul li input { 
-    width: 60%;
+#signup_div_grid div { margin-top: 30px; }
+#signup_div_grid div ul li { margin-bottom: 40px; }
+#signup_div_grid div ul li input { 
+    width: 75%;
     margin-left: 5px;
     height: 25px;
     border-radius: 3px;
@@ -71,13 +85,13 @@
 }
 
 #signup_agree_mobile_div { display: none; }
+
+#signup_submit_div { text-align: center; padding-bottom: 80px; margin-top: 70px; }
 #signup_submit_button {
     padding: 5px 10px 5px 10px;
     border-radius: 5px;
     background-color: white;
-    width: 215px;
-    position: absolute;
-    margin: 3% 20% 4% 20%;
+    width: 30%;
 }
 
 #signup_complate_div {
@@ -100,46 +114,54 @@
 #signup_complate_div p { font-size: 13px; }
 #signup_complate_div #signup_complate_select_div {
     display: grid;
-    grid-template-columns: 33% 33% 33%;
-    margin-top: 80px;
-    font-size: 15px;
+    grid-template-columns: 33% 33% 34%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 120px;
+    font-size: 17px;
 }
 
-#signup_complate_div #signup_complate_select_div div {
-    margin-left: 25%;
-    margin-right: 25%;
-}
 
 #login_div h3 {
-    border-bottom: solid 1px white;
     padding-bottom: 20px;
-    margin: 0px 0px 0px 0px;
+    margin: 10px 0px 0px 0px;
     font-size: 26px;
 }
 
+.login_form_grid { display: grid; grid-template-columns: 20% auto; margin-top: 10px; font-size: 14px; }
+.login_form_grid input { margin-left: 20px; width: 80%; }
+.login_other_title_div { text-align: right; }
+
 #login_div #login_form { margin-top: 30px; padding-bottom: 30px; border-bottom: solid 1px white; }
-#login_div #login_form div { margin-top: 40px; line-height: 10px; }
+/* #login_div #login_form div { line-height: 10px; } */
 #login_div #login_form div input { padding : 4px }
 
 #login_div #login_close_icon {
     position: absolute;
-    width: 30px;
-    margin: -60px 0px 0px 165px;
+    width: 20px;
+    margin: -60px 0px 0px 350px !important;
 }
 
-#login_div #login_button_div button {
-    width: 100%;
-    background-color: white;
-    border: solid 1px white;
+#login_button_div div { font-size: 12px; color: #ababab; margin: 8px 0px 0px 225px !important; position: absolute; }
+/* #login_button_div div u { position: absolute; } */
+
+#login_div #login_button_div input {
+    /* background-color: white; */
+    /* border: solid 1px white; */
+    /* background-color: rgb(57, 72, 103); */
+    border: none;
+    color: white;
+    width: 92%;
+    background-color: black;
+    font-size: 12px;
     padding: 5px;
-    border-radius: 5px;
-    margin-top: 15px;
+    height: 30px;
+    margin : 60px 0px 0px 10px;
 }
 
+#login_div { display: grid; grid-template-columns: 3% 94% 3%; }
 #login_div #login_other_div {
     margin-top: 20px;
-    display: grid;
-    grid-template-columns: 15% 25% 5% 45% 15%;
     font-size: 13px;
 }
 
@@ -169,16 +191,20 @@
 
 #header_search_div input {
     width: 45%;
-    padding: 3px;
+    padding: 4px 0px 4px 7px;
     height: 17px;
+    font-weight: bold;
+    font-size: 14px;
 }
 #header_search_div #header_search_icon {
     position: absolute;
-    margin-top: 14px;
-    width: 20px;
-    border: solid 1px white;
+    margin-top: 12px;
+    width: 18px !important;
+    height: 20px !important;
+    margin-left: 5px;
+    border: solid 1px black;
     background-color: white;
-    padding: 2px;
+    padding: 4.5px 7px 3px 7px;
 }
 
 #header_myPage_div {
@@ -281,41 +307,51 @@
 }
 
 #modify_user_div_grid {
-    display: grid;
-    grid-template-columns: 30% auto 0%;
+    /* display: grid; */
+    /* grid-template-columns: 30% auto 0%; */
     margin-top: 25px;
 }
 
-#modify_user_info_ul { line-height: 0px; }
-#modify_user_info_ul li { margin-bottom: 100px; }
-#modify_user_info_ul li input { width: 40%; padding : 5px; }
+#modify_user_info_ul { line-height: 0px; padding-left: 0px !important; }
+#modify_user_info_ul li { margin-bottom: 130px; }
+#modify_user_info_ul li input { width: 25%; padding : 5px; }
 #modify_user_info_ul li select { padding: 5px; }
 
-#modify_user_email_grid { display: grid; grid-template-columns: 25% 10% auto; }
-#modify_user_email_grid div input { width: 90%; }
+/* #modify_user_email_grid { display: grid; grid-template-columns: 25% 10% auto; } */
+#modify_user_email_grid { display: inline-block; width: 100%; }
+#modify_user_email_id { width: 20% !important; }
 
-#modify_user_select_email_host_div { width: 100% !important; }
-#modify_user_email_input { margin-top: 5px; width: 70%; }
+#modify_user_email_input { margin-top: 20px; }
+#modify_user_email_input input { width: 30% !important; }
+
+/* #modify_user_email_id { width: 20% !important; } */
+/* #modify_user_email_grid div { float: left; width: 45%; } */
+/* #modify_user_email_grid div input { width: 30%; } */
+
+/* #modify_user_email_sign { width: 5% !important;  } */
+/* #modify_user_email_grid div input { !important; } */
+
+/* #modify_user_select_email_host_div { width: 100% !important; } */
+/* #modify_user_email_input { margin-top: 5px; width: 70%; } */
 
 #modify_user_phone_div input { width: 10% !important; }
 .modify_user_buttons {
     background-color: white;
-    margin-left: 2.5%;
     border-radius: 5px;
     padding: 10px;
-    width: 50%;
+    width: 40%;
 }
 
 #modify_user_other_div {
     margin-top: 80px;
     margin-bottom: 60px;
-    border-top: solid 1px #ababab;
 }
 
 #modify_user_other_div div {
     margin-top: 20px;
 }
 
+.alert { width: 85% !important; padding-bottom: 20px !important; line-height: 18px; }
 .modify_user_alert {
     margin : 15px 0px 0px 0px;
     width: 100%;
@@ -324,13 +360,13 @@
 
 #modify_user_host_div {
     margin-bottom: 70px !important;
-    width: 60%;
+    /* width: 60%; */
 }
 
 #daum_host_api {
     border: solid 2px #ababab;
     border-top: none;
-    margin : 0px 30% 80px -15%;
+    /* margin : 0px 30% 80px -15%; */
 }
 
 #search_first_host {
@@ -350,17 +386,25 @@
 
 #modify_user_detail_host_div { margin-top: 100px !important; }
 #modify_user_detail_host_div input {
-    width: 52% !important;
+    width: 40% !important;
 }
 
-#modify_user_submit_div {
+/* #modify_user_submit_div {
+    text-align: center;
+    background-color: #ababab;
+    border-top: solid 1px #ababab;
+    border-bottom: solid 1px #ababab;
+    padding-top: 50px;
+    padding-bottom: 50px;
     margin-top: 100px;
-    margin-bottom: 100px;
+    margin-bottom: 40px;
+} */
+
+#modify_user_submit_button { border: none; background-color: #ababab; color : white; font-size: 23px;
+    width: 100%; height: 100px; font-weight: bold; margin-top: 50px;
+
 }
 
-#modify_user_submit_div input {
-    width: 55%;
-}
 
 #admin_icon {
     position: absolute;
@@ -368,3 +412,12 @@
     margin-top: -50px;
     margin-left: 70px;
 }
+
+/* #modify_user_date_div { margin-left: 10%; } */
+#modify_user_info_form {
+    margin-top: 80px;
+}
+
+#modify_user_other_div { padding: 5px; text-align: center; margin-top: 50px !important; }
+#modify_user_other_div div { margin-bottom: 40px !important; }
+#modify_user_other_div div input { width: 40%; padding: 10px; background-color: white; border-radius: 10px; }

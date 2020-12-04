@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import axios from 'axios';
+import queryString from 'query-string';
+// import axios from 'axios';
 
 import '../css/main.css';
 import * as configAction from '../Store/modules/config';
+import * as searchAction from '../Store/modules/search';
 
 import { Link } from 'react-router-dom';
 import img from '../source/img/icon.json';
 
-import $ from 'jquery';
-import URL from '../config/url';
+// import $ from 'jquery';
+// import URL from '../config/url';
 
 class Header extends Component {
     componentDidMount() {
@@ -32,7 +34,7 @@ class Header extends Component {
     _setScrollSize = () => {
         // 화면 스크롤 구하기
         // const width_size = window.scrollX;
-        const height_size = window.scrollY;
+        // const height_size = window.scrollY;
 
         // if(height_size > 88) {
         //     $('#header_other_div').css({ 
@@ -79,17 +81,26 @@ class Header extends Component {
         return;
     }
 
+    _closeCategory = () => {
+        const { configAction, select_cat_open } = this.props;
+
+        if(select_cat_open) {
+            configAction.select_cat_data({ 'bool' : false, 'type' : null })
+        }
+    }
+
     render() {
-        const { _pageMove, _modalToggle, login, admin_info } = this.props;
+        const { _pageMove, _modalToggle, login, admin_info, user_info, _search, search } = this.props;
+        const { _closeCategory } = this;
 
         return (
             <div id='main_header'>
-                <div id='main_header_div'>
+                <div id='main_header_div' onMouseEnter={_closeCategory}>
                     <div id='main_header_left'> </div>
                     <div id='main_header_center'> 
                         { /* Center */ }
                         <h4 id='main_title'> <b onClick={() => _pageMove('href', '/')} className='pointer'> Sejun's Mall </b> </h4>
-                        {admin_info ? 
+                        {admin_info && user_info ? 
                             <div> 
                                 <img src={img.icon.admin}
                                     id='admin_icon'
@@ -144,8 +155,10 @@ class Header extends Component {
                         <b className='pointer'> 카테고리 </b>
                     </div>
                     <div id='header_search_div'> 
-                        <input type='text' maxLength='20' />
-                        <img alt='' src={img.icon.search} id='header_search_icon' title='검색하기' className='pointer'/>
+                        <form onSubmit={_search}>
+                            <input type='text' maxLength='20' name='search' defaultValue={search} />
+                            <input type='image' name='submit' alt='' src={img.icon.search} id='header_search_icon' title='검색하기' className='pointer'/>
+                        </form>
                     </div>
                     <div id='header_myPage_div'>
                         <div> 장바구니 </div>
@@ -171,10 +184,13 @@ export default connect(
         login : state.config.login,
         window_width : state.config.window_width,
         window_height : state.config.window_height,
-        admin_state : state.admin.admin_state
+        admin_state : state.admin.admin_state,
+        search : state.search.search,
+        select_cat_open : state.config.select_cat_open
     }), 
   
     (dispatch) => ({
-        configAction : bindActionCreators(configAction, dispatch)
+        configAction : bindActionCreators(configAction, dispatch),
+        searchAction : bindActionCreators(searchAction, dispatch)
     })
   )(Header);

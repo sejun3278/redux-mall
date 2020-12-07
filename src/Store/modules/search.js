@@ -8,20 +8,21 @@ export const set_search_data = createAction(SETSEARCHDATA);
 export const save_qry = createAction(SAVEQUERY);
 export const toggle_view_type = createAction(TOGGLEVIEWTYPE);
 
-
 const initialState = {
     search_data : JSON.stringify([]),
     search : "",
     search_view_type : "album",
     serach_first_cat : null,
     serach_last_cat : null,
+    search_ready : false
 };
 
 export default handleActions({
    [SETSEARCHDATA] : (state, data) => {
       return {
         ...state,
-        search_data : data.payload.arr
+        search_data : data.payload.arr,
+        search_ready : true
       };
     },
 

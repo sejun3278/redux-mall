@@ -139,6 +139,7 @@ ul { padding-left: 0px !important; }
     .category_list_default { display: none; }
     .category_responsive { display: block; }
     #category_responsive_div { display: block; }
+    #close_category_button { display: none; }
 }
 
 @media (max-width : 700px) {

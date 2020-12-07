@@ -168,6 +168,9 @@ class Search extends Component {
 
             } else if(opt_value === 'min_price') {
                 delete qry['max_price'];
+                
+            } else if(opt_value === 'max_price') {
+                delete qry['min_price'];
             }
 
             return this.props._filterURL(qry, 'search');
@@ -175,7 +178,7 @@ class Search extends Component {
     }
 
     render() {
-        const { search, _searchCategoryName, search_view_type, price_comma, _clickCategory } = this.props;
+        const { search, _searchCategoryName, search_view_type, price_comma, _clickCategory, search_ready } = this.props;
         const { _filter, _search, _removeSearchOption, _priceFilter } = this;
         const search_data = JSON.parse(this.props.search_data);
         
@@ -205,7 +208,9 @@ class Search extends Component {
 
         return(
             <div id='search_body_div'>
-                {first_cat && last_cat_list ? 
+                {search_ready ? 
+                <div>
+                {first_cat && last_cat_list? 
                     <div id='search_show_category_list_div' className='border_bottom'>
                         <div id='search_show_last_cat_title' className='border_right'> <b> 하위 카테고리 </b> </div>
                         
@@ -463,6 +468,8 @@ class Search extends Component {
                     </div>
                     }
                 </div>
+
+                </div> : null}
             </div>
         )
     }
@@ -476,6 +483,7 @@ Search.defaultProps = {
         search_data : state.search.search_data,
         search : state.search.search,
         search_view_type : state.search.search_view_type,
+        search_ready : state.search.search_ready
     }), 
   
     (dispatch) => ({

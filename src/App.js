@@ -149,8 +149,10 @@ class App extends Component {
     const { configAction } = this.props;
 
     const login_cookie = await this._getCookie('login', 'get');
+    console.log(login_cookie)
 
     if(login_cookie) {
+      console.log(123)
       configAction.login_and_logout({ 'bool' : true });
 
       // 유저 정보 담기

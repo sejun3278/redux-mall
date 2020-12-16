@@ -10,17 +10,29 @@ import '../../css/responsive/signup.css';
 
 class Signup_complate extends Component {
 
-  componentDidMount() {
-    // const { user_info } = this.props;
-    // const check = sessionStorage.getItem('signup')
+  async componentDidMount() {
+    // 접근 체크하기
+    await this._checkSignupId();
+  }
 
-    // if(!check) {
-    //   alert('허용되지 않는 접근입니다.');
+  _checkSignupId = async () => {
+    const { match, _getCookie, signupAction } = this.props;
 
-    //   return window.location.replace('/');
-    // }
+    const id = match.params.id;
+    const check_cookie = await _getCookie('signup', 'get');
 
-    // sessionStorage.removeItem('signup');
+    let allow = true;
+    if(!check_cookie.id || id !== check_cookie.id) {
+      allow = false;
+      alert('정상적인 접근이 아닙니다.');
+    }
+
+    if(allow === false) {
+      return window.location.replace('/');
+    }
+
+    await _getCookie('signup', 'remove');    
+    return signupAction.save_signup_id({ 'id' : check_cookie.id });
   }
 
   // 회원 정보 수정 클릭시
@@ -41,20 +53,20 @@ class Signup_complate extends Component {
   }
 
     render() {
-      const { _pageMove, _modalToggle } = this.props;
+      const { _pageMove, _modalToggle, signup_id, save_signup_id } = this.props;
       const { _moveModifyUserInfo } = this;
-      const id = this.props.match.params.id;
 
-      const check = sessionStorage.getItem('signup')
+      console.log(signup_id)
+      console.log(save_signup_id)
 
         return(
             <div id='signup_complate_div'>
-              {check ? 
+              {signup_id ? 
               <div>
                 <h3> 회원가입 완료 </h3>
 
                 <p> 
-                  <b> {id} </b> 님 회원가입을 환영합니다 ! 
+                  <b> {signup_id} </b> 님 회원가입을 환영합니다 ! 
                 </p>
 
                 <div id='signup_complate_select_div' className='aCenter'>
@@ -96,7 +108,8 @@ Signup_complate.defaultProps = {
       pw : state.signup.pw,
       pw_check : state.signup.pw_check,
       agree : state.signup.agree,
-      alert_obj : state.signup.alert_obj
+      alert_obj : state.signup.alert_obj,
+      signup_id : state.signup.signup_id
     }), 
   
     (dispatch) => ({

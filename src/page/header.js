@@ -17,14 +17,14 @@ import img from '../source/img/icon.json';
 
 class Header extends Component {
     componentDidMount() {
-        this._setScrollSize();
-        window.addEventListener("scroll", this._setScrollSize);
+        // this._setScrollSize();
+        // window.addEventListener("scroll", this._setScrollSize);
         
-        let user = sessionStorage.getItem('login');
-        if(user) {
-            user = JSON.parse(user);
-            // 관리자 확인하기
-        }
+        // let user = sessionStorage.getItem('login');
+        // if(user) {
+        //     user = JSON.parse(user);
+        //     // 관리자 확인하기
+        // }
     }
     
     componentWillUnmount() {
@@ -59,8 +59,11 @@ class Header extends Component {
     }  
 
     _logout = async () => {
+        const { _getCookie } = this.props;
+
         if(window.confirm('로그아웃 하시겠습니까?')) {
-            sessionStorage.removeItem('login');
+            // sessionStorage.removeItem('login');
+            await _getCookie('login', 'remove');
 
             const url = ['/myPage', '/admin'];
             let url_check = false;
@@ -71,7 +74,8 @@ class Header extends Component {
             })
 
             // admin Session 삭제
-            sessionStorage.removeItem('admin');
+            // sessionStorage.removeItem('admin');
+            await _getCookie('admin', 'remove');
 
             if(url_check) {
                 return window.location.replace('/')
@@ -161,17 +165,21 @@ class Header extends Component {
                         </form>
                     </div>
                     <div id='header_myPage_div'>
-                        <div> 장바구니 </div>
+                        <div> 
+                            <u className='pointer remove_underLine' onClick={() => window.location.href='/myPage/cart'}> 장바구니 </u>
+                        </div>
                         <div> 주문 / 배송 현황 </div>
-                        <div> 찜 리스트 </div>
+                        <div> 
+                            <u className='pointer remove_underLine' onClick={() => window.location.href='/myPage/like_list'}> 찜 리스트 </u>
+                        </div>
                     </div>
                 </div>
                             
                 <div id='header_other_mobile_div'>
                     <div> </div>
-                    <div> 장바구니 </div>
+                    <div onClick={() => window.location.href='/myPage/cart'}> 장바구니 </div>
                     <div> 주문 / 배송 현황</div>
-                    <div> 찜 리스트 </div>
+                    <div onClick={() => window.location.href='/myPage/like_list'}> 찜 리스트 </div>
                     <div> </div>
                 </div>
             </div>

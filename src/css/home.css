@@ -1,5 +1,8 @@
+.loading_div { text-align: center; }
+.loading_div div { height: 300px; background-repeat: no-repeat; width: 90%; background-position-x: center; background-size: contain; margin-top: 10px; position: relative; margin-left: auto; margin-right: auto; padding-bottom: 40px; }
+
 #top_category_div { border-bottom: solid 1px #ababab;  height: 60px; line-height: 60px;}
-#top_category_list_grid_div { display: grid; font-size: 15px; }
+#top_category_list_grid_div { display: grid; font-size: 13px; }
 #top_category_list_grid_div div img { width: 17px; margin-right: 5px; }
 
 #top_category_index_div { display: grid; grid-template-columns: 8% 84% 8%; border-bottom: solid 2px black; }
@@ -63,8 +66,8 @@ ul { padding-left: 0px !important; }
 
 .search_album_name_and_price_grid { display: grid; grid-template-columns: 75% auto !important; }
 .search_album_name_and_price { padding : 5px; font-size: 14px; margin : 15px 0px 0px 10px; width: 90%; }
-.search_album_name_and_price p { margin-top: -10px; margin-left: 5px; }
-.search_album_name_div { height: 100%; }
+.search_album_name_and_price p { margin-left: 5px; }
+/* .search_album_name_div { height: 100%; } */
 
 #search_option_div { margin-top: 70px; }
 #search_option_title_div { border-bottom: solid 1px #ababab; padding-bottom: 10px; font-weight: bold; padding-left: 20px; color: #ababab; }
@@ -97,6 +100,14 @@ ul { padding-left: 0px !important; }
 #search_show_last_list::-webkit-scrollbar { display: none }
 #search_show_last_list div { width: auto; margin-right: 50px; margin-left: 20px; }
 #search_select_angel { width: 15px; margin: 5px 0px 0px -10px;}
+
+#search_album_like_div { position: absolute; border: solid 1px black; background-color: white; padding: 6px 8px 3px 8px; margin-top: -40px; margin-left: -10px; }
+#search_album_like_div img { width: 30px; }
+
+#search_view_filter_grid_div { display: grid; grid-template-columns: 270px auto; }
+#search_view_value_filter_div { text-align: right; }
+#search_view_value_filter_div div { float: right; margin: 5px 10px 0px 15px; cursor: pointer; }
+#select_view_filter { font-weight: bold; color: #52BFFF; }
 
 @media (max-width : 1200px) {
     #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
@@ -138,12 +149,21 @@ ul { padding-left: 0px !important; }
 
     .category_list_default { display: none; }
     .category_responsive { display: block; }
-    #category_responsive_div { display: block; }
+    #category_responsive_div { display: block !important; }
     #close_category_button { display: none; }
+
+    #search_view_filter_grid_div { display: block; }
+    #search_result_div { margin-top: 80px; }
 }
 
 @media (max-width : 700px) {
     .search_contents_thumb_list { min-height: 140px !important; }
+    #search_album_like_div { margin-top: -30px; }
+    #search_album_like_div img { width: 20px; }
+}
+
+@media (max-width : 650px) {
+    #search_view_filter_grid_div { margin-top: 30px; }
 }
 
 @media (max-width : 600px) {
@@ -156,6 +176,8 @@ ul { padding-left: 0px !important; }
     .search_goods_category { font-size: 10.5px; }
     #search_album_div .search_contents_each_list { margin-left: 3.5% !important; width: 29%; }
     .search_album_each_div { grid-template-columns: 3% 94% 3% !important; }
+
+    .search_option_grid_div { grid-template-columns: 23% auto; }
 }
 
 @media (max-width : 550px) {
@@ -186,6 +208,11 @@ ul { padding-left: 0px !important; }
     #search_price_title_div { display: block; text-align: left; margin: 10px 0px 0px 20px; }
     #search_price_input_div { display: block !important; margin-right: 20px; }
     #search_price_filter_grid_div { margin-right: 35px; }
+
+    .search_option_grid_div { grid-template-columns: 27% auto; }
+    #search_view_filter_grid_div { display: block; height: 20px; }
+
+    #search_view_value_filter_div { line-height: 30px; }
 }
 
 @media (max-width : 426px) {

@@ -7,6 +7,7 @@ const MODALTOGGLE = 'signup/modal_toggle';
 const LOGINTOGGLE = 'signup/login_toggle';
 const SETLOGINAFTER = 'signup/set_login_after';
 const TOGGLESELECTEMAILHOST = 'signup/toggle_select_email_host';
+const SAVESIGNUPID = 'signup/save_signup_id';
 
 export const input_info = createAction(INPUTINFO);
 export const set_alert = createAction(SETALERT);
@@ -15,7 +16,7 @@ export const modal_toggle = createAction(MODALTOGGLE);
 export const login_toggle = createAction(LOGINTOGGLE);
 export const set_login_after = createAction(SETLOGINAFTER);
 export const toggle_select_email_host = createAction(TOGGLESELECTEMAILHOST);
-
+export const save_signup_id = createAction(SAVESIGNUPID);
 
 const initialState = {
     id : "",
@@ -32,6 +33,7 @@ const initialState = {
     login_modal : false,
     login_able : true,
     login_after : "",
+    signup_id : ""
 };
 
 export default handleActions({
@@ -96,6 +98,13 @@ export default handleActions({
       return {
         ...state,
         email_select : data.payload.bool
+      }
+    },
+
+    [SAVESIGNUPID] : (state, data) => {
+      return {
+        ...state,
+        signup_id : data.payload.id
       }
     }
 

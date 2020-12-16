@@ -10,7 +10,9 @@ import * as searchAction from '../Store/modules/search';
 import * as configAction from '../Store/modules/config';
 import '../css/responsive/signup.css';
 
-import URL, { repeat } from '../config/url';
+import { Loading } from './index';
+
+import URL from '../config/url';
 import icon from '../source/img/icon.json';
 import img from '../source/img/img.json';
 import cat_list from '../source/admin_page.json';
@@ -19,7 +21,7 @@ import $ from 'jquery';
 class Search extends Component {
 
     componentDidMount() {
-        const { searchAction, location, configAction, _moveScrollbar } = this.props;
+        const { searchAction, location, configAction, _moveScrollbar, search_ready } = this.props;
 
         // 검색 정보 가져오기
         this._getData();
@@ -47,11 +49,17 @@ class Search extends Component {
 
         configAction.select_cat_data({ 'type' : first_cat, 'last_cat' : last_cat });
 
-        //  last_cat 스크롤 이동
+        window.setTimeout(() => {
+            return this._lastCatScrollMove(qry_obj)
+        }, 100)
+    }
+
+    _lastCatScrollMove = (qry_obj) => {
         if(qry_obj['last_cat']) {
+
             const last_cat_list = cat_list.last_category[qry_obj['first_cat']];
-            let cat_index = 0;
             let width = 0;
+            let cat_index = 0;
 
             for(let key in last_cat_list) {
                 if(last_cat_list[key].value === qry_obj['last_cat']) {
@@ -59,23 +67,27 @@ class Search extends Component {
                         width = $('#last_cat_scroll_0').offset().left;
 
                     } else if(key > 0) {
-                        width = $('#last_cat_scroll_' + (key - 1)).offset().left;
+                        width = $('#last_cat_scroll_' + cat_index).offset().left;
                     }
                 }
                 cat_index += 1;
             }
-            
-            _moveScrollbar('#search_show_last_list', 'x', width)
+                
+            this.props._moveScrollbar('#search_show_last_list', 'x', width)
         }
     }
 
     _getData = async () => {
-        const { location, searchAction } = this.props;
+        const { location, searchAction, user_info } = this.props;
 
         const qry = queryString.parse(location.search);
-
         const obj = { 'type' : "SELECT", 'table' : "goods", 'comment' : "검색 정보 가져오기" };
 
+        if(user_info) {
+            // obj['join'] = true;
+            // obj['join_table'] = 'like'
+        }
+ 
         // obj['columns'] = [];
         // 컬럼 조건 담기
         // obj['columns'].push('name');
@@ -86,7 +98,17 @@ class Search extends Component {
         obj['option']['name'] = 'LIKE';
         obj['option']['first_cat'] = 'LIKE';
         obj['option']['last_cat'] = 'LIKE';
+        obj['option']['state'] = "=";
         obj['option']['price'] = "";
+
+        if(obj.join) {
+            // join 이 있는 경우
+            obj['join_arr'] = [];
+            obj['join_arr'][0] = { 'key1' : 'goods_id', 'key2' : 'id' }
+
+            obj['join_where'] = [];
+            obj['join_where'][0] = { 'columns' : 'state', 'as' : 'like_state' }
+        }
 
         obj['where'] = [];
         // 검색 조건 담기
@@ -100,10 +122,23 @@ class Search extends Component {
             max_price = 1000000000;
         }
 
-        obj['where'][0] = { 'name' : "%" + search + "%" };
-        obj['where'][1] = { 'first_cat' : "%" + first_cat + "%" };
-        obj['where'][2] = { 'last_cat' : "%" + last_cat + "%" };
-        obj['where'][3] = { 'result_price' : [Number(min_price), Number(max_price)] };
+        obj['where'][0] = { 'table' : 'goods', 'key' : 'name', 'value' : "%" + search + "%" };
+        obj['where'][1] = { 'table' : 'goods', 'key' : 'first_cat', 'value' : "%" + first_cat + "%" };
+        obj['where'][2] = { 'table' : 'goods', 'key' : 'last_cat', 'value' : "%" + last_cat + "%" };
+        obj['where'][3] = { 'table' : 'goods', 'key' : 'state', 'value' : "1" };
+        obj['where'][4] = { 'table' : 'goods', 'key' : 'result_price', 'value' : [Number(min_price), Number(max_price)] };
+
+        const view_filter = qry.view_filter;
+
+        obj['order'] = [];
+        obj['order'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : "" }
+
+        if(view_filter === 'high_price') {
+            obj['order'][0] = { 'table' : 'goods', 'key' : 'result_price', 'value' : "DESC" }
+
+        } else if(view_filter === 'low_price') {
+            obj['order'][0] = { 'table' : 'goods', 'key' : 'result_price', 'value' : "ASC" }
+        }
 
         const get_data = await axios(URL + '/api/query', {
             method : 'POST',
@@ -168,7 +203,7 @@ class Search extends Component {
 
             } else if(opt_value === 'min_price') {
                 delete qry['max_price'];
-                
+
             } else if(opt_value === 'max_price') {
                 delete qry['min_price'];
             }
@@ -177,25 +212,37 @@ class Search extends Component {
         }
     }
 
+    // 라이크 on / off
+    _likeToggle = (goods_id, type) => {
+        const { user_info, _modalToggle } = this.props;
+
+        if(!user_info) {
+            alert('로그인이 필요합니다.');
+            return _modalToggle(true);
+        }
+    }
+
     render() {
-        const { search, _searchCategoryName, search_view_type, price_comma, _clickCategory, search_ready } = this.props;
-        const { _filter, _search, _removeSearchOption, _priceFilter } = this;
+        const { search, _searchCategoryName, search_view_type, price_comma, _clickCategory, search_ready, user_info } = this.props;
+        const { _filter, _search, _removeSearchOption, _priceFilter, _likeToggle } = this;
+
         const search_data = JSON.parse(this.props.search_data);
-        
         const qry = queryString.parse(this.props.location.search);
 
         const min_price = qry.min_price === undefined ? 0 : qry.min_price;
         const max_price = qry.max_price === undefined ? 0 : qry.max_price;
 
         const first_cat = qry.first_cat === undefined ? null : qry.first_cat;
-        const last_cat = qry.last_cat === undefined ? null : qry.last_cat
+        const last_cat = qry.last_cat === undefined ? null : qry.last_cat;
+        const _view_filter = qry.view_filter === undefined ? null : qry.view_filter;
 
-        const filter_option_check = search || first_cat || last_cat || (min_price > 0 || max_price > 0);
+        const filter_option_check = search || first_cat || last_cat || (min_price > 0 || max_price > 0) || _view_filter;
         const opt_name_obj = {
             "search" : "검색어",
             "first_cat" : "상위 카테고리",
             "last_cat" : "하위 카테고리",
             "max_price" : "가격 설정",
+            "view_filter" : "검색 필터"
         }
         
         let last_cat_list = [];
@@ -205,6 +252,8 @@ class Search extends Component {
             // grid_repeat = `repeat(${last_cat_list.length}, ${Math.round(100 / last_cat_list.length)}%)`;
             grid_repeat = `repeat(${last_cat_list.length}, 200px)`;
         }
+
+        const view_filter = qry.view_filter;
 
         return(
             <div id='search_body_div'>
@@ -225,7 +274,7 @@ class Search extends Component {
                                     onClick={() => _clickCategory(qry, qry.first_cat, el.value)}
                                 >
                                 {qry['last_cat'] === el.value
-                                    ? <img src={icon.angel.angel_right_orange} id='search_select_angel' />
+                                    ? <img src={icon.angel.angel_right_orange} id='search_select_angel' alt='' />
                                     : null}
                                     {el.name}
                                 </div>
@@ -253,29 +302,49 @@ class Search extends Component {
                                     <b id='search_price_input_max_div'>　~
                                     　최대　<input type='number' min={0} max={1000000000} name='max_price' defaultValue={max_price}/> </b>
 
-                                    <input id='search_price_filter_submit' title='검색' className='pointer' type='image' src={icon.icon.search_black} value='검색' />
+                                    <input id='search_price_filter_submit' title='검색' alt='' className='pointer' type='image' src={icon.icon.search_black} value='검색' />
                                 </b>
                             </div>
                         </form>
                     </div>
 
-                    <div id='search_view_filter_div'>
-                        <div className='pointer'
-                            onClick={search_view_type !== 'album' ? () => _filter('view_type','album') : null}
-                        >
-                            <img src={search_view_type === 'album' 
-                                ? icon.search_icon.search_album_select
-                                : icon.search_icon.search_album_default}/> 
-                            <p id={search_view_type === 'album' ? 'search_view_select' : null}> 앨범 형 </p>
+                    <div id='search_view_filter_grid_div'>
+                        <div id='search_view_filter_div'>
+                            <div className='pointer'
+                                onClick={search_view_type !== 'album' ? () => _filter('view_type','album') : null}
+                            >
+                                <img alt='' src={search_view_type === 'album'
+                                    ? icon.search_icon.search_album_select
+                                    : icon.search_icon.search_album_default}/> 
+                                <p id={search_view_type === 'album' ? 'search_view_select' : null}> 앨범 형 </p>
+                            </div>
+
+                            <div className='pointer'
+                                onClick={search_view_type !== 'board' ? () => _filter('view_type', 'board') : null}
+                            > 
+                                <img alt='' src={search_view_type === 'board' 
+                                    ? icon.search_icon.search_board_select
+                                    : icon.search_icon.search_board_default}/> 
+                                <p id={search_view_type === 'board' ? 'search_view_select' : null}> 게시판 형 </p>
+                            </div>
                         </div>
 
-                        <div className='pointer'
-                            onClick={search_view_type !== 'board' ? () => _filter('view_type', 'board') : null}
-                        > 
-                            <img src={search_view_type === 'board' 
-                                ? icon.search_icon.search_board_select
-                                : icon.search_icon.search_board_default}/> 
-                            <p id={search_view_type === 'board' ? 'search_view_select' : null}> 게시판 형 </p>
+                        <div id='search_view_value_filter_div' className='aRight'>
+                            <div onClick={() => _filter('view_filter', 'high_price')}
+                                 id={view_filter === 'high_price' ? 'select_view_filter' : null}
+                            > 
+                                가격 높은 순 
+                            </div>
+
+                            <div onClick={() => _filter('view_filter', 'low_price')}
+                                 id={view_filter === 'low_price' ? 'select_view_filter' : null}
+                            > 
+                                가격 낮은 순 
+                            </div>
+
+                            <div onClick={() => _filter('view_filter', 'popular')}> 인기도 순 </div>
+                            <div onClick={() => _filter('view_filter', 'high_score')}> 평점 높은 순 </div>
+                            <div onClick={() => _filter('view_filter', 'my_like')}> 내가 찜한 상품 </div>
                         </div>
                     </div>
                 </div>
@@ -327,6 +396,14 @@ class Search extends Component {
                                         } else if(Number(qry['max_price']) > 0 && Number(qry['min_price']) > 0) {
                                             opt_value = price_comma(qry['min_price']) + ' 원　~　' + price_comma(qry['max_price']) + ' 원';
                                         }
+
+                                    } else if(opt_name === '검색 필터') {
+                                        if(opt_value === 'high_price') {
+                                            opt_value = '높은 가격순'
+
+                                        } else if(opt_value === 'low_price') {
+                                            opt_value = '낮은 가격순'
+                                        }
                                     }
 
                                     return(
@@ -339,7 +416,7 @@ class Search extends Component {
 
                                                     <div className='search_option_value_div bold'>
                                                     {opt_value}
-                                                        <img src={icon.icon.close_circle}
+                                                        <img alt='' src={icon.icon.close_circle}
                                                             title='삭제'
                                                             onClick={() => _removeSearchOption(el[1], el[0])}
                                                         />
@@ -379,8 +456,16 @@ class Search extends Component {
                                     const slice_str = goods_name.slice(0, first_idx);
                                     const last_str = goods_name.slice((first_idx + search.length), goods_name.length);
 
-                                    goods_name = `${slice_str} ` + `<b class='bold search_line'> ${search} </b>` + last_str;
+                                    goods_name = slice_str + "<b class='bold search_line'>" + search + "</b>" + last_str;
                                 }
+
+                                const like_state = user_info === false 
+                                    ? icon.goods.like_none
+                                    
+                                    : icon.goods.like_none
+                                            // ? icon.goods.like_none
+
+                                            // : icon.goods.like_on
 
                                 return(
                                     <div className='search_contents_each_list pointer' key={key}
@@ -389,7 +474,18 @@ class Search extends Component {
                                         <p className='font_13'> No. {el.id} </p>
                                         <div className='search_contents_thumb_list border' key={key} 
                                             style={{ 'backgroundImage' : `url(${el.thumbnail})` }}
+                                            onClick={() => window.location.href='/goods/?goods_num=' + el.id}
                                         />
+
+                                        <div id='search_album_like_div'
+                                             title={el.like_state === 0 ? "찜 추가" : "찜 해제"}
+                                             onClick={() => el.like_state === 0
+                                                ? _likeToggle(el.id, true) // like 적용
+                                                : _likeToggle(el.id, false) // like 해제
+                                            }
+                                        >
+                                            <img src={like_state} />
+                                        </div>
 
                                         <div className='search_goods_category aCenter font_12 gray marginTop_10'>
                                             [　<u className='remove_underLine' onClick={() => _clickCategory(qry, el.first_cat)}> { first_cat_name } </u>　
@@ -399,11 +495,12 @@ class Search extends Component {
 
                                         <div className='search_goods_name aCenter marginTop_10 cut_multi_line'
                                             dangerouslySetInnerHTML={{__html : goods_name}}
+                                            onClick={() => window.location.href='/goods/?goods_num=' + el.id}
                                         >
                                         </div>
 
                                         <div className='search_price_div font_14 aCenter'>
-                                            {price_comma(el.result_price)}　원
+                                            <b> {price_comma(el.result_price)} 원 </b>
                                         </div>
                                     </div>
                                 )
@@ -421,7 +518,7 @@ class Search extends Component {
                                     const slice_str = goods_name.slice(0, first_idx);
                                     const last_str = goods_name.slice((first_idx + search.length), goods_name.length);
 
-                                    goods_name = `${slice_str} ` + `<b class='bold search_line'> ${search} </b>` + last_str;
+                                    goods_name = slice_str + `<b class='bold search_line'> ${search} </b>` + last_str;
                                 }
 
                                 return(
@@ -432,7 +529,9 @@ class Search extends Component {
                                                 <p className='search_album_goods_number font_13'> No. { el.id } </p>
                                                 <div className='search_album_grid_div border'>
                                                     <div className='border_right'>
-                                                        <div className='search_album_thumbnail' style={{ 'backgroundImage' : `url(${el.thumbnail})` }} />
+                                                        <div className='search_album_thumbnail' style={{ 'backgroundImage' : `url(${el.thumbnail})` }} 
+                                                             onClick={() => window.location.href='/goods/?goods_num=' + el.id}
+                                                        />
                                                     </div>
 
                                                     <div>
@@ -443,7 +542,9 @@ class Search extends Component {
                                                             <u className='remove_underLine' onClick={() => _clickCategory(qry, el.first_cat, el.last_cat)}> { last_cat_name } </u>
                                                         </div>
 
-                                                        <div className='search_album_name_and_price_grid'>
+                                                        <div className='search_album_name_and_price_grid'
+                                                             onClick={() => window.location.href='/goods/?goods_num=' + el.id}
+                                                        >
                                                             <div className='search_album_name_and_price'>
                                                                 <div dangerouslySetInnerHTML={{__html : goods_name}}
                                                                     className='cut_multi_line search_album_name_div'
@@ -469,7 +570,7 @@ class Search extends Component {
                     }
                 </div>
 
-                </div> : null}
+                </div> : <Loading /> }
             </div>
         )
     }

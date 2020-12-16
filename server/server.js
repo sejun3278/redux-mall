@@ -8,6 +8,14 @@ const cors = require('cors');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+
+// app.use(session({
+//   secret: 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: true,
+//   store: new FileStore()
+// }));
 
 app.use(express.json());
 app.use(cors());
@@ -24,15 +32,3 @@ app.listen(PORT, () => {
 app.get('/', (req, res) => {
   res.send('Sejun Node Express Server 구동 완료');
 })
-
-app.get('/get/all_cookies', (req, res) => {
-  const cookies = req.cookies;
-
-  return res.send(cookies)
-})
-
-
-// // 파일 로컬 업로드
-// app.post('/upload', (req, res, next) => {
-//   const 
-// })

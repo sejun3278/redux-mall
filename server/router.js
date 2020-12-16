@@ -15,12 +15,15 @@ router.post('/get/admin_info', controller.get.admin_info);
 router.post('/get/goods_data', controller.get.goods_data);
 router.post('/get/write_goods_data', controller.get.write_goods_data);
 router.post('/get/user_data', controller.get.user_data);
+router.post('/get/cookie_data', controller.get.cookie_data);
+router.post('/get/like', controller.add.like);
 
 router.post('/check/user_data', controller.check.user_data);
 router.post('/check/nickname', controller.check.nickname);
 
 router.post('/add/signup', controller.add.signup);
 router.post('/add/goods', controller.add.goods);
+router.post('/add/like', controller.add.like);
 
 router.post('/api/login', controller.api.login);
 router.post('/api/send_mail', controller.api.send_mail);
@@ -34,7 +37,6 @@ router.post('/update/goods', controller.update.goods);
 
 router.post('/remove/cookie', controller.remove.cookie);
 router.post('/delete/goods', controller.delete.goods);
-
 
 
 module.exports = router;

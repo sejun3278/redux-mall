@@ -1,0 +1,79 @@
+{
+    "myPage" : {
+        "page_name" : {
+            "modify_user" : "회원 정보 수정",
+            "cart" : "장바구니",
+            "order_list" : "주문 / 배송 현황",
+            "like_list" : "찜 리스트",
+            "QandA" : "문의 / 답변",
+            "star" : "내 평점 내역",
+            "se_bot" : "세봇 (Sejun-Bot)",
+            "coupon" : "내 쿠폰함"
+        },
+
+        "arr" : [
+            [
+                { 
+                    "name" : "회원 정보 수정",
+                    "path" : "modify_user"
+                }
+            ],
+
+            [
+                { 
+                    "name" : "장바구니",
+                    "path" : "cart"
+                }
+            ],
+
+            [
+                { 
+                    "name" : "주문 / 배송 현황",
+                    "path" : "order_list"
+                }
+            ],
+
+            [
+                { 
+                    "name" : "찜 리스트",
+                    "path" : "like_list"
+                }
+            ],
+
+            [
+                { 
+                    "name" : null,
+                    "path" : null
+                }
+            ],
+
+            [
+                { 
+                    "name" : "문의 / 답변",
+                    "path" : "QandA"
+                }
+            ],
+
+            [
+                { 
+                    "name" : "내 평점 내역",
+                    "path" : "star"
+                }
+            ],
+
+            [
+                { 
+                    "name" : "세봇 (Sejun-Bot)",
+                    "path" : "se_bot"
+                }
+            ],
+
+            [
+                { 
+                    "name" : "내 쿠폰함",
+                    "path" : "coupon"
+                }
+            ]
+        ]
+    }
+}

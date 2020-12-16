@@ -27,7 +27,7 @@ class Signup extends Component {
     const arr = ['id', 'nick', 'name', 'email', 'pw', 'pw_check', 'agree'];
     const form_data = event.target;
 
-    const { signupAction } = this.props;
+    const { signupAction, _getCookie } = this.props;
     const { id, nick, name, pw, email_id, email_host } = this.props;
 
     let signup_allow = true;
@@ -57,6 +57,9 @@ class Signup extends Component {
 
           const data = { id : id, nick : nick, name : name, email : all_email, pw : pw, 'qry' : qry_arr };
 
+          // _getCookie('add', 'signup', { 'id' : id });
+          // return;
+
             const add_user = await axios(URL + '/add/signup', {
               method : 'POST',
               headers: new Headers(),
@@ -79,7 +82,7 @@ class Signup extends Component {
       
             } else {
               // 1차 회원가입 완료
-              sessionStorage.setItem('signup', true);
+              await _getCookie('signup', 'add', { 'id' : id }, { 'time' : 60 * 60 } );
               return window.location.replace('/signup/complate/' + id)
             }
         }

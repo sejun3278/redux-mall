@@ -56,7 +56,6 @@ class Top_category extends Component {
             configAction.select_cat_data({ 'type' : null, 'bool' : false });
 
             $('#open_top_category_display').fadeOut(200);
-
         }
     }
 
@@ -209,7 +208,7 @@ class Top_category extends Component {
                                     {cat_list.first_category.category.map( (el, key) => {
                                             return(
                                                 <div key={key}
-                                                    onMouseOver={() => _mouseToggle(el.value, true, null, key)}
+                                                    onMouseOver={() => _mouseToggle(el.value, true, null)}
                                                     className={select_cat === el.value ? 'select_cat_responsive pointer' : 'pointer'}
                                                     style={qry.first_cat === el.value ? { 'backgroundColor' : 'orange', 'color' : 'white', 'fontSize' : '15px', 'fontWeight' : 'bold' } : null}
                                                 >

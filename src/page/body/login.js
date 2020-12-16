@@ -29,10 +29,10 @@ class Login extends Component {
         const form_data = event.target;
 
         if(login_able) {
-        const id = form_data.id.value.trim();
+        const user_id = form_data.id.value.trim();
         const pw = form_data.pw.value.trim();
 
-        if(id.length === 0) {
+        if(user_id.length === 0) {
             return alert('아이디를 입력해주세요.')
 
         } else if(pw.length === 0) {
@@ -40,7 +40,7 @@ class Login extends Component {
         }   
         
         signupAction.login_toggle({ 'bool' : false })
-        const data = { id : id, pw : pw };
+        const data = { user_id : user_id, pw : pw };
         const login_api = await axios(URL + '/api/login', {
           method : 'POST',
           headers: new Headers(),
@@ -52,7 +52,7 @@ class Login extends Component {
             return alert('아이디 및 비밀번호를 다시 확인해주세요.');
         
         } else {
-            sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
+            // sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
             configAction.login_and_logout({ 'bool' : true });
 
             const url = ['/signup', '/myPage'];

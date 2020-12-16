@@ -35,7 +35,6 @@ class AdminHome extends Component {
         const { login, user_info, _checkAdmin, _checkLogin, adminAction } = this.props;
         _checkLogin();
 
-        console.log(user_info, login)
         if(!user_info || !login) {
             return window.location.replace('/');
 

@@ -12,16 +12,12 @@ import * as signupAction from './Store/modules/signup';
 import * as configAction from './Store/modules/config';
 import * as adminAction from './Store/modules/admin';
 
-// import Header from './page/header';
-// import Signup from './page/body/signup';
-// import Login from './page/body/login';
-// import SignupComplate from './page/body/signup_complate';
-
-import { MyPageHome, ModifyUser } from './page/body/my_page/index';
+import { MyPageHome } from './page/body/my_page/index';
 import { AdminHome, AdminCategory } from './page/body/admin/index';
 import { Header, Login, Signup, SignupComplate, TopCategory, SearchIDPW, Search } from './page/index';
 
 import category_list from './source/admin_page.json';
+import { Loading, Goods } from './page/index';
 
 import URL from './config/url.js';
 import $ from 'jquery';
@@ -41,23 +37,43 @@ const customStyles = {
 Modal.setAppElement('body')
 
 class App extends Component {
-  componentDidMount() {
-    const { configAction } = this.props;
+  async componentDidMount() {
+    const { configAction, loading } = this.props;
 
-    const login_check = JSON.parse(sessionStorage.getItem('login'));
-    if(login_check) {
-      configAction.login_and_logout({ 'bool' : true });
+    // 로그인 체크하기
+    this._checkLogin();
 
-      // 유저 정보 담기
-      this._getLoginInfo(login_check);
-
-      // 관리자 확인
-      this._checkAdmin(login_check)
+    if(!loading) {
+      // configAction.set_loading();
     }
   }
 
   componentDidUpdate() {
-    this._checkLogin();
+    const { loading, user_info } = this.props;
+    // this._checkLogin();
+
+    if(loading === true && user_info === null) {
+    }
+  }
+
+  // 쿠키 출력하기
+  _getCookie = async (key, type, value, opt) => {
+    const login_cookie = await axios(URL + '/get/cookie_data', {
+      method : 'POST',
+      headers: new Headers(),
+      data : { 'key' : key, 'type' : type, 'value' : value, 'opt' : opt }
+    })
+
+    if(login_cookie.status === 500) {
+      return window.location.reload();
+    }
+
+    if(login_cookie.data) {
+      return login_cookie.data;
+
+    } else {
+      return false;
+    }
   }
 
   _checkAdmin = async (info) => {
@@ -66,29 +82,35 @@ class App extends Component {
       headers: new Headers(),
       data : { id : info.id, user_id : info.user_id }
     })
-
+    
     if(get_admin_info.data === true) {
       this.props.configAction.save_admin_info({ 'info' : get_admin_info.data })
+
       return true;
     }
     return false;
   }
 
   _getLoginInfo = async (info) => {
+    const { configAction } = this.props;
     const get_user_info = await axios(URL + '/get/user_info', {
       method : 'POST',
       headers: new Headers(),
       data : { id : info.id, user_id : info.user_id }
     })
 
+    console.log(get_user_info)
+    return;
+
     if(!get_user_info.data) {
       alert('잘못된 로그인 방식입니다. \n다시 로그인을 시도해주세요.');
-      sessionStorage.removeItem('login');
+      // sessionStorage.removeItem('login');
+      this._getCookie('login', 'remove')
 
       return window.location.replace('/');
     }
 
-    return this.props.configAction.save_user_info({ 'info' : JSON.stringify(get_user_info.data) })
+    return configAction.save_user_info({ 'info' : JSON.stringify(get_user_info.data) })
   }
 
   _pageMove = (type, location) => {
@@ -123,19 +145,26 @@ class App extends Component {
   }
 
   // 로그인 체크
-  _checkLogin = () => {
-    const login_check = JSON.parse(sessionStorage.getItem('login'));
+  _checkLogin = async () => {
     const { configAction } = this.props;
 
-    if(login_check) {
+    const login_cookie = await this._getCookie('login', 'get');
+
+    if(login_cookie) {
       configAction.login_and_logout({ 'bool' : true });
 
       // 유저 정보 담기
-      this._getLoginInfo(login_check);
+      // this._getLoginInfo(login_cookie);
+      configAction.save_user_info({ 'info' : JSON.stringify(login_cookie) })
 
       // 관리자 확인
-      this._checkAdmin(login_check)
+      this._checkAdmin(login_cookie)
+
+    } else {
+      configAction.save_user_info({ 'info' : false })
     }
+
+    return configAction.set_loading();
   }
 
   // category 이름 찾기
@@ -200,31 +229,6 @@ class App extends Component {
         start_str = '&';
       }
     }
-    // for(let key in type_obj) {
-    //   url += start_str + key + '=' + type_obj[key];
-
-    //   start_str = '&';
-    // }
-    // for(let key2 in qry) {
-    //   let copy_value = qry[key2];
-
-    //   if(key2 === filter_type) {
-    //     copy_value = type;
-    //   }
-    //     url += start_str + key2 + '=' + copy_value;
-
-    //     start_str = '&';
-    // }
-
-    // console.log(location_url)
-    // if(qry[filter_type] === undefined) {
-    //   if(location_url !== "") {
-    //     start_str = '&';
-    //   }
-
-    //   url += start_str + filter_type + '=' + type;
-    // }
-
 
     return window.location.href = url;
   }
@@ -244,17 +248,18 @@ class App extends Component {
 
   // 스크롤 이동
   _moveScrollbar = (target, type, val) => {
-    if(type = 'x') {
+    if(type === 'x') {
       return $(target).scrollLeft(val);
+
+    } else if(type === 'y') {
+      return $(target).stop().animate({ scrollTop : val });
     }
   }
 
   render() {
-    const { login_modal, admin_info, login, admin_state, search_id_pw_modal, select_cat_open } = this.props;
-    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _filterURL, _clickCategory, _moveScrollbar } = this;
-
-      // const user_info = JSON.parse(sessionStorage.getItem('login'));
-      const user_info = JSON.parse(this.props.user_info);
+    const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading } = this.props;
+    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _filterURL, _clickCategory, _moveScrollbar, _getCookie } = this;
+    const user_info = JSON.parse(this.props.user_info);
 
       const now_url = document.location.href.split('/');
       let cat_name = '';
@@ -283,22 +288,22 @@ class App extends Component {
         }
     }
 
-  
     return(
       <div className='App'>
-        {/* {user_info !== null ? <div> */}
-          {user_info && !login
+          {loading === false && user_info === null
           
-          ? <div> </div>
+          ? <Loading />
           
           :
           <div>
+            {/* {JSON.stringify(user_info)} */}
             <Header
-            user_info={user_info}
-            _pageMove={_pageMove}
-            _modalToggle={_modalToggle}
-            admin_info={admin_info}
-            _search={_search}
+              user_info={user_info}
+              _pageMove={_pageMove}
+              _modalToggle={_modalToggle}
+              admin_info={admin_info}
+              _search={_search}
+              _getCookie={_getCookie}
           />
 
           <div>
@@ -381,8 +386,23 @@ class App extends Component {
                         _filterURL={_filterURL}
                         _clickCategory={_clickCategory}
                         _moveScrollbar={_moveScrollbar}
+                        _modalToggle={_modalToggle}
+                        user_info={user_info}
                         // cat_name={cat_name}
                         // _pageMove={_pageMove}
+                      {...props} 
+                  />}
+                />
+
+                <Route path='/goods'
+                      render={(props) => <Goods
+                        admin_info={admin_info}
+                        _searchCategoryName={_searchCategoryName}
+                        _pageMove={_pageMove}
+                        price_comma={price_comma}
+                        _modalToggle={_modalToggle}
+                        _getCookie={_getCookie}
+                        _moveScrollbar={_moveScrollbar}
                       {...props} 
                   />}
                 />
@@ -391,6 +411,7 @@ class App extends Component {
                       render={(props) => <Signup 
                         login={login}
                         user_info={user_info}
+                        _getCookie={_getCookie}
                           {...props} 
                   />}
                 />
@@ -400,20 +421,18 @@ class App extends Component {
                           _modalToggle={_modalToggle}
                           login={login}
                           user_info={user_info}
+                          _getCookie={_getCookie}
                           {...props} 
                   />}
                 />
 
-                <Route path='/myPage/modify_user' 
-                      render={(props) => <ModifyUser
-                          {...props} 
-                  />}
-                /> {/* 회원 정보 수정 */}
-
-                <Route path='/myPage' 
+                <Route path='/myPage'
                       render={(props) => <MyPageHome
                       login={login}
                       user_info={user_info}
+                      _getCookie={_getCookie}
+                      price_comma={price_comma}
+                      _modalToggle={_modalToggle}
                       {...props} 
                   />}
                 />
@@ -444,7 +463,8 @@ export default connect(
     login_after : state.signup.login_after,
     search_id_pw_modal : state.config.search_id_pw_modal,
     search_id_pw_type : state.config.search_id_pw_type,
-    select_cat_open : state.config.select_cat_open
+    select_cat_open : state.config.select_cat_open,
+    loading : state.config.loading
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),

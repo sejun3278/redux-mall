@@ -25,6 +25,14 @@ moment.tz.setDefault("Asia/Seoul");
 
 const now_date = moment().format('YYYY-MM-DD HH:mm:ss');
 
+const createError = require('createerror');
+
+const MyError = createError({
+    name: 'MyError',
+    // Used when no message is handed to the constructor:
+    message: '/////// 에러 발생　:　'
+});
+
 module.exports = {
     needs: () => upload,
     api : {
@@ -41,65 +49,173 @@ module.exports = {
                 // 타입 설정 (// SELECT, UPDATE, DELETE, INSERT)
                 qry += (body.type + " ");
 
-                // 검색 컬럼 설정 // 없으면 *
-                let columns = "* "
-                if(body.columns) {
-                    columns = "";
-                    body.columns.forEach( (el, key) => {
-                        columns += "`" + el + "`";
-
-                        if(body.columns.length !== (key + 1)) {
-                            columns += ", ";
-                        }
-                    })
-                }
-                qry += columns
-
-                // SELECT 타입
-                if(body.type === 'SELECT') {
-                    qry += ' FROM `' + body.table + '` WHERE ';
-                }
-
                 let where = "";
-                body.where.forEach( (el, cnt) => {
-                    let result_entries = Object.entries(el);
+                if(body.type === 'SELECT') {
+                    // SELECT 타입
 
-                    for (let [key, value] of result_entries) {
-                        // where += key + " = '" + value + "'"
-                        if(key === 'result_price') {
-                            where += "result_price >= " + value[0] + " AND ";
-                            where += "result_price <= " + value[1];
+                    // 검색 컬럼 설정 // 없으면 *
+                    let columns = ""
+                    if(body.columns) {
+                        body.columns.forEach( (el, key) => {
+                            columns += "`" + el + "`";
+
+                            if(body.columns.length !== (key + 1)) {
+                                columns += ", ";
+                            }
+                        })
+                    } else {
+                        columns = "`" + body.table + "`.*";
+                    }
+                    qry += columns
+
+                    if(body['join_where']) {
+                        body['join_where'].forEach( (el) => {
+                            qry += ', `' + body.join_table + '`.' + el.columns + ' AS "' + el.as + '"'; 
+                        })
+                    }
+
+                    qry += ' FROM `' + body.table + '`';
+
+                    if(body.join === true) {
+                        qry += ' INNER JOIN `' + body.join_table + '`'; 
+                        qry += ' ON ';
+
+                        body.join_arr.forEach( (el) => {
+                            qry += '`' + body.join_table + '`.' + el.key1 + ' = ';
+                            qry += '`' + body.table + '`.' + el.key2;
+                        })
+                    }
+                    qry += ' WHERE ';
+
+                    body.where.forEach( (el, cnt) => {
+                        // let result_entries = Object.entries(el);
+                        // for (let [key, value] of result_entries) {
+                        //     // where += key + " = '" + value + "'"
+                            if(el.key === 'result_price') {
+                                where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
+                                where += '`' + el.table + "`.result_price <= " + el.value[1];
+    
+                            } else {
+                                // where += key + " " + body.option[key] + " '" + value + "' ";
+                                where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+                            }
+    
+                            if(body.where.length !== (cnt + 1)) {
+                                where += "AND ";
+                            }
+                        // }
+                    })
+                    qry += where;
+
+                    if(body['order']) {
+                        qry += " ORDER BY ";
+
+                        let order = '';
+                        body['order'].forEach( (el) => {
+                            order += "`" + el.table + "`." + el.key + " " + el.value
+                            if(el.key === 'limit') {
+                                order = " limit " + el.value;
+                            }
+
+                            qry += order
+                        })
+                    }
+
+                } else if(body.type === 'INSERT') {
+                    // INSERT 타입
+                    qry += 'INTO `' + body.table + '` (';
+                    
+                    let columns = "";
+                    let value = "";
+                    body.columns.forEach( (el, key) => {
+                        columns += '`' + el.key + '`';
+
+                        if(el.key.includes('date')) {
+                            value += "'" + now_date + "'"; 
 
                         } else {
-                            where += key + " " + body.option[key] + " '" + value + "' ";
+                            value += "'" + el.value + "'"; 
                         }
 
-                        if(body.where.length !== (cnt + 1)) {
-                            where += "AND ";
+                        if(body.columns.length !== (key + 1)) {
+                            columns += ', ';
+                            value += ', ';
+
+                        } else {
+                            columns += ') ';
+                            value += ')';
                         }
-                    }
-                })
-                qry += where;
+                    })
+                    qry += columns;
+                    qry += "VALUES (";
+
+                    qry += value;
+
+                } else if(body.type === 'DELETE') {
+                    // DELETE 타입
+                    qry += 'FROM `' + body.table + '` WHERE ';
+
+                    let columns = '';
+                    body.columns.forEach( (el, key) => {
+                        columns += "`" + el.key + "` = " + el.value;
+
+                        if((body.columns.length - 1) !== key) {
+                            columns += ' AND ';
+                        }
+                    })
+                    qry += columns;
+
+                } else if(body.type === 'UPDATE') {
+                    // UPDATE 타입
+                    qry += "`" + body.table + "` SET ";
+
+                    let columns = "";
+                    body.columns.forEach( (el, key) => {
+
+                        if(el.key.includes('date')) {
+                            columns += "`" + el.key + "` = '" + now_date + "'";
+
+                        } else {
+                            columns += "`" + el.key + "` = '" + el.value + "'";
+                        }
+
+                        if((body.columns.length - 1) !== key) {
+                            columns += ', ';
+                        }
+                    })
+                    qry += columns;
+
+                    qry += " WHERE ";
+                    let where = "";
+                    body.where.forEach( (el, key) => {
+                        where += "`" + el.key + "` = '" + el.value + "'";
+
+                        if(key !== body.where_limit) {
+                            where += ' AND ';
+                        }
+                    })
+                    qry += where;
+                }
 
             } else {
                 qry = body.qry;
             }
 
-            // let qry = "SELECT * FROM `goods` WHERE ";
-
+            console.log(qry)
             model.api.query(qry, body.type, result => {
                 if(result) {
                     return res.send(result);
                 }
+                throw new createError.BadRequest();
                 return res.send(false);
             })
         },
 
         login : (req, res) => {
             let body = req.body;
-            const hash_pw = hashing.enc(body.id, body.pw, salt);
+            const hash_pw = hashing.enc(body.user_id, body.pw, salt);
             
-            const data = { id : body.id, pw : hash_pw };
+            const data = { user_id : body.user_id, pw : hash_pw };
             model.api.login( data, result => {
                 let result_obj = { 'bool' : false, 'data' : false };
 
@@ -107,14 +223,28 @@ module.exports = {
                     result_obj.bool = true;
                     result_obj.data = result.toJSON();
 
-                    const update_data = { id : body.id, date : now_date }
-                    model.update.login_date(update_data, () => {
-                        
+                    const update_data = { id : result.dataValues.id, date : now_date }
+
+                    model.update.login_date(update_data, () => {  
+                        // req.session.login = { 'id' : result.dataValues.id };
+
+                        var expiryDate = new Date( Date.now() + 60 * 60 * 1000 * 24 * 1 ); // 24 hour 1일
+                        res.cookie('login', result.dataValues, { expires: expiryDate, httpOnly: true, signed : true });
+
+                        // const cookie = JSON.stringify({ 
+                        //     'id' : result.dataValues.id,
+                        //     'user_id' : result.dataValues.user_id
+                        // })
+
+                        // res.cookie('login', cookie, )
+
+                        // result_obj.session = req.session.login
                         return res.send(result_obj)
                     })
+                    
+                } else {
+                    return res.send(result_obj)
                 }
-
-                return res.send(result_obj)
             })
         },
 
@@ -216,6 +346,43 @@ module.exports = {
                 return res.send( result )
             })
         },
+
+        cookie_data : async (req, res) => {
+            const body = req.body;
+
+            const api_cookie = async (type) => {
+                if(type === 'get') {
+                    let data = null;
+                    if(req.signedCookies[body.key]) {
+                        data = req.signedCookies[body.key];
+                    }
+    
+                    return res.send(data);
+    
+                } else if(type === 'remove') {
+                    if(req.signedCookies[body.key]) {
+                        res.clearCookie(body.key);
+                    }
+                    return res.send(true)
+    
+                } else if(type === 'add') {
+                    // req.session[body.key] = body.value;
+    
+                    let time = 60 * 60 * 1000 * 24 * 1;
+                    if(body.opt.hour) {
+                        time = body.opt.time;
+                    }
+    
+                    const expiryDate = new Date( Date.now() + time ); // 24 hour 1일
+                    res.cookie(body.key, body.value, { expires: expiryDate, httpOnly: true, signed : true });
+    
+                    return res.send(true)
+                }
+            }
+            
+            await api_cookie(body.type);
+            // return res.send(true);
+        },
         
         user_info : (req, res) => {
             const body = req.body;
@@ -294,6 +461,17 @@ module.exports = {
                 }
             })
         },
+
+        like : (req, res) => {
+            const body = req.body;
+
+            model.get.like(body, result => {
+                if(result) {
+                    return res.send(result);
+                }
+                return res.send(false);
+            })
+        }
     },
 
     check : {
@@ -391,6 +569,7 @@ module.exports = {
             model.add.signup( data, () => {
                 return res.send(true)
             })
+            return res.send(true);
         },
 
         admin_check : (req, res) => {
@@ -408,6 +587,17 @@ module.exports = {
                     return res.send(false);
                 }
                 return res.send(true);
+            })
+        },
+
+        like : (req, res) => {
+            const body = req.body;
+
+            model.add.like(body, now_date, result => {
+                if(result) {
+                    return res.send(result.dataValues);
+                }
+                return res.send(false);
             })
         }
     },

@@ -57,7 +57,32 @@ let sequelize = new Sequelize(
     db.Connection = require('./connection')(sequelize, Sequelize);
     db.UserInfo = require('./userInfo')(sequelize, Sequelize);
     db.Goods = require('./goods')(sequelize, Sequelize);
+    db.Like = require('./like')(sequelize, Sequelize);
+    db.Cart = require('./cart')(sequelize, Sequelize);
 
+    /* UserInfo 와 Like 의 관계 설정 (M : 1)*/
+    db.UserInfo.hasMany(db.Like, {
+      foreignKey: 'user_id',
+      sourceKey : 'id'
+    });
+
+    db.Like.belongsTo(db.UserInfo, {
+      foreignKey: 'user_id',
+      targetKey : 'user_id'
+    });
+    /* //////////////////////////////////////// */
+
+    /* Goods 와 Like 의 관계 설정 (M : 1)*/
+    db.Goods.hasMany(db.Like, {
+      foreignKey: 'goods_id',
+      sourceKey : 'id'
+    });
+    
+    db.Like.belongsTo(db.Goods, {
+      foreignKey: 'goods_id',
+      targetKey : 'id'
+    });
+    /* //////////////////////////////////////// */
 
 db.secret = 'gdf80fsadf8098qwej123l;1k9809sf8daf90sdajkl1j23';
 module.exports = db;

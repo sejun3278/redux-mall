@@ -32,8 +32,12 @@ const customStyles = {
 
 class Modify_user extends Component {
 
-  componentDidMount() {
-    if(!JSON.parse(sessionStorage.getItem('login'))) {
+  async componentDidMount() {
+    const { _getCookie } = this.props;
+    const user_info = JSON.parse(this.props.user_info);
+    const user_cookie = await _getCookie('login', 'get');
+
+    if(!user_info || !user_cookie) {
       alert('로그아웃 되었습니다.');
 
       return window.location.replace('/');
@@ -455,10 +459,6 @@ class Modify_user extends Component {
 
         return(
             <div id='modify_user_div'>
-              <div id='modify_user_title_div' className='my_page_title border_bottom'>
-                <h3 className='aCenter'> 회원정보 수정 </h3>
-              </div>
-
               <div id='modify_user_info_div'>
                 {!cover_user_info
                   ?

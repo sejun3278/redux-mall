@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { MyPage, ModifyUser, LikeList, Cart } from './index';
+import { Route, Switch } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -6,234 +8,82 @@ import { bindActionCreators } from 'redux';
 import * as signupAction from '../../../Store/modules/signup';
 import * as configAction from '../../../Store/modules/config';
 
-import img from '../../../source/img/icon.json';
+// import img from '../../../source/img/icon.json';
+import page_list from '../../../source/myPage.json';
 
 import '../../../css/responsive/signup.css';
-import $ from 'jquery';
+import icon from '../../../source/img/icon.json';
 
 class MyPageHome extends Component {
 
     componentDidMount() {
         // 로그인 체크
-        // const { user_info, login } = this.props;
+        const { user_info } = this.props;
 
-        // if(!user_info || !login) {
-        //     window.location.replace('/');
-        // }
-    }
-
-    _iconToggle = (target, type) => {
-        const target_el = '#my_page_' + target + '_div div u';
-        const target_img_div = '#my_page_' + target + '_div div div';
-        let img_el = '';
-
-        if(type === 'mouseOver') {
-            $(target_el).css({ 'color' : 'black', 'fontWeight' : 'bold', 'borderBottom' : 'solid 2px black' })
-
-            img_el = target + '_black';
-
-        } else if(type === 'mouseLeave') {
-            $(target_el).css({ 'color' : '#ababab', 'fontWeight' : '400', 'borderBottom' : 'solid 1px #ababab' })
-
-            img_el = target + '_gray';
-
-        } else if(type === 'move') {
-            const url = '/myPage/' + target;
-
-            return window.location.href = url;
+        if(!user_info) {
+            return window.location.replace('/');
         }
-
-        $(target_img_div).css({ 'backgroundImage' : `url(${img.icon[img_el]})` })
     }
 
     render() {
-        const { user_info } = this.props;
-        const { _iconToggle } = this; 
+        const { user_info, _getCookie, price_comma, _modalToggle } = this.props;
 
-        let signup_date;
-        if(user_info) { 
-            signup_date = user_info.signup_date.slice(0, 10);
+        const qry = this.props.location.pathname;
+        const path = qry.split('/')[2];
+
+        let page_name = "마이 페이지"
+        let page_icon = icon.my_page.my_page
+        if(path !== undefined) {
+            page_name = page_list.myPage.page_name[path];
+            page_icon = icon.my_page[path +  '_black']
         }
 
         return(
             <div id='my_page_div'>
                 {user_info ? <div>
                 <div id='my_page_title_div' className='my_page_title border_bottom'>
-                    <h3 className='aCenter'> 마이 페이지 </h3>
+                    <img src={page_icon}/>
+                    <b className='aCenter'> {page_name} </b>
                 </div>
+                
+                <Switch>
+                    {/* 마이페이지 홈 */}
+                    <Route path='/myPage' exact
+                        render={(props) => <MyPage
+                            user_info={user_info}
+                        {...props}  />}
+                    />
 
-                <div id='my_page_profile_div' className='border_bottom'>
-                    <div> </div>
-                    <div id='user_thumbnail_div'> 
-                        <img id='user_thumbnail_img' alt=''
-                            style={{ 'backgroundImage' : `url(${img.icon.user_icon})` }}
-                        />
-                        <div id='user_mobile_id_div'> 
-                            <p> <b> {user_info.user_id} </b> </p>
-                            <p> ( {user_info.nickname} )</p>
-                        </div>
-                    </div>
+                    {/* 유저 정보 수정 */}
+                    <Route path='/myPage/modify_user'
+                        render={(props) => <ModifyUser
+                            user_info={user_info}
+                            _getCookie={_getCookie}
+                        {...props}  />}
+                    />
 
-                    <div>
-                        <div className='my_page_info_title_div'> 
-                            <div id='my_page_user_id'> 
-                                아이디
-                                <p className='bold'> {user_info.user_id} </p>
-                            </div>
+                    {/* 찜 리스트 */}
+                    <Route path='/myPage/like_list'
+                        render={(props) => <LikeList
+                            user_info={user_info}
+                            _getCookie={_getCookie}
+                            price_comma={price_comma}
+                            _modalToggle={_modalToggle}
+                        {...props}  />}
+                    />
 
-                            <div> 
-                                포인트 
-                                <p> 0 P </p>    
-                            </div>
+                    {/* 장바구니 */}
+                    <Route path='/myPage/cart'
+                        render={(props) => <Cart
+                            user_info={user_info}
+                            _getCookie={_getCookie}
+                            price_comma={price_comma}
+                            _modalToggle={_modalToggle}
+                        {...props}  />}
+                    />
 
-                            <div> 
-                                가입일
-                                <p> {signup_date} </p> 
-                            </div>
-                        </div>
 
-                        <div className='my_page_info_title_div'
-                            style={{ 'marginTop' : '15px' }}
-                        > 
-                            <div id='my_page_user_nick'> 
-                                닉네임 
-                                <p> {user_info.nickname} </p>
-                            </div>
-
-                            <div> 
-                                보유 쿠폰 
-                                <p> 0 개 </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id='my_page_select_div'>
-                    <div> </div>
-                    <div>
-                        <div className='my_page_select_grid_div'>
-                            <div id='my_page_modify_user_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('modify_user', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('modify_user', 'mouseLeave')}
-                                 onClick={() => _iconToggle('modify_user', 'move')}
-                            >
-                                <div> 
-                                    <u> 회원 정보 수정 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.modify_user_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-
-                            <div id='my_page_cart_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('cart', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('cart', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 장바구니 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.cart_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-
-                            <div id='my_page_order_list_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('order_list', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('order_list', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 주문 / 배송 현황 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.order_list_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='my_page_select_grid_div'>
-                            <div id='my_page_like_list_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('like_list', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('like_list', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 찜 리스트 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.like_list_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-
-                            <div className='my_page_select_divs' />
-
-                            <div id='my_page_QandA_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('QandA', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('QandA', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 문의 / 답변 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.QandA_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='my_page_select_grid_div'>
-                            <div id='my_page_star_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('star', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('star', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 내 평점 내역 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.star_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-
-                            <div id='my_page_se_bot_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('se_bot', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('se_bot', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 세봇 (Sejun-Bot) </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.se_bot_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-
-                            <div id='my_page_coupon_div'
-                                 className='my_page_select_divs'
-                                 onMouseEnter={() => _iconToggle('coupon', 'mouseOver')}
-                                 onMouseLeave={() => _iconToggle('coupon', 'mouseLeave')}
-                            >
-                                <div> 
-                                    <u> 내 쿠폰함 </u> 
-                                    <div className='my_page_icon_img'
-                                         style={{ 'backgroundImage' : `url(${img.icon.coupon_gray})` }}
-                                    >
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div> </div>
-                </div>
+                </Switch>
 
                 </div> : null}
             </div>

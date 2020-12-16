@@ -58,6 +58,100 @@
 { background-color: black; color: white; border : none; width: 100%; padding : 3px 0px 3px 0px; margin-top: 30px; }
 #disable_last_confirm_div input { padding: 10px !important; margin-top: 50px !important; }
 
+.my_like_list_divs { border: solid 1px black; border-left: none; border-right: none; }
+.my_like_list_check_and_number_div { padding: 10px; line-height: 20px; }
+.my_like_list_check_and_number_div p { display: inline-block; margin-top: 0px; margin-bottom: 0px; }
+.my_like_list_date_div { margin-left: 60px; }
+
+.my_like_list_detail_contents_div { display: grid; grid-template-columns: 220px auto; }
+.my_like_list_grid_contents_div { padding: 13px; }
+.my_like_list_thumbnail { width: 190px; height: 150px; background-size: cover; background-repeat: no-repeat; background-position-y: 50%; }
+.my_like_list_info_div { padding: 10px; padding-top: 15px; padding-left: 15px; }
+.my_like_list_name_div, .cart_name_div { margin-top: 10px; display: inline-block; width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-top: 5px;
+    white-space: normal; line-height: 1.2; height: 2.4em; text-align: left; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.my_like_price_and_state { margin-left: 10px !important; margin-top: 0px; }
+.my_like_price_and_state .my_like_stock_div { margin-top: -10px; }
+
+.my_like_list_each_remove_button { margin-left: 5%; }
+.my_like_list_each_remove_button input { background-color: white; color: black; padding: 3px; font-size: 12px; border-radius: 5px; }
+
+.my_like_list_disable_div { position: absolute; width: 70%; height: 225px; background-color: black; color: white; opacity: 0.8; }
+.my_like_list_disable_div h2 { margin-top: 30px; }
+.my_like_list_disable_div div { margin-top: 50px; }
+.my_like_list_disable_div div p input { width: 50%; background-color: white; font-weight: bold; padding: 5px; }
+
+#like_list_other_div { font-size: 14px; margin: 10px; line-height: 30px; }
+.select_like_list { background-color: black; color: white; }
+#like_list_select_remove_div { float: right; margin-right: 15px; }
+
+#my_page_title_div { line-height: 35px; padding: 40px 0px 40px 0px; text-align: center; }
+#my_page_title_div img { width: 30px; position: absolute; margin-left: 0px; }
+#my_page_title_div b { font-size: 18px; margin: 0px 0px 0px 50px; }
+
+.cart_goods_list_title { padding-left: 15px; margin: 0px !important; padding-top: 20px; padding-bottom: 20px; border-top: solid 2px black; border-bottom: solid 2px black; }
+#cart_contents_div {  padding-top: 20px; padding-bottom: 3px; background-color: #f4f4f4; }
+
+.cart_contents_divs { margin-bottom: 20px; background-color: white; }
+.cart_grid_divs { display: grid; grid-template-columns: 145px auto; }
+.cart_info_div { padding : 7.5px 0px 7.5px 15px }
+.cart_thumbnail_div div { width: 120px; height: 120px; background-size: contain; background-position-x: center; margin: 10px; background-repeat: no-repeat;}
+
+.cart_name_and_num_div { padding: 15px 0px 0px 15px; display: grid; grid-template-columns: 45% auto; }
+.cart_name_div { font-size: 16.5px; margin-right: 15px; margin-top: 0px;}
+.cart_price_div { margin-top: 5px !important; }
+
+.cart_num_div div { float: left; width: 28%; }
+.cart_num_div div input { width: 70%; text-align: center; padding: 4px 0px 2.5px 0px; }
+.cart_num_div .cart_num_button_div { border: solid 1px #ababab; border-radius: 5px; cursor: pointer; margin-left: 10px; margin-right: 10px; }
+/* .cart_able_num_div { width: 100%; } */
+
+.cart_discount_price_div { margin-top: 10px; }
+.cart_result_price_div { padding-right: 25px; }
+.cart_able_num_div p { margin-top: 35px; }
+
+/* #cart_price_show_div { padding-left: 20px; } */
+#cart_price_show_div .cart_price_show_grid_div { display: grid; grid-template-columns: 120px auto; }
+
+.cart_price_show_grid_div div { padding-left: 20px; }
+.cart_price_result_div { padding-right: 30px; }
+#final_result_price { background-color: black; color: white; }
+
+@media (max-width : 880px) {
+    .my_like_list_disable_div { width: 100%; }
+}
+
+@media (max-width : 660px) {
+    .cart_name_and_num_div { display: block; }
+    .cart_price_div { margin-top: 5px !important; }
+    /* .cart_able_num_div { display: inline-block; } */
+    .cart_thumbnail_div div { height: 90%; background-position-y: center; }
+
+    .cart_name_and_num_div { padding: 0px; }
+    .cart_name_and_price_div { padding: 20px; }
+
+    .cart_num_result_div { margin-top: 10px; border-top: solid 1px #ababab; padding: 15px; padding-top: 20px; padding-bottom: 5px; }
+    .cart_able_num_div p { width: 100%; display: inline-block; margin-top: 10px; padding-left: 12px; }
+}
+
+@media (max-width : 450px) {
+    /* .cart_num_result_div { padding-left: 0px; padding-right: 0px; } */
+
+    .cart_num_div .cart_num_button_div { margin-left: 15px; margin-right: 15px !important; }
+    .cart_num_div div { width: 23%; }
+    .cart_num_div div input { width: 80% !important; }
+}
+
+@media (max-width : 424px) {
+    .my_like_list_thumbnail { width: 150px; }
+    .my_like_list_detail_contents_div { grid-template-columns: 170px auto; }
+    .my_like_list_grid_contents_div { padding: 8px; } 
+    .my_like_price_and_state { margin-top: -5px; }
+    .my_like_list_name_div { margin-top: 0px; }
+
+    .my_like_list_disable_div { width: 100%; height: 215px;}
+    .my_like_stock_div { font-size: 11px; }
+}
+
 @media (max-width : 400px) {
     #login_close_icon { margin-left: 350px !important; }
     .change_pw_divs input { width: 45%; }
@@ -67,6 +161,13 @@
     .submit_button { margin-left: -15px !important; }
     .disable_grid_divs { grid-template-columns: 20% auto !important; margin-left: 30px; }
     .disable_grid_divs div input { width: 70% !important; }
+
+    .cart_num_div div { width: 20%; }
+    .cart_num_div div input { width: 90% !important; }
+
+    .cart_num_result_div { padding : 0px; padding-top: 15px; }
+    .cart_able_num_div p { width: auto; }
+
 }
 
 @media (max-width : 370px) {
@@ -76,9 +177,21 @@
 
     #close_disable_user_icon { margin-left: 330px; }
 
+    .my_like_list_thumbnail { width: 120px; height: 120px; }
+    .my_like_list_detail_contents_div { grid-template-columns: 145px auto; }
+    .my_like_price_and_state { margin-left: 3px !important; }
+
+    .my_like_price_div h3 { font-size: 16px; }
+    .my_like_list_disable_div { height: 185px; }
+    .my_like_list_disable_div div { margin-top: 30px; }
 }
 
 @media (max-width : 350px) {
     #login_close_icon { margin-left: 330px !important; }
     .change_pw_divs input { width: 42.5%; }
+
+    .my_like_list_date_div { margin-left: 20px; }
+
+    .cart_num_div div { width: 20%; }
+
 }

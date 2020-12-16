@@ -11,6 +11,7 @@ const SEARCHING = 'config/searching';
 const SETCONFIRMNUMBER = 'config/set_confirm_number';
 const SAVEUSERID = 'config/save_user_id';
 const SELECTCATDATA = 'config/select_cat_data';
+const SETLOADING = 'config/set_loading';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -23,6 +24,7 @@ export const searching = createAction(SEARCHING);
 export const set_confirm_number = createAction(SETCONFIRMNUMBER);
 export const save_user_id = createAction(SAVEUSERID);
 export const select_cat_data = createAction(SELECTCATDATA);
+export const set_loading = createAction(SETLOADING);
 
 const initialState = {
     login : false,
@@ -47,8 +49,9 @@ const initialState = {
     mypage_url : false,
     select_cat_open : false,
     select_cat : null,
-    select_last_cat : null
-};
+    select_last_cat : null,
+    loading : false
+}
 
 export default handleActions({
    [LOGINANDLOGOUT] : (state, data) => {
@@ -148,6 +151,13 @@ export default handleActions({
             select_cat : cover_select_cat,
             select_last_cat : cover_select_last_cat
         }
-    }
+    },
+
+    [SETLOADING] : (state, data) => {
+        return {
+            ...state,
+            loading : true
+        }
+    } 
 
 }, initialState);

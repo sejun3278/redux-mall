@@ -6,7 +6,9 @@ const {
   Connection,
   UserInfo,
   Goods,
-  Sequelize: { Op }
+  Like,
+  Cart,
+  Sequelize: { Op },
 } = require('./tables');
 sequelize.query('SET NAMES utf8;');
 
@@ -26,7 +28,7 @@ module.exports = {
                 attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date']
             })
             .then( result => { callback(result) })
-            .catch( err => { throw err })
+            .catch( err => { throw new createError.BadRequest(); })
         },
 
         admin_info : (data, callback) => {
@@ -125,6 +127,14 @@ module.exports = {
             result['data'] = select_query;
 
             callback(result);
+        },
+
+        like : (data, callback) => {
+            Like.findAll({
+                where : { user_id : data.user_id, goods_id : data.goods_id }
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
         }
     },
 
@@ -184,6 +194,18 @@ module.exports = {
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
+        },
+
+        like : (data, now_date, callback) => {
+            Like.create({
+                user_id : data.user_id,
+                goods_id : data.goods_id,
+                state : 1,
+                create_date : now_date,
+                modify_date : now_date
+            })
+            .then( result => { callback(result) })
+            .catch( err => { throw err })
         }
     },
 
@@ -191,7 +213,7 @@ module.exports = {
         login : (data, callback) => {
             UserInfo.findOne({
                 where : { 
-                    [Op.and] : { 'user_id' : data.id, 'password' : data.pw }
+                    [Op.and] : { 'user_id' : data.user_id, 'password' : data.pw }
                 },
                 attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date']
             })
@@ -207,21 +229,25 @@ module.exports = {
                 type: QueryTypes.types
             })
 
-            callback(set_query);
+            if(set_query) {
+                callback(set_query);
+
+            } else {
+                throw new createError.BadRequest();
+            }
         }
     },
 
     update : {
         login_date : (data, callback) => {
             UserInfo.update({ login_date : data.date }, {
-                where : { user_id : data.id }
+                where : { id : data.id }
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
         },
 
         user_info : async (qry, callback) => {
-
             const update_user_info = await sequelize.query(qry, {
                 logging: console.log,
                 plain: false,

@@ -18,6 +18,7 @@ class PassAdmin extends Component {
 
     _setCheckCode = async () => {
         const { adminAction, user_info, _checkAdmin } = this.props; 
+
         // 인증 코드 생성
         let code_length = Math.trunc(Math.random() * (11 - 6) + 6);
         let code = '';
@@ -60,19 +61,18 @@ class PassAdmin extends Component {
 
     _checkAdmin = async (event) => {
         event.preventDefault();
-        const { admin_code, login, _checkLogin, _checkAdmin, admin_check, adminAction } = this.props;
+        const { admin_code, login, _checkLogin, _checkAdmin, admin_check, adminAction, user_info } = this.props;
 
         const check_code = event.target['admin_code'].value;
         _checkLogin();
-
-        const user_info = JSON.parse(sessionStorage.getItem('login'));
-    
+        
+        console.log(login, user_info)
         adminAction.admin_check_toggle({ 'bool' : true  })
         if(admin_check === false) {
             if(!login || !user_info) {
                 alert('로그아웃 된 아이디 입니다.');
 
-                return window.location.replace('/');
+                // return window.location.replace('/');
 
             } else {
                 // 관리자 재 확인하기

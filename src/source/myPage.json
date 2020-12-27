@@ -8,7 +8,8 @@
             "QandA" : "문의 / 답변",
             "star" : "내 평점 내역",
             "se_bot" : "세봇 (Sejun-Bot)",
-            "coupon" : "내 쿠폰함"
+            "coupon" : "내 쿠폰함",
+            "order" : "주문하기"
         },
 
         "arr" : [

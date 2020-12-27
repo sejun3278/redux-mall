@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
           allowNull : false
         },
 
+        'remove_state' : {
+          type: DataTypes.INTEGER(10),
+          allowNull : false
+        },
+
         'create_date' : {
             type: DataTypes.STRING(20),
             allowNull : false

@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import queryString from 'query-string';
-// import axios from 'axios';
-
 import '../css/main.css';
 import * as configAction from '../Store/modules/config';
 import * as searchAction from '../Store/modules/search';
@@ -93,9 +90,22 @@ class Header extends Component {
         }
     }
 
+    _loginCheckAndMove = async (type) => {
+        const { user_info, _getCookie, _modalToggle } = this.props;
+        const login_cookie = await _getCookie('login', 'get');
+
+        if(!user_info || !login_cookie) {
+            alert('로그인이 필요합니다.');
+
+            return _modalToggle(true);
+        }
+
+        return window.location.href = '/myPage/' + type;
+    }
+
     render() {
         const { _pageMove, _modalToggle, login, admin_info, user_info, _search, search } = this.props;
-        const { _closeCategory } = this;
+        const { _closeCategory, _loginCheckAndMove } = this;
 
         return (
             <div id='main_header'>
@@ -166,20 +176,20 @@ class Header extends Component {
                     </div>
                     <div id='header_myPage_div'>
                         <div> 
-                            <u className='pointer remove_underLine' onClick={() => window.location.href='/myPage/cart'}> 장바구니 </u>
+                            <u className='pointer remove_underLine' onClick={() => _loginCheckAndMove('cart')}> 장바구니 </u>
                         </div>
                         <div> 주문 / 배송 현황 </div>
                         <div> 
-                            <u className='pointer remove_underLine' onClick={() => window.location.href='/myPage/like_list'}> 찜 리스트 </u>
+                            <u className='pointer remove_underLine' onClick={() => _loginCheckAndMove('like_list')}> 찜 리스트 </u>
                         </div>
                     </div>
                 </div>
                             
                 <div id='header_other_mobile_div'>
                     <div> </div>
-                    <div onClick={() => window.location.href='/myPage/cart'}> 장바구니 </div>
+                    <div onClick={() => _loginCheckAndMove('cart')}> 장바구니 </div>
                     <div> 주문 / 배송 현황</div>
-                    <div onClick={() => window.location.href='/myPage/like_list'}> 찜 리스트 </div>
+                    <div onClick={() => _loginCheckAndMove('like_list')}> 찜 리스트 </div>
                     <div> </div>
                 </div>
             </div>

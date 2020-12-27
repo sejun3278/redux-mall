@@ -38,7 +38,7 @@ Modal.setAppElement('body')
 
 class App extends Component {
   async componentDidMount() {
-    const { configAction, loading } = this.props;
+    const { loading } = this.props;
 
     // 로그인 체크하기
     this._checkLogin();
@@ -149,10 +149,8 @@ class App extends Component {
     const { configAction } = this.props;
 
     const login_cookie = await this._getCookie('login', 'get');
-    console.log(login_cookie)
 
     if(login_cookie) {
-      console.log(123)
       configAction.login_and_logout({ 'bool' : true });
 
       // 유저 정보 담기
@@ -166,7 +164,8 @@ class App extends Component {
       configAction.save_user_info({ 'info' : false })
     }
 
-    return configAction.set_loading();
+    configAction.set_loading();
+    return login_cookie;
   }
 
   // category 이름 찾기
@@ -258,9 +257,29 @@ class App extends Component {
     }
   }
 
+  // 모달 style 지정
+    _setModalStyle = (top, width) => {
+      const customStyles = {
+          content : {
+            top                   : top,
+            left                  : '50%',
+            right                 : 'auto',
+            bottom                : 'auto',
+            marginRight           : '-50%',
+            transform             : 'translate(-50%, -50%)',
+            width                 : width,
+          }
+      };
+
+      return customStyles;
+  }
+
   render() {
     const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading } = this.props;
-    const { _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _filterURL, _clickCategory, _moveScrollbar, _getCookie } = this;
+    const { 
+          _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, 
+          _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle
+    } = this;
     const user_info = JSON.parse(this.props.user_info);
 
       const now_url = document.location.href.split('/');
@@ -435,6 +454,8 @@ class App extends Component {
                       _getCookie={_getCookie}
                       price_comma={price_comma}
                       _modalToggle={_modalToggle}
+                      _setModalStyle={_setModalStyle}
+                      admin_info={admin_info}
                       {...props} 
                   />}
                 />

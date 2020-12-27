@@ -11,8 +11,6 @@ import '../../css/responsive/signup.css';
 import img from '../../source/img/icon.json';
 import URL from '../../config/url';
 
-// import $ from 'jquery';
-
 class Login extends Component {
 
     _moveSignup = () => {

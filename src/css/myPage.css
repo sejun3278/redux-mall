@@ -88,36 +88,153 @@
 #my_page_title_div img { width: 30px; position: absolute; margin-left: 0px; }
 #my_page_title_div b { font-size: 18px; margin: 0px 0px 0px 50px; }
 
-.cart_goods_list_title { padding-left: 15px; margin: 0px !important; padding-top: 20px; padding-bottom: 20px; border-top: solid 2px black; border-bottom: solid 2px black; }
-#cart_contents_div {  padding-top: 20px; padding-bottom: 3px; background-color: #f4f4f4; }
+/* 장바구니 */
+#cart_list_div { margin: 80px 60px 0px 60px; }
+.cart_goods_list_title { font-size: 20px; border-bottom: solid 1px #ababab; color : #35c5f0; padding-left: 15px; margin: 0px !important; padding-top: 20px; padding-bottom: 20px; }
+
+.cart_div_lists { margin-top: 150px !important; }
+#cart_contents_div { padding-top: 20px; padding-bottom: 3px; background-color: #f4f4f4; }
 
 .cart_contents_divs { margin-bottom: 20px; background-color: white; }
 .cart_grid_divs { display: grid; grid-template-columns: 145px auto; }
-.cart_info_div { padding : 7.5px 0px 7.5px 15px }
+
+.cart_info_div { padding : 7.5px 0px 7.5px 15px; height: 20px; line-height: 20px; }
+.cart_select_divs { float: left; }
+.cart_remove_divs { float : right; margin-right: 15px; }
+.cart_remove_divs input { background-color: white; padding: 3px 5px 3px 5px; font-size: 12px; border: none;  }
+
 .cart_thumbnail_div div { width: 120px; height: 120px; background-size: contain; background-position-x: center; margin: 10px; background-repeat: no-repeat;}
 
 .cart_name_and_num_div { padding: 15px 0px 0px 15px; display: grid; grid-template-columns: 45% auto; }
 .cart_name_div { font-size: 16.5px; margin-right: 15px; margin-top: 0px;}
 .cart_price_div { margin-top: 5px !important; }
 
-.cart_num_div div { float: left; width: 28%; }
-.cart_num_div div input { width: 70%; text-align: center; padding: 4px 0px 2.5px 0px; }
-.cart_num_div .cart_num_button_div { border: solid 1px #ababab; border-radius: 5px; cursor: pointer; margin-left: 10px; margin-right: 10px; }
-/* .cart_able_num_div { width: 100%; } */
+.cart_num_div { padding-right: 20px; }
 
 .cart_discount_price_div { margin-top: 10px; }
 .cart_result_price_div { padding-right: 25px; }
-.cart_able_num_div p { margin-top: 35px; }
+.cart_able_num_div p { margin-top: 15px; padding-right: 20px; padding-bottom: 10px; }
 
 /* #cart_price_show_div { padding-left: 20px; } */
-#cart_price_show_div .cart_price_show_grid_div { display: grid; grid-template-columns: 120px auto; }
+#cart_price_show_div .cart_price_show_grid_div { display: grid; grid-template-columns: 150px auto; }
+#cart_delivery_price_div, #cart_coupon_price_div { background-color: #ffe6e6; }
 
 .cart_price_show_grid_div div { padding-left: 20px; }
 .cart_price_result_div { padding-right: 30px; }
 #final_result_price { background-color: black; color: white; }
+#cart_select_div { padding-bottom: 20px; padding-left: 15px; }
+
+.cart_disable_divs { position: absolute; width: 70%; height: 177px; background-color: black; color: white; opacity: 0.8; }
+.cart_disable_remove_button { width: 50%; background-color: white; padding : 5px 0px 5px 0px }
+
+#empty_cart_div { margin-top: 70px; padding-bottom: 50px; font-size: 19px; }
+#empty_select_div { margin-top: 60px; font-size: 17px; }
+
+#cart_order_select_div div { height: 80px; background-color: #f4f4f4; }
+
+#cart_select_list_remove_button_div { padding-bottom: 15px; margin-left: 10px; padding-bottom: 30px; line-height: 30px; }
+#cart_select_list_remove_button_div input { font-size: 12px; border: none; background-color: #f4f4f4; width: 100px; margin: 0px 0px 0px 10px; }
+
+/* #cart_all_result_price_div { background-color: #dff3e3; } */
+.cart_price_div_icon { width: 20px; position : absolute; margin: -50px 0px 0px 110px; }
+
+#cart_delivery_price_div { height: 85px; line-height: 35px; }
+#cart_delivery_alert_div { min-width: 290px; position: absolute !important;  margin: 50px 0px 0px 20px; }
+#cart_middle_layout { height: 50px; }
+
+.cart_grid_div { line-height: 30px; display: grid; grid-template-columns: 160px auto; font-size: 14px; }
+#cart_add_coupon_button { min-width: 100px; width: 12%; height: 25px; }
+
+/* 장바구니 */
+.order_div_style { margin: 50px 60px 120px 60px; }
+.order_title_div { font-family: 'Recipekorea'; border-bottom: solid 1px #ababab; padding: 0px 0px 10px 10px; cursor: default; color: #35c5f0;  }
+.order_list_divs { display: grid; grid-template-columns: 120px auto; }
+.order_list_thumbnail_div { width: 100px; height: 100px; background-size: cover; background-repeat: no-repeat; margin: 10px; }
+.order_list_divs { margin-top: 15px; }
+.order_list_div { margin: 15px 15px 0px 25px; }
+
+.order_price_div { display : grid; grid-template-columns: 120px auto; text-align: right; margin: 5px 15px 0px 15px; padding: 15px 15px 15px 15px; }
+#order_result_price_div { background-color: black; color: white;}
+
+.order_delivery_top_div { display: grid; grid-template-columns: 220px auto; margin : 25px 0px 10px 20px;  }
+.order_delivery_top_div div input { height: 35px; line-height: 35px; padding-left: 10px; max-width: 80%; border: solid 1px #ababab; }
+
+.order_delivery_input_1 { min-width: 160px; width: 30%; }
+#order_delivery_host_code_input { min-width: 100px; width: 20%; }
+#order_delivery_host_code_button { min-width: 100px;  border-radius: 5px; height: 40px !important; line-height: 35px; margin-left: 12px; background-color: #35c5f0; color: white; }
+
+.order_delivery_input_2 { width: 95% !important; }
+#close_order_delivery_code { width: 20px; margin: -70px 0px 0px 310px; float: left; }
+
+#user_info_agree_input { margin: 5px 0px 0px 10px; }
+#order_userInfo_agree_div { margin : 30px 0px 0px 20px; }
+#order_agree_notice_div { font-size: 12px; color: #ababab; margin-top:  5px; }
+
+.order_delivery_top_div { font-size: 13px; line-height: 40px; }
+#same_delivery_info { margin-left: 10px; font-size: 12px; }
+
+#order_coupon_add_button { background-color: #35c5f0; border: none; min-width: 100px; border-radius: 5px; padding: 0px; }
+#cart_coupon_div { margin: 15px; }
+
+#cart_coupon_list_div { margin-top: -15px; }
+#cart_remove_coupon { width: 20px; position: absolute; margin: 5px 0px 0px 0px; }
+
+#cart_coupon_content_list_div div { float: left; margin-right: 20px; }
+#cart_coupon_price_div { background-color: #a3d2ca; }
+#cart_coupon_icon { margin-top: -40px; margin-left: 130px; }
+
+/* /////////////////////////////////////////////////////////// */
+/* 쿠폰 리스트 */
+#coupon_other_div { margin-left: 10px; line-height: 30px; }
+#coupon_other_div div { float: left; margin-left: 10px; margin-right: 10px; }
+#coupon_list_other_div { background-color: #ababab; color: white; }
+
+#coupon_add_button { width: 120px; height: 30px; margin-left: 20px;  }
+#coupon_add_input_div { margin-left: 10% !important; margin-right: 0px !important; }
+#coupon_add_input_div input { padding: 3px; padding-left: 5px; }
+
+#coupon_list_div { display: inline-block; width: 100%; margin-top : 90px; }
+
+.coupon_div_style { padding : 3px; height: 30px; line-height: 30px; display: grid; grid-template-columns: 80px 70% auto; }
+.coupon_div_style div { padding-left: 15px; font-size: 14px;  border-right: solid 1px white; }
+.coupon_list_divs { padding: 8px 3px 8px 3px; height: auto; line-height: 30px; }
+
+.coupon_name_div { padding-right: 15px; }
+.coupon_name_div div { padding-left: 0px !important; border-right: none; }
+.coupon_name_div h4 { margin-top: 5px; margin-bottom: 5px; font-size: 16px;  }
+.coupon_price_divs { line-height: 25px; margin-top: 20px; }
+.coupon_limit_date_div { margin-top: 20%; }
+
+#coupon_list_each_close_button { position : absolute; width: 20px; right: 30px; }
+#coupon_list_each_div h3 { padding-bottom: 15px; }
+#coupon_list_each_add_div { display: grid; grid-template-columns: 100px auto; line-height: 25px; font-size: 13px; }
+#coupon_list_each_input { padding : 3px; padding-left: 5px; width: 60%; }
+#coupon_list_submit_button { width: 70px; margin-left: 20px; height: 25px; }
+
+#coupon_list_each_divs { margin: 5px; margin-top : 30px }
+#coupon_list_able_length_title { height: 25px; }
+#coupon_list_contents_divs { padding: 10px; border-radius: 2px; max-height: 250px; overflow-y: auto; }
+
+.coupon_list_each_contents_div { margin: 10px; padding: 5px; display: grid; grid-template-columns: 70% auto; }
+.coupon_list_each_name_div h4 { margin-top: 5px; margin-bottom: 5px; padding: 3px; width: 95%; height: 14px; }
+.coupon_list_each_price_div { font-size: 13px; margin-top: 10px; padding: 10px; border-top: dotted 1px #ababab; }
+.coupon_list_each_date_div b { display: inline-block; margin-top: 30% !important; text-align: center; width: 70%; margin-left: 17.5%; }
+
+#coupon_list_result_div { border-top: dotted 2px black; padding-top: 10px; display: grid; grid-template-columns: 30% 3% 30% 3% 34%; line-height: 25px; margin-top: 30px; font-size: 13px; }
+#coupon_submit_button_div { height: 30px; line-height: 30px; font-size: 13px; margin-top: 10px; }
+.select_coupon { border : solid 3px #35c5f0 }
+
+@media (max-width : 1051px) {
+    #coupon_add_input_div { margin-top: 0px !important; }
+}
+
+@media (max-width : 950px) {
+    #cart_list_div { margin-left: 30px; margin-right: 30px !important; }
+}
 
 @media (max-width : 880px) {
     .my_like_list_disable_div { width: 100%; }
+    .cart_disable_divs { width: 100%; }
 }
 
 @media (max-width : 660px) {
@@ -130,15 +247,61 @@
     .cart_name_and_price_div { padding: 20px; }
 
     .cart_num_result_div { margin-top: 10px; border-top: solid 1px #ababab; padding: 15px; padding-top: 20px; padding-bottom: 5px; }
-    .cart_able_num_div p { width: 100%; display: inline-block; margin-top: 10px; padding-left: 12px; }
+    /* .cart_able_num_div p { width: 100%; display: inline-block; margin-top: 10px; padding-left: 12px; } */
+
+    .cart_disable_divs { height: 338px; }
+    .cart_disable_divs .cart_disable_title_div { margin-top : 90px !important }
+
+    #coupon_add_input_div { margin-left: 10px !important; }
+
+}
+
+@media (max-width : 600px) {
+    #order_agree_notice_div { margin-top: -15px; }
+
+    #goods_other_div div { font-size: 12px; }
+    .order_delivery_top_div { grid-template-columns: 140px auto; }
+    #order_delivery_info_div { font-size: 14px; line-height: 40px; }
+
+    .coupon_div_style { grid-template-columns: 80px 65% auto; }
+}
+
+@media (max-width : 570px) {
+    input[name=coupon_add_code] { width: 30%; }
+    #coupon_add_button { width: 80px; font-size: 11px; }
+}
+
+@media (max-width : 550px) {
+    #order_delivery_host_code_input { min-width: 80px; width: 15%; }
+
+    .coupon_div_style { grid-template-columns: 80px auto; }
+    #coupon_date_other_div, .coupon_limit_date_div { display: none; }
+
+    #coupon_name_other_div, .coupon_name_div { border-right: none !important; }
+
+    #cart_coupon_list_div { grid-template-columns: 5px auto !important; line-height: 20px !important; }
+    #cart_remove_coupon { margin-top: 0px; }
+}
+
+@media (max-width : 500px) {
+    .order_div_style { margin-left: 30px; margin-right: 30px; }
+    .order_list_divs { grid-template-columns: 90px auto; }
+    .order_list_thumbnail_div { width: 80px; height: 80px; }
+    .order_list_divs { margin-top: 5px; }
+    .order_title_div { margin-bottom: 10px; }
+
+    .order_delivery_top_div { grid-template-columns: 120px auto; }
+    #order_delivery_info_div { font-size: 13px; line-height: 35px; }
+
+    #coupon_empty_div { text-align: center; margin-left: 0px !important; }
 }
 
 @media (max-width : 450px) {
-    /* .cart_num_result_div { padding-left: 0px; padding-right: 0px; } */
+    .order_delivery_top_div { grid-template-columns: 100px auto; margin-left: 0px; }
+    #order_delivery_info_div { font-size: 13px; line-height: 35px; }
 
-    .cart_num_div .cart_num_button_div { margin-left: 15px; margin-right: 15px !important; }
-    .cart_num_div div { width: 23%; }
-    .cart_num_div div input { width: 80% !important; }
+    #cart_list_div { margin-left: 15px; margin-right: 15px !important; }
+    #cart_coupon_list_div { margin-left: 20px; }
 }
 
 @media (max-width : 424px) {
@@ -150,6 +313,13 @@
 
     .my_like_list_disable_div { width: 100%; height: 215px;}
     .my_like_stock_div { font-size: 11px; }
+
+    #cart_price_show_div .cart_price_show_grid_div div { padding-left: 15px !important; padding-right: 20px; }
+    #coupon_add_input_div { font-size: 12px !important; }
+
+    #coupon_list_each_div { margin-left: 10px; margin-right: 10px; overflow-y: auto; }
+    .coupon_list_each_name_div h4 { font-size: 14px; }
+    #coupon_list_contents_divs { padding: 5px; }
 }
 
 @media (max-width : 400px) {
@@ -162,12 +332,42 @@
     .disable_grid_divs { grid-template-columns: 20% auto !important; margin-left: 30px; }
     .disable_grid_divs div input { width: 70% !important; }
 
-    .cart_num_div div { width: 20%; }
-    .cart_num_div div input { width: 90% !important; }
+    /* .cart_num_div div { width: 20%; }
+    .cart_num_div div input { width: 90% !important; } */
 
     .cart_num_result_div { padding : 0px; padding-top: 15px; }
     .cart_able_num_div p { width: auto; }
 
+    #order_same_delivery_info_div { margin-left: 20px; }
+    .order_title_div { padding-left: 20px; }
+    .order_div_style { margin-left: 0px !important; margin-right: 0px !important; }
+    .order_delivery_top_div div { margin: 0px 15px 0px 15px; }
+
+    #coupon_list_other_div { border-left: none; border-right: none; border-top: solid 2px black; border-bottom: solid 2px black; }
+    .coupon_div_style { grid-template-columns: 60px auto; border-left: none; border-right: none; }
+    .coupon_responsive_date_div { display: block !important; }
+
+    .coupon_responsive_grid_div { display: grid; grid-template-columns: 63px auto; }
+    .coupon_responsive_grid_div div { padding : 10px 0px 10px 15px; font-size: 13px; border-bottom: solid 2px black;}
+    .coupon_responsive_date_divs { padding-right: 15px; }
+
+    #cart_list_div { margin-left: 5px; margin-right: 5px !important; }
+
+    /* #coupon_other_div { margin-left: 20px; } */
+    /* .order_div_style { margin-left: 15px !important; margin-right: 15px !important; } */
+    #coupon_list_each_div { margin-left: 20px; margin-right: 20px; }
+    .coupon_list_each_date_div b { width: 80%; margin-left: 10%; }
+    #coupon_list_each_close_button { right: 40px; }
+}
+
+@media (max-width : 366px) {
+    /* #order_delivery_host_code_input { min-width: 90% !important; } */
+    /* #order_delivery_host_code_button{ margin: 5px 0px 0px 0px; min-width: 97%; } */
+    #coupon_list_each_div { margin-left: 30px; margin-right: 30px; }
+    /* .coupon_list_each_date_div b { width: 80%; margin-left: 10%; } */
+    #coupon_list_each_close_button { right: 70px; }
+    #coupon_list_each_input { width: 40%; }
+    #coupon_list_each_add_div { grid-template-columns: 100px auto; text-align: center; }
 }
 
 @media (max-width : 370px) {
@@ -192,6 +392,21 @@
 
     .my_like_list_date_div { margin-left: 20px; }
 
-    .cart_num_div div { width: 20%; }
+    /* .cart_num_div div { width: 20%; } */
+    #cart_price_show_div .cart_price_show_grid_div div { padding-right: 10px; }
+
+    .cart_num_div { font-size: 10px !important; padding-right: 10px; }
+    .cart_num_div div input { width: 40%; }
+    .cart_able_num_div p { padding-right: 5px; }
+
+    #order_delivery_host_code_input { min-width: 60px; width: 15%; }
+
+    .order_delivery_input_1, .order_delivery_input_2 { min-width: 170px !important; }
+    #order_delivery_host_code_button { min-width: 100px !important; width: 10% !important; }
+
+    input[name=coupon_add_code] { width: 50%; }
+    #coupon_add_button { width: 95% !important; margin-left: 0px; margin-top: 10px; }
+
+    #coupon_list_each_div { margin-left: 40px; margin-right: 40px; }
 
 }

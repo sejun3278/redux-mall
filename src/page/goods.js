@@ -47,19 +47,19 @@ class Goods extends Component {
 
     // 가로형
     _setScreenWitdhEvent = (overlap, complate) => {
-        const width_size = document.body.offsetWidth;
+        // const width_size = document.body.offsetWidth;
         
-        if(width_size <= 850 && width_size > 550) {
-            if(overlap === true) {
-                $('#goods_contents_grid_div').css({ 'paddingBottom' : '200px' })
+        // if(width_size <= 850 && width_size > 550) {
+        //     if(overlap === true) {
+        //         $('#goods_contents_grid_div').css({ 'paddingBottom' : '200px' })
 
-            } else if(complate === true) {
-                $('#goods_contents_grid_div').css({ 'paddingBottom' : '150px' })
+        //     } else if(complate === true) {
+        //         $('#goods_contents_grid_div').css({ 'paddingBottom' : '150px' })
 
-            } else {
-                $('#goods_contents_grid_div').css({ 'paddingBottom' : '90px' })
-            }
-        }
+        //     } else {
+        //         $('#goods_contents_grid_div').css({ 'paddingBottom' : '90px' })
+        //     }
+        // }
     }
 
     // 스크롤 반응형
@@ -383,12 +383,18 @@ class Goods extends Component {
     }
 
     // 장바구니 추가
-    _addCartGoods = async (stock_check, define_check, stop) => {
-        const { like_loading, goods_num, goodsAction } = this.props;
+    _addCartGoods = async (stock_check, define_check, stop, update) => {
+        const { like_loading, goods_num, goodsAction, _getCookie, _modalToggle } = this.props;
         const user_info = JSON.parse(this.props.user_info);
+        const user_cookie = _getCookie('login', 'get');
+
         const goods_data = JSON.parse(this.props.goods_data);
 
-        if(goods_data.state === 0) {
+        if(!user_info || !user_cookie) {
+            alert('로그인이 필요합니다.');
+            return _modalToggle(true);
+
+        } else if(goods_data.state === 0) {
             return alert('현재 구매 불가능한 상품입니다.');
 
         } else if(goods_num === 0) {
@@ -402,7 +408,26 @@ class Goods extends Component {
 
         const obj = { };
 
-        if(!stock_check) {
+        if(update === true) {
+            obj['type'] = "UPDATE";
+            obj['table'] = "cart";
+            obj['comment'] = "삭제 복구하기";
+
+            obj['where_limit'] = 1;
+
+            obj['columns'] = [];
+            obj['columns'][0] = { 'key' : 'modify_date', 'value' : null };
+            obj['columns'][1] = { 'key' : 'remove_state', 'value' : 0 };
+            obj['columns'][2] = { 'key' : 'num', 'value' : goods_num };
+            obj['columns'][3] = { 'key' : 'price', 'value' : goods_data.result_price };
+            obj['columns'][4] = { 'key' : 'discount', 'value' : goods_data.discount_price };
+    
+            obj['where'] = [];
+            
+            obj['where'][0] = { 'key' : 'user_id', 'value' : user_info.id };
+            obj['where'][1] = { 'key' : 'goods_id', 'value' : goods_data.id };
+
+        } else if(!stock_check) {
             obj['type'] = "SELECT";
             obj['table'] = "goods";
             obj['comment'] = "재고 체크하기";
@@ -449,6 +474,7 @@ class Goods extends Component {
             obj['columns'][4] = { "key" : "state", "value" : 1 }
             obj['columns'][5] = { "key" : "create_date", "value" : null }
             obj['columns'][6] = { "key" : "discount", "value" : goods_data.discount_price }
+            obj['columns'][7] = { "key" : "remove_state", "value" : 0 }
         }
 
         goodsAction.like_loading({ 'bool' : true });
@@ -459,7 +485,11 @@ class Goods extends Component {
             data : obj
         })
 
-        if(!stock_check) {
+        if(update === true) {
+            goodsAction.like_loading({ 'bool' : false });
+            return goodsAction.add_complate_cart({ 'bool' : true });
+
+        } else if(!stock_check) {
             const stock = Number(query_result.data[0][0].stock);
             const disable = query_result.data[0][0].state;
 
@@ -500,12 +530,18 @@ class Goods extends Component {
                 return this._addCartGoods(true, true);
 
             } else {
-                const state = query_result.data[0][0].state;
-                if(state === 0) {
+                const data = query_result.data[0][0];
+                if(data.state === 0) {
                     return this._addCartGoods(true, true);
 
-                } else if(state === 1) {
+                } else if(data.remove_state === 1) {
+                    // 삭제한 내역이 있다면
+                    return this._addCartGoods(true, true, null, true);
+                
+                } else if(data.state === 1) {
                     // 중복
+                    this._changeOtherDivHeight(200);
+
                     this._setScreenWitdhEvent(true);
                     goodsAction.like_loading({ 'bool' : false });
                     return goodsAction.overlap_cart({ 'bool' : true, 'num' : query_result.data[0][0].id })
@@ -527,11 +563,16 @@ class Goods extends Component {
 
         if(bool === false) {
             // 취소 버튼 클릭시
+            this._changeOtherDivHeight(90);
+
             return goodsAction.overlap_cart({ 'bool' : false })
             
         } else {
             const check_goods = await this._addCartGoods(null, null, true);
             goodsAction.overlap_cart({ 'bool' : false })
+
+            this._changeOtherDivHeight(120);
+
 
             if(check_goods) {
                 return
@@ -559,6 +600,8 @@ class Goods extends Component {
 
             this._setScreenWitdhEvent(false, true);
 
+            this._changeOtherDivHeight(140);
+
             goodsAction.like_loading({ 'bool' : false });
             goodsAction.add_complate_cart({ 'bool' : true })
         }
@@ -583,8 +626,18 @@ class Goods extends Component {
             return window.location.href='/myPage/cart'
 
         } else if(type === 'close') {
+            this._changeOtherDivHeight(90)
+
             this._setScreenWitdhEvent(false, false)
             return this.props.goodsAction.add_complate_cart({ 'bool' : false });
+        }
+    }
+
+    _changeOtherDivHeight = (height) => {
+        const width_size = document.body.offsetWidth;
+        
+        if(width_size <= 850 && width_size >= 550) {
+            $('#goods_contents_grid_div').css({ 'paddingBottom' :  height + 'px' })
         }
     }
 
@@ -700,14 +753,14 @@ class Goods extends Component {
                                                 add_complate === false ?
                                                     overlap_cart === false 
                                                     ?
-                                                    <div className='add_cart_complate_grid_divs'>
+                                                    <div id='default_add_cart_grid_div' className='add_cart_complate_grid_divs'>
                                                         <div className='border_right'> 바로 구매 </div>
                                                         <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}> <img src={icon.my_page.cart_plus} /> 장바구니 </div>
                                                     </div>
 
                                                     : 
-                                                    <div className='overlap_question_div'>
-                                                        <div> 
+                                                    <div id='default_overlap_div' className='overlap_question_div'>
+                                                        <div id='default_overlap_question_div'> 
                                                             <p className='font_15 bold red'> 이미 장바구니에 있는 상품입니다. </p> 
                                                             <p className='font_12'> 새로운 내용을 적용하시겠습니까?  </p>
                                                         </div>
@@ -718,7 +771,7 @@ class Goods extends Component {
                                                         </div>
                                                     </div>
 
-                                                : <div id='add_cart_complate_div'>
+                                                : <div id='default_add_cart_complate_div' className='add_cart_complate_div'>
                                                     <img className='add_cart_complate_icon' src={icon.my_page.cart_complate} /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
                                                     <div className='add_cart_complate_grid_divs'>
                                                         <div className='border_right' onClick={() => _clickComplateButton('move')} > 장바구니 이동 </div>
@@ -802,7 +855,7 @@ class Goods extends Component {
                                                     </div>
 
                                                 : <div id='add_cart_responsive_complate_div'>
-                                                    <img className='add_cart_complate_icon' src={icon.my_page.cart_complate} /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
+                                                    <img className='add_cart_complate_icon' id='add_cart_responsive_complate_icon' src={icon.my_page.cart_complate} /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
                                                     <div className='add_cart_complate_grid_divs'>
                                                         <div className='border_right' onClick={() => window.location.href='/myPage/cart'} > 장바구니 이동 </div>
                                                         <div onClick={() => this.props.goodsAction.add_complate_cart({ 'bool' : false })}> 계속 쇼핑하기 </div>

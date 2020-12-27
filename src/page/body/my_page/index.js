@@ -4,3 +4,6 @@ export { default as ModifyUser } from './modify_user';
 export { default as LikeList } from './like_list';
 export { default as Cart } from './cart';
 export { default as Disable } from './disable';
+export { default as Order } from './order';
+export { default as Coupon } from './coupon';
+export { default as CouponList } from './coupon_list';

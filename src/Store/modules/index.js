@@ -7,6 +7,7 @@ import admin from './admin';
 import admin_user from './admin_user';
 import search from './search';
 import goods from './goods';
+import order from './order';
 
 export default combineReducers({
     config,
@@ -15,5 +16,6 @@ export default combineReducers({
     admin,
     admin_user,
     search,
-    goods
+    goods,
+    order
 });

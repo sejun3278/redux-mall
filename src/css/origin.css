@@ -1,3 +1,5 @@
+body { cursor: default; }
+
 /* 왼쪽 정렬 */
 .aLeft { text-align: left; }
 
@@ -119,13 +121,19 @@ input[type='checkbox'].check_custom_1 {
 .border_left_black { border-left: solid 1px black !important; }
 .border_bottom_black { border-bottom: solid 1px black !important; }
 
+/* border style */
+.border_style_dotted { border-style: dotted; }
+
+/* border_dotted */
+.border_top_dotted { border-top: dotted 1px #ababab !important; }
+.border_bottom_dotted { border-bottom: dotted 1px #ababab !important; }
+
 /* border width */
 .border_width_2 { border-width: 2px !important; }
 
 /* border 없애기 */
 .border_none { border: none !important; }
 .border_none_right { border-right: solid 0px !important; }
-
 
 /* border 크기 조정 */
 .border_size_2 { border-width: 2px; }
@@ -187,10 +195,19 @@ input[type='checkbox'].check_custom_1 {
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'paybooc-Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/paybooc-Bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* 폰트 스타일 */
 .t_money_font { font-family: 'TmoneyRoundWindExtraBold'; }
 .kotra_bold_font { font-family: 'KOTRA_BOLD-Bold'; }
 .recipe_korea { font-family: 'Recipekorea'; }
+.paybook_bold { font-family: 'Recipekorea'; }
+
 
 /* 글자수 제한하기 */
 .cut_multi_line {
@@ -202,3 +219,6 @@ input[type='checkbox'].check_custom_1 {
 }
 
 .search_line { background-color: #ff8e71; padding : 0px 5px 0px 5px; color: white; }
+
+/* button 스타일 */
+.button_style_1 { background-color: #35c5f0; border: none; color: white; font-weight: bold; font-size: 13px; cursor: pointer; border-radius: 5px; }

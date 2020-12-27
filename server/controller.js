@@ -95,9 +95,16 @@ module.exports = {
                                 where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
                                 where += '`' + el.table + "`.result_price <= " + el.value[1];
     
+                            } else if(el.key.includes('date')) {
+                                where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
+                            
                             } else {
-                                // where += key + " " + body.option[key] + " '" + value + "' ";
-                                where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+                                if(el.value !== null) {
+                                    where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+
+                                } else {
+                                    where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " ";
+                                }
                             }
     
                             if(body.where.length !== (cnt + 1)) {
@@ -131,7 +138,14 @@ module.exports = {
                         columns += '`' + el.key + '`';
 
                         if(el.key.includes('date')) {
-                            value += "'" + now_date + "'"; 
+                            if(el.value === null) {
+                                value += "'" + now_date + "'"; 
+
+                            } else {
+                                const add_date = moment().add(el.value, "d").format('YYYY-MM-DD HH:mm:ss');
+
+                                value += "'" + add_date + "'"; 
+                            }
 
                         } else {
                             value += "'" + el.value + "'"; 

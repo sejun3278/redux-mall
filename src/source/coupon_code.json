@@ -1,0 +1,36 @@
+{
+    "coupon_code" : {
+        "adminGoodsCode" : {
+            "able" : true,
+            "admin" : true,
+            "discount" : 50,
+            "percent" : true,
+            "max_discount" : 5000,
+            "limit_price" : 10000,
+            "limit_date" : 30,
+            "name" : "관리자용 할인 쿠폰 코드"
+        },
+
+        "test1" : {
+            "able" : true,
+            "admin" : false,
+            "discount" : 1000,
+            "percent" : false,
+            "max_discount" : 0,
+            "limit_price" : 5000,
+            "limit_date" : 30,
+            "name" : "테스트 쿠폰 1"
+        },
+
+        "test2" : {
+            "able" : true,
+            "admin" : false,
+            "discount" : 20,
+            "percent" : true,
+            "max_discount" : 0,
+            "limit_price" : 30000,
+            "limit_date" : 3,
+            "name" : "테스트 쿠폰 2"
+        }
+    }
+}

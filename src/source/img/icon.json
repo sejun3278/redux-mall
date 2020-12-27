@@ -35,7 +35,8 @@
         "se_bot_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/7.+se_bot_gray.png",
         "se_bot_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/7.+se_bot_black.png",
         "coupon_gray" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_gray.png",
-        "coupon_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_black.png"
+        "coupon_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/my-page/8.+coupon_black.png",
+        "delivery_black" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/delivery_icon.png"
     },
 
     "search_icon" : {

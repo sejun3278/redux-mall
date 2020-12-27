@@ -45,7 +45,6 @@ class MyPage extends Component {
         const { user_info } = this.props;
         const { _iconToggle } = this;
 
-        console.log(user_info)
         let signup_date;
         if(user_info) { 
             signup_date = user_info.signup_date.slice(0, 10);

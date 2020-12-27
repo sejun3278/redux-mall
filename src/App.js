@@ -328,6 +328,7 @@ class App extends Component {
           />
 
           <div>
+            qweqweqweqwe
             <Route path='/'
                 render={(props) => <TopCategory
                     cat_name={cat_name}

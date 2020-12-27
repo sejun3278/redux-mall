@@ -62,7 +62,7 @@ class Login extends Component {
             })
 
             console.log(login_api)
-            return;
+            // return;
 
             if(url_check) {
                 if(login_after !== "") {

@@ -15,9 +15,34 @@ module.exports = (sequelize, DataTypes) => {
             // 2 : 취소
         },
 
+        "order_type" : {
+            type : DataTypes.INTEGER(10),
+            allowNull : false
+
+            // 0 : null
+            // 1 : 무통장 입금
+            // 2 : 카드 결제
+            // 3 : 포인트 & 쿠폰 결제
+        },
+
+        "payment_state" : {
+            type : DataTypes.INTEGER(10),
+            allowNull : false
+
+            // 0 : 결제 전 (= 무통장 입금)
+            // 1 : 결제 완료 (카드 결제 및 입금 확인)
+        },
+
         "cart_list" : {
             type : DataTypes.TEXT(),
             allowNull : false
+        },
+
+        "goods_num" : {
+            type: DataTypes.INTEGER(10),
+            allowNull : false
+
+            // 바로 구매시 상품 갯수
         },
 
         "order_title" : {
@@ -28,6 +53,18 @@ module.exports = (sequelize, DataTypes) => {
         "code" : {
             type: DataTypes.INTEGER(10),
             allowNull : false
+        },
+
+        "origin_price" : {
+            type: DataTypes.INTEGER(10),
+            allowNull : false
+        },
+
+        "discount_price" : {
+            type: DataTypes.INTEGER(10),
+            allowNull : false
+
+            // 할인가
         },
 
         "delivery_price" : {
@@ -43,11 +80,28 @@ module.exports = (sequelize, DataTypes) => {
             // 원가 - 할인가를 뺀 가격
         },
 
-        "discount_price" : {
+        "point_price" : {
             type: DataTypes.INTEGER(10),
-            allowNull : false
+            allowNull : false,
+            defaultValue : 0
 
-            // 할인가
+            // 적용한 포인트
+        },
+
+        "coupon_price" : {
+            type: DataTypes.INTEGER(10),
+            allowNull : false,
+            defaultValue : 0
+
+            // 적용한 쿠폰 가격
+        },
+
+        "final_price" : {
+            type: DataTypes.INTEGER(10),
+            allowNull : false,
+            defaultValue : 0
+
+            // 결제한 총 가격
         },
 
         "cancel_reason" : {
@@ -62,6 +116,11 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         'buy_date' : {
+            type: DataTypes.STRING(20),
+            allowNull : true
+        },
+        
+        'payment_date' : {
             type: DataTypes.STRING(20),
             allowNull : true
         },

@@ -42,7 +42,7 @@ class MyPage extends Component {
     }
 
     render() {
-        const { user_info } = this.props;
+        const { user_info, coupon_list, price_comma } = this.props;
         const { _iconToggle } = this;
 
         let signup_date;
@@ -73,7 +73,7 @@ class MyPage extends Component {
 
                             <div> 
                                 포인트 
-                                <p> 0 P </p>    
+                                <p> {price_comma(user_info.point)} P </p>    
                             </div>
 
                             <div> 
@@ -92,7 +92,7 @@ class MyPage extends Component {
 
                             <div> 
                                 보유 쿠폰 
-                                <p> 0 개 </p>
+                                <p  className='pointer' onClick={() => window.location.href='/myPage/coupon'}> {coupon_list.length} 개 </p>
                             </div>
                         </div>
                     </div>

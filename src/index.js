@@ -8,12 +8,15 @@ import { Provider } from 'react-redux';
 import Store from './Store';
 
 import App from './App';
+// import Config from '../src/page/config/config';
+
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <Provider store={Store}>
     <BrowserRouter>
+      {/* <Config /> */}
       <App />
     </BrowserRouter>
   </Provider>,

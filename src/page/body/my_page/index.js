@@ -7,3 +7,5 @@ export { default as Disable } from './disable';
 export { default as Order } from './order';
 export { default as Coupon } from './coupon';
 export { default as CouponList } from './coupon_list';
+export { default as Order_complate } from './order_complate';
+export { default as OrderList } from './order_list';

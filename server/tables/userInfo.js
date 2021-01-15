@@ -47,6 +47,27 @@ module.exports = (sequelize, DataTypes) => {
         allowNull : true
        },
 
+       point : {
+        type: DataTypes.INTEGER(10),
+        allowNull : false 
+
+        // 현재 포인트
+       },
+
+       use_point : {
+        type: DataTypes.INTEGER(10),
+        allowNull : false
+
+        // 사용한 포인트
+       },
+
+       acc_point : {
+        type: DataTypes.INTEGER(10),
+        allowNull : false 
+
+        // 적립된 포인트
+       },
+
        signup_date: {
         type: DataTypes.STRING(20),
         allowNull : false

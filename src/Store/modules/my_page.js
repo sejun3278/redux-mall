@@ -57,6 +57,8 @@ const initialState = {
     cart_able_goods_length : 0,
     cart_delivery_price : 0,
     cart_coupon_price : 0,
+    prediction_point : 0,
+    use_point : 0,
     coupon_loading : false,
     coupon_add_loading : false,
     coupon_list : JSON.stringify([]),
@@ -155,7 +157,9 @@ export default handleActions({
         cart_result_price : data.payload.result_price !== undefined ? data.payload.result_price : state.cart_result_price,
         cart_final_price : data.payload.final_price !== undefined ? data.payload.final_price : state.cart_final_price,
         cart_delivery_price : data.payload.delivery_price !== undefined ? data.payload.delivery_price : state.cart_delivery_price,
-        cart_coupon_price : data.payload.coupon_price !== undefined ? data.payload.coupon_price : state.cart_coupon_price
+        cart_coupon_price : data.payload.coupon_price !== undefined ? data.payload.coupon_price : state.cart_coupon_price,
+        prediction_point : data.payload.point !== undefined ? data.payload.point : state.prediction_point,
+        use_point : data.payload.use_point !== undefined ? data.payload.use_point : state.use_point
       }
     },
 
@@ -196,6 +200,6 @@ export default handleActions({
         cover_coupon_select : data.payload.cover !== undefined ? data.payload.cover : state.cover_coupon_select,
         coupon_select : data.payload.obj !== undefined ? data.payload.obj : state.coupon_select
       }
-    }
+    },
  
 }, initialState);

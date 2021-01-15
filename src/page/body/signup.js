@@ -27,7 +27,7 @@ class Signup extends Component {
     const arr = ['id', 'nick', 'name', 'email', 'pw', 'pw_check', 'agree'];
     const form_data = event.target;
 
-    const { signupAction, _getCookie } = this.props;
+    const { signupAction, _getCookie, _addCoupon } = this.props;
     const { id, nick, name, pw, email_id, email_host } = this.props;
 
     let signup_allow = true;
@@ -57,9 +57,6 @@ class Signup extends Component {
 
           const data = { id : id, nick : nick, name : name, email : all_email, pw : pw, 'qry' : qry_arr };
 
-          // _getCookie('add', 'signup', { 'id' : id });
-          // return;
-
             const add_user = await axios(URL + '/add/signup', {
               method : 'POST',
               headers: new Headers(),
@@ -69,18 +66,10 @@ class Signup extends Component {
             if(add_user.data !== true) {
             signupAction.signup_allow({ 'bool' : false });
       
-              // if(add_user.data.id === false) {
-              //   // 아이디 중복
-              //   this._alert('id', '중복되는 아이디입니다.')
-              //   return false;
-      
-              // } else if(add_user.data.nick === false) {
-              //   // 닉네임 중복
-              //   this._alert('nick', '중복되는 닉네임입니다.')
-              //   return false;
-              // }
-      
             } else {
+              // 회원가입 쿠폰 제공
+              _addCoupon('welcome', null, null, false, id);
+
               // 1차 회원가입 완료
               await _getCookie('signup', 'add', { 'id' : id }, { 'time' : 60 * 60 } );
               return window.location.replace('/signup/complate/' + id)
@@ -509,7 +498,7 @@ class Signup extends Component {
               <label htmlFor='agree_info_button' className='pointer' id='signup_agree_input'
                     onClick={() => this._inputInfo('agree')}
               > 
-                이용약관에 동의합니다. 
+                이용약관에 동의합니다.  
               </label>
             </p>
           </div>

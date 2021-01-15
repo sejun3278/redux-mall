@@ -207,6 +207,10 @@
     #add_cart_responsive_complate_icon { margin-top: 0px !important; }
 }
 
+@media (max-width : 500px) {
+    #search_board_div { display: block !important; }
+}
+
 @media (max-width : 450px) {
     #goods_fixed_name_and_price_grid_div { grid-template-columns: 125px auto; }
     #goods_fixed_thumbnail { width: 100px; }

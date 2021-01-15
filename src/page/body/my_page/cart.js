@@ -76,25 +76,36 @@ class Cart extends Component {
             data : obj
         })
         const result_data = get_data.data[0];
-        
-        const num_obj = {};
+
+        const filter_overlap = [];
+        const use_goods_id = [];
+
         result_data.forEach( (el) => {
+            if(use_goods_id.includes(el.goods_id) === false) {
+                use_goods_id.push(el.goods_id);
+                filter_overlap.push(el);
+            }
+        })
+
+        const num_obj = {};
+        
+        filter_overlap.forEach( (el) => {
             let cover_num = el.num;
             if(el.num > el.goods_stock) {
                 cover_num = el.goods_stock;
 
-                this._modfiyCartNumber(el)             
+                this._modfiyCartNumber(el)
             }
 
             num_obj[el.id] = cover_num;
         })
 
         const save_obj = {};
-        save_obj['arr'] = JSON.stringify(result_data);
+        save_obj['arr'] = JSON.stringify(filter_overlap);
         save_obj['bool'] = true;
         save_obj['num_obj'] = JSON.stringify(num_obj);
 
-        this._setSelectCartList(result_data, num_obj);
+        this._setSelectCartList(filter_overlap, num_obj);
 
         return myPageAction.save_cart_data(save_obj)
     }
@@ -161,17 +172,40 @@ class Cart extends Component {
 
     // 최종 결제금액 구하기
     _setFinalResultPrice = (data, select_list, num_obj) => {
-        const { myPageAction } = this.props;
+        const { myPageAction, use_point, cart_coupon_price, _autoChangePoint } = this.props;
 
         const cart_data = data === null ? JSON.parse(this.props.cart_data) : data;
         const cart_select_list = select_list === null ? JSON.parse(this.props.cart_select_list) : select_list;
         const cart_num_obj = num_obj === null ? JSON.parse(this.props.cart_num_obj) : num_obj;
+        const coupon_select = JSON.parse(this.props.coupon_select);
 
-        const obj = {};
+        let obj = {};
         obj['origin_price'] = 0;
         obj['discount_price'] = 0;
         obj['result_price'] = 0;
+        obj['coupon_price'] = cart_coupon_price;
 
+        if(cart_select_list.length === 0) {
+            obj['use_point'] = 0;
+            obj['point'] = 0;
+            obj['final_price'] = 0;
+            obj['coupon_price'] = 0;
+            obj['delivery_price'] = 0;
+
+            const coupon_obj = {};
+            coupon_obj['cover'] = JSON.stringify({});
+            coupon_obj['obj'] = JSON.stringify({});
+
+            myPageAction.select_coupon(coupon_obj);
+
+            $('input[name=use_point_input]').val(0)
+
+            myPageAction.save_cart_result_price(obj);
+
+            return;
+        }
+
+        let cover_result_price = 0;
         cart_data.forEach( (el) => {
             if(cart_select_list.includes(el.id)) {
                 obj['origin_price'] += (el.goods_origin_price * cart_num_obj[el.id]);
@@ -183,7 +217,8 @@ class Cart extends Component {
                     obj['discount_price'] += 0;
                 }
 
-                obj['result_price'] += (el.goods_result_price * cart_num_obj[el.id])
+                obj['result_price'] += (el.goods_result_price * cart_num_obj[el.id]);
+                cover_result_price += (el.goods_result_price * cart_num_obj[el.id]);
             }
         })
 
@@ -191,17 +226,44 @@ class Cart extends Component {
         if(obj['result_price'] < 30000) {
             // 3만원 미만일 때 배송비 추가
             obj['delivery_price'] = 2500;
-            obj['final_price'] += 2500;
+            obj['result_price'] += 2500;
+
         } else {
-            obj['delivery_price'] = 0;
-            
+            obj['delivery_price'] = 0;   
+        }
+        
+        obj['final_price'] = obj['result_price'];
+
+        if(cover_result_price < coupon_select.limit_price) {
+            const coupon_obj = {};
+            coupon_obj['obj'] = JSON.stringify({});
+            coupon_obj['cover'] = JSON.stringify({});
+
+            obj['coupon_price'] = 0;
+
+            myPageAction.select_coupon(coupon_obj);
+
+        } else {
+            obj['final_price'] -= cart_coupon_price;
+        }
+
+        obj['point'] = Math.trunc(cover_result_price * 0.01);
+
+        // obj['final_price'] -= use_point;
+
+        if(obj['final_price'] < 0) {
+            obj['final_price'] = 0;
+        }
+
+        if(use_point > 0) {
+            obj = _autoChangePoint(use_point, obj);
         }
 
         myPageAction.save_cart_result_price(obj);
     }
 
     // 선택 버튼 클릭시
-    _setEachSelect = (data, id, obj) => {
+    _setEachSelect = (data, id) => {
         let cart_select_list = JSON.parse(this.props.cart_select_list);
         const cart_data = JSON.parse(this.props.cart_data);
         const cart_num_obj = JSON.parse(this.props.cart_num_obj);
@@ -247,7 +309,7 @@ class Cart extends Component {
             
         } else {
             // 전체 해제
-            cart_select_list = [];        
+            cart_select_list = [];
         }
 
         this._setFinalResultPrice(cart_data, cart_select_list, cart_num_obj)
@@ -332,19 +394,19 @@ class Cart extends Component {
 
     // 구매하기 버튼 클릭
     _moveOrder = async () => {
-        const { user_info, _getCookie, cart_result_price, cart_delivery_price, cart_discount_price, cart_coupon_price } = this.props;
+        const { user_info, _getCookie, cart_result_price, cart_delivery_price, cart_discount_price, cart_coupon_price, cart_origin_price, use_point, _loginCookieCheck } = this.props;
         const cart_select_list = JSON.parse(this.props.cart_select_list);
         const cart_data = JSON.parse(this.props.cart_data);
         const cart_num_obj = JSON.parse(this.props.cart_num_obj);
         const coupon_select = JSON.parse(this.props.coupon_select);
 
-        const user_cookie = await this.props._getCookie('login', 'get');
-
         let num_check = true;
         let fall_reason = '';
 
-        if(user_info === undefined || user_cookie.id !== user_info.id) {
-            alert('로그아웃 된 아이디 입니다.');
+        _loginCookieCheck();
+
+        if(user_info === undefined) {
+            alert('로그인이 필요합니다.');
             return window.location.replace('/');
 
         } else if(cart_select_list.length === 0) {
@@ -374,6 +436,7 @@ class Cart extends Component {
         save_cookie['select_list'] = cart_num_obj;
         save_cookie['coupon'] = coupon_select;
         save_cookie['coupon_price'] = cart_coupon_price;
+        save_cookie['use_point'] = use_point
 
         // 인증 코드 추가
         let code = '';
@@ -406,6 +469,9 @@ class Cart extends Component {
         obj['columns'][6] = { "key" : "result_price", "value" : cart_result_price };
         obj['columns'][7] = { "key" : "discount_price", "value" : cart_discount_price };
         obj['columns'][8] = { "key" : "delivery_price", "value" : cart_delivery_price };
+        obj['columns'][9] = { "key" : "origin_price", "value" : cart_origin_price };
+        obj['columns'][10] = { "key" : "order_type", "value" : 0 };
+        obj['columns'][11] = { "key" : "payment_state", "value" : 0 };
 
         await axios(URL + '/api/query', {
             method : 'POST',
@@ -419,7 +485,7 @@ class Cart extends Component {
     render() {
         const { 
             cart_loading, price_comma, cart_origin_price, cart_discount_price, cart_result_price, cart_able_goods_length, cart_delivery_price, _toggleCouponListModal,
-            coupon_list_open_modal, cart_final_price, cart_coupon_price, _removeCoupon, _setModalStyle
+            coupon_list_open_modal, cart_final_price, cart_coupon_price, _removeCoupon, _setModalStyle, user_info, prediction_point, _setPonit, use_point
         } = this.props;
 
         const cart_data = JSON.parse(this.props.cart_data);
@@ -433,6 +499,8 @@ class Cart extends Component {
         if(cart_loading) {
             all_select_check = cart_select_list.length === cart_able_goods_length;
         }
+
+        const max_number = user_info.point > cart_result_price ? user_info.point : cart_result_price
 
         return(
             <div id='cart_div'>
@@ -580,7 +648,8 @@ class Cart extends Component {
                                 <div className='bold'> 쿠폰 적용 </div>
                                 <div> 
                                     <input id='cart_add_coupon_button' className='button_style_1' type='button' value='쿠폰 추가'
-                                           onClick={() => _toggleCouponListModal(true)}
+                                           style={cart_select_list.length === 0 ? {'backgroundColor' : '#ababab'} : null}
+                                           onClick={cart_select_list.length !== 0 ? () => _toggleCouponListModal(true) : () => alert('상품을 1개 이상 선택해주세요.')}
                                     /> 
                                 </div>
                             </div>
@@ -619,39 +688,62 @@ class Cart extends Component {
                                 />
                             </Modal>
 
+                            <div className='cart_grid_div'>
+                                <div className='bold'> 포인트 사용 </div>
+                                <div id='cart_point_div'>
+                                    <input type='number' defaultValue={0} max={max_number} min={0} name='use_point_input' 
+                                        onBlur={_setPonit} readOnly={user_info.point < 1000 || cart_select_list.length === 0 ? true : false}
+                                        title='1,000 포인트 이상부터 사용할 수 있습니다.' disabled={user_info.point < 1000 || cart_select_list.length === 0 ? true : false}
+                                    /> P
+                                    <div className='gray font_12 bold'> 보유 포인트 : {price_comma(user_info.point)} P </div>
+                                </div>
+                            </div>
+
+                            <div className='cart_grid_div'> 
+                                <div  className='bold'> 포인트 적립 </div>
+                                <div style={cart_select_list.length === 0 ? { 'color' : '#ababab' } : { 'color' : '#35c5f0' }}> 
+                                    <b> {price_comma(prediction_point)} P </b>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div id='cart_all_result_price_div' className='cart_div_lists'>
                             <h4 className='recipe_korea cart_goods_list_title'> - 계산서 </h4>
 
                             <div id='cart_price_show_div'>
-                                <div className='cart_price_show_grid_div'> 
-                                    <div> <h4> 상품 원가 </h4> </div>
-                                    <div className='aRight cart_price_result_div'> <h4> { price_comma(cart_origin_price) } 원 </h4> </div>
-                                </div>
+                                <div id='cart_origin_prices_div'>
+                                    <div className='cart_price_show_grid_div'> 
+                                        <div> <h4> 상품 원가 </h4> </div>
+                                        <div className='aRight cart_price_result_div'> <h4> { price_comma(cart_origin_price) } 원 </h4> </div>
+                                    </div>
 
-                                <div className='cart_price_show_grid_div border_top_dotted' style={{ 'backgroundColor' : '#bbbbbb', 'color' : 'white' }}> 
-                                    <div> <h4> 상품 할인 </h4> </div>
-                                    <div className='aRight cart_price_result_div'> <h4> - { price_comma(cart_discount_price) } 원 </h4> </div>
-                                </div>
+                                    {cart_discount_price > 0 ?
+                                    <div className='cart_price_show_grid_div border_top_dotted border_width_2' style={{ 'backgroundColor' : '#bbbbbb', 'color' : 'white' }}> 
+                                        <div> <h4> └　상품 할인 </h4> </div>
+                                        <div className='aRight cart_price_result_div'> <h4> - { price_comma(cart_discount_price) } 원 </h4> </div>
+                                    </div>
+                                    : null}
 
-                                    {cart_delivery_price > 0 || cart_coupon_price > 0
-                                    ?
-                                    <div>
-                                        <div className='cart_price_show_grid_div border_top_dotted'> 
-                                            <div> <h4> 예상 결제가 </h4> </div>
-                                            <div className='aRight cart_price_result_div'> <h4> { price_comma(cart_result_price) } 원 </h4> </div>
-                                        </div>
-                                        
-                                        {cart_delivery_price > 0 ?
+                                    {cart_delivery_price > 0 ?
                                         <div className='border_top_dotted border_bottom_dotted border_width_2'>
                                             <div className='cart_price_show_grid_div' id='cart_delivery_price_div'>
-                                                <div> <h4> └　배송비 </h4> <img className='cart_price_div_icon' src={icon.my_page.delivery_black} /> </div>
+                                                <div> <h4> 배송비 </h4> <img className='cart_price_div_icon' src={icon.my_page.delivery_black} /> </div>
                                                 <div className='aRight cart_price_result_div'> <h4> + { price_comma(cart_delivery_price) } 원 </h4> </div>
                                                 <p id='cart_delivery_alert_div' className='gray font_12'> 3 만원 미만 구매시, 배송비 2,500 원 추가 </p>
                                             </div>
                                         </div>
-                                        : null}
+                                    : null}
+
+                                </div>
+
+                                    {cart_coupon_price > 0 || use_point > 0
+                                    ?
+                                    <div>
+                                        <div className='cart_price_show_grid_div '> 
+                                            <div> <h4> = 예상 결제가 </h4> </div>
+                                            <div className='aRight cart_price_result_div'> <h4> { price_comma(cart_result_price) } 원 </h4> </div>
+                                        </div>
 
                                         {cart_coupon_price > 0 ?
                                         <div className='border_top_dotted border_bottom_dotted border_width_2'>
@@ -662,11 +754,21 @@ class Cart extends Component {
                                         </div>
 
                                         : null}
+
+                                        {use_point > 0 ?
+                                        <div className='border_top_dotted border_bottom_dotted border_width_2'>
+                                            <div className='cart_price_show_grid_div' style={{ 'backgroundColor' : '#a3d2ca' }}>
+                                                <div> <h4> └　포인트 </h4> </div>
+                                                <div className='aRight cart_price_result_div'> <h4> - { price_comma(use_point) } 원 </h4> </div>
+                                            </div>
+                                        </div>
+                                    
+                                        : null}
                                     </div>
 
                                     : null}
 
-                                <div className='cart_price_show_grid_div border_top_black border_width_2' id='final_result_price'> 
+                                <div className='cart_price_show_grid_div border_top_black border_width_2 kotra_bold_font' id='final_result_price'> 
                                     <div> <h4> 최종 결제가 </h4> </div>
                                     <div className='aRight cart_price_result_div'> <h4> { price_comma(cart_final_price) } 원 </h4> </div>
                                 </div>
@@ -678,6 +780,7 @@ class Cart extends Component {
                                 <div />
                                 <h4 className='recipe_korea cart_goods_list_title aCenter pointer'
                                     onClick={_moveOrder}
+                                    style={cart_select_list.length === 0 ? {'color' : '#ababab'} : null}
                                 > 
                                     구매하기 
                                 </h4>
@@ -719,7 +822,9 @@ Cart.defaultProps = {
         cart_able_goods_length : state.my_page.cart_able_goods_length,
         cart_delivery_price : state.my_page.cart_delivery_price,
         cart_coupon_price : state.my_page.cart_coupon_price,
-        coupon_select : state.my_page.coupon_select
+        coupon_select : state.my_page.coupon_select,
+        prediction_point : state.my_page.prediction_point,
+        use_point : state.my_page.use_point
     }), 
   
     (dispatch) => ({

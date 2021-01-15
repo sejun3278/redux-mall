@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -11,21 +10,18 @@ import '../../../css/responsive/signup.css';
 import '../../../css/myPage.css';
 
 import img from '../../../source/img/icon.json';
-import URL from '../../../config/url';
-import $ from 'jquery';
-
 import coupon_list from '../../../source/coupon_code.json';
 
 class Coupon_list extends Component {
 
     _selectCoupon = async (data) => {
         // 쿠폰 상태 한번 더 체크하기
-        const { myPageAction, cart_result_price, price_comma } = this.props;
+        const { myPageAction, cart_origin_price, price_comma } = this.props;
         const cover_coupon_select = JSON.parse(this.props.cover_coupon_select);
 
         if(coupon_list.coupon_code[data.code]) {
 
-            if(cart_result_price < data.limit_price) {
+            if(cart_origin_price < data.limit_price) {
                 return alert('최소 주문 가격이 ' + price_comma(data.limit_price) + ' 원 이상이여야 합니다.');
             }
 
@@ -44,13 +40,31 @@ class Coupon_list extends Component {
 
     // 쿠폰 적용
     _compalteCoupon = (discount_price, result_price) => {
-        const { myPageAction, _toggleCouponListModal, cart_delivery_price } = this.props;
+        const { myPageAction, _toggleCouponListModal, cart_delivery_price, cart_result_price, use_point, price_comma, cart_discount_price } = this.props;
         const cover_coupon_select = JSON.parse(this.props.cover_coupon_select);
+
+        if(!cover_coupon_select.id) {
+            return alert('쿠폰을 선택해주세요.')
+        }
+        const cover_coupon_price = use_point ? use_point : 0;
+        const final_price = cart_result_price - cover_coupon_price > 0 ? cart_result_price - cover_coupon_price : 0;
+
+        if(discount_price > final_price) {
+            if(!window.confirm('최종 결제가보다 쿠폰 할인가가 더 많습니다.\n쿠폰을 적용하시겠습니까?\n( 할인가 : ' + price_comma(discount_price) + ' 원　|　결제가 : ' + price_comma(final_price) + ' 원 )') ) {
+                return;
+            }
+        }
 
         const obj = {};
         obj['coupon_price'] = discount_price;
-        obj['final_price'] = result_price + cart_delivery_price;
+        obj['final_price'] = ((result_price - cart_discount_price) + cart_delivery_price) - cover_coupon_price;
 
+        if(obj['final_price'] < 0) {
+            obj['final_price'] = 0;
+        }
+
+        console.log(obj['final_price'])
+        console.log(result_price, cart_discount_price, cart_delivery_price, cover_coupon_price)
         myPageAction.select_coupon({ 'obj' : JSON.stringify(cover_coupon_select) });
         myPageAction.save_cart_result_price(obj);
 
@@ -63,23 +77,22 @@ class Coupon_list extends Component {
 
     render() {
         const { 
-            _toggleCouponListModal, _addCoupon, price_comma, cart_result_price
+            _toggleCouponListModal, _addCoupon, price_comma, cart_origin_price, _getCouponList
         } = this.props;
+
         const coupon_list = JSON.parse(this.props.coupon_list);
         const cover_coupon_select = JSON.parse(this.props.cover_coupon_select);
 
         const { _selectCoupon, _compalteCoupon } = this;
 
         let discount_coupon_price = 0;
-        let result_price = cart_result_price;
-
-        console.log(cover_coupon_select, cart_result_price)
+        let result_price = cart_origin_price;
 
         if(cover_coupon_select.id !== undefined) {
             if(cover_coupon_select.percent === 1) {
                 // 퍼센트 할인인 경우
                 const percent = cover_coupon_select.discount / 100;
-                let discount_price = Math.round(cart_result_price * percent);
+                let discount_price = Math.trunc(cart_origin_price * percent);
 
                 if(cover_coupon_select.max_discount > 0 && discount_price > cover_coupon_select.max_discount) {
                     discount_price = cover_coupon_select.max_discount;
@@ -92,7 +105,7 @@ class Coupon_list extends Component {
                 discount_coupon_price = cover_coupon_select.discount;
             }
 
-            result_price = cart_result_price - discount_coupon_price;
+            result_price = cart_origin_price - discount_coupon_price;
         }
 
         return(
@@ -102,18 +115,18 @@ class Coupon_list extends Component {
                 />
                 <h3 className='kotra_bold_font aCenter border_bottom'> MY 쿠폰함 </h3>
 
-                <form onSubmit={_addCoupon}>
+                <form>
                     <div id='coupon_list_each_add_div'>
                         <div> 쿠폰 추가　|　</div>
                         <div> 
                             <input type='input' name='coupon_add_code' id='coupon_list_each_input' />
-                            <input type='submit' value='등록' id='coupon_list_submit_button' className='button_style_1' />
+                            <input type='button' onClick={() => _addCoupon(null, _getCouponList, true, true)} value='등록' id='coupon_list_submit_button' className='button_style_1' />
                         </div>
                     </div>
                 </form>
 
                 <div id='coupon_list_each_divs'>
-                    <div id='coupon_list_able_length_title' className='font_13 bold'> 사용 가능 쿠폰 : {coupon_list.length} 개 </div>
+                    <div id='coupon_list_able_length_title' className='font_13 bold'> 보유 쿠폰 : {coupon_list.length} 개 </div>
                     <div id='coupon_list_contents_divs' className='border_black'>
                         {coupon_list.length > 0 ?
                             coupon_list.map( (el) => {
@@ -164,20 +177,20 @@ class Coupon_list extends Component {
 
                 <div id='coupon_list_result_div' className='aCenter bold'>
                     <div>  
-                        <div className='coupon_list_each_title_djv'> 예정 결제 금액 </div>
-                        <div className='coupon_list_each_content_div'> {price_comma(cart_result_price)} 원 </div>
+                        <div className='coupon_list_each_title_djv'> 상품 원가 </div>
+                        <div className='coupon_list_each_content_div'> {price_comma(cart_origin_price)} 원 </div>
                     </div>
 
                     <div> <h3> - </h3> </div>
 
                     <div style={{ 'color' : '#35c5f0' }}>
-                        <div className='coupon_list_each_title_djv'> 쿠폰 할인 금액 </div>
+                        <div className='coupon_list_each_title_djv'> 쿠폰 할인가 </div>
                         <div className='coupon_list_each_content_div'> {price_comma(discount_coupon_price)} 원 </div>
                     </div>
 
                     <div> <h2> = </h2> </div>
                     <div>  
-                        <div className='coupon_list_each_title_djv'> 최종 결제 금액 </div>
+                        <div className='coupon_list_each_title_djv'> 최종 결제가 </div>
                         <div className='coupon_list_each_content_div'> {price_comma(result_price)} 원 </div>
                     </div>
                 </div>
@@ -204,7 +217,10 @@ Coupon_list.defaultProps = {
         cart_result_price : state.my_page.cart_result_price,
         coupon_discount_price : state.my_page.coupon_discount_price,
         cover_coupon_select : state.my_page.cover_coupon_select,
-        cart_delivery_price : state.my_page.cart_delivery_price
+        cart_delivery_price : state.my_page.cart_delivery_price,
+        use_point : state.my_page.use_point,
+        cart_origin_price : state.my_page.cart_origin_price,
+        cart_discount_price : state.my_page.cart_discount_price
     }), 
   
     (dispatch) => ({

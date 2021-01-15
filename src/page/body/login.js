@@ -61,15 +61,11 @@ class Login extends Component {
                 }
             })
 
-            console.log(login_api)
-            console.log('-------');
-            // return;
+            if(login_after !== "") {
+                return window.location.replace(login_after)
+            }
 
             if(url_check) {
-                if(login_after !== "") {
-                    return window.location.replace(login_after)
-                }
-
                 return window.location.replace('/')
             }
 

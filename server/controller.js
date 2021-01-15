@@ -69,9 +69,14 @@ module.exports = {
                     qry += columns
 
                     if(body['join_where']) {
-                        body['join_where'].forEach( (el) => {
-                            qry += ', `' + body.join_table + '`.' + el.columns + ' AS "' + el.as + '"'; 
-                        })
+                        if(body['join_where'] !== '*') {
+                            body['join_where'].forEach( (el) => {
+                                qry += ', `' + body.join_table + '`.' + el.columns + ' AS "' + el.as + '"'; 
+                            })
+
+                        } else if(body['join_where'] === '*') {
+                            qry += ', `' + body.join_table + '`.*';
+                        }
                     }
 
                     qry += ' FROM `' + body.table + '`';
@@ -96,8 +101,18 @@ module.exports = {
                                 where += '`' + el.table + "`.result_price <= " + el.value[1];
     
                             } else if(el.key.includes('date')) {
-                                where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
-                            
+                                if(el.value === null) {
+                                    where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
+
+                                } else {
+                                    if(el.option) {
+                                        if(el.option === 'BETWEEN') {
+                                            where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+                                            where += 'AND "' + el.between_value + '" ';
+                                        }
+                                    }
+                                }
+
                             } else {
                                 if(el.value !== null) {
                                     where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
@@ -243,7 +258,7 @@ module.exports = {
                         // req.session.login = { 'id' : result.dataValues.id };
 
                         var expiryDate = new Date( Date.now() + 60 * 60 * 1000 * 24 * 1 ); // 24 hour 1일
-                        res.cookie('login', result.dataValues, { expires: expiryDate, httpOnly: true, signed : true });
+                        res.cookie('login', result.dataValues.user_id, { expires: expiryDate, httpOnly: true, signed : true });
 
                         // const cookie = JSON.stringify({ 
                         //     'id' : result.dataValues.id,
@@ -363,7 +378,6 @@ module.exports = {
 
         cookie_data : async (req, res) => {
             const body = req.body;
-
             const api_cookie = async (type) => {
                 if(type === 'get') {
                     let data = null;

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-// import queryString from 'query-string';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -11,16 +10,20 @@ import { Route, Switch } from 'react-router-dom';
 import * as signupAction from './Store/modules/signup';
 import * as configAction from './Store/modules/config';
 import * as adminAction from './Store/modules/admin';
+import * as myPageAction from './Store/modules/my_page';
 
 import { MyPageHome } from './page/body/my_page/index';
 import { AdminHome, AdminCategory } from './page/body/admin/index';
 import { Header, Login, Signup, SignupComplate, TopCategory, SearchIDPW, Search } from './page/index';
+import OrderCheck from './page/config/order_check';
 
 import category_list from './source/admin_page.json';
 import { Loading, Goods } from './page/index';
 
 import URL from './config/url.js';
 import $ from 'jquery';
+
+import coupon_list from './source/coupon_code.json';
 
 const customStyles = {
   content : {
@@ -37,8 +40,9 @@ const customStyles = {
 Modal.setAppElement('body')
 
 class App extends Component {
+
   async componentDidMount() {
-    const { loading } = this.props;
+    const { loading, configAction } = this.props;
 
     // 로그인 체크하기
     this._checkLogin();
@@ -46,6 +50,11 @@ class App extends Component {
     if(!loading) {
       // configAction.set_loading();
     }
+
+    const moment = require('moment');
+    const now_date = moment().format("YYYY-MM-DD HH:MM:SS");
+
+    configAction.set_init_date({ 'date' : now_date });
   }
 
   componentDidUpdate() {
@@ -55,6 +64,30 @@ class App extends Component {
     if(loading === true && user_info === null) {
     }
   }
+
+  // _getCookie = async (key, type, value) => {
+  //   let cookie;
+  //   if(type === 'get') {
+  //     cookie = window.sessionStorage.getItem(key);
+
+  //     if(key === 'login' || key === 'order') {
+  //       cookie = JSON.parse(cookie)
+  //     }
+
+  //   } else if(type === 'remove') {
+  //     window.sessionStorage.removeItem(key)
+
+  //   } else if(type === 'add') {
+  //     window.sessionStorage.setItem(key, value)
+  //   }
+
+  //   if(cookie) {
+  //     return cookie;
+
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   // 쿠키 출력하기
   _getCookie = async (key, type, value, opt) => {
@@ -77,14 +110,24 @@ class App extends Component {
   }
 
   _checkAdmin = async (info) => {
-    const get_admin_info = await axios(URL + '/get/admin_info', {
+    const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '관리자 정보 가져오기' };
+
+    obj['option'] = {};
+    obj['option']['user_id'] = '=';
+    obj['option']['admin'] = '=';
+
+    obj['where'] = [];
+    obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : info });
+    obj['where'].push({ 'table' : 'userInfo', 'key' : 'admin', 'value' : 'Y' });
+
+    const get_admin_info = await axios(URL + '/get/query', {
       method : 'POST',
       headers: new Headers(),
-      data : { id : info.id, user_id : info.user_id }
+      data : obj
     })
-    
-    if(get_admin_info.data === true) {
-      this.props.configAction.save_admin_info({ 'info' : get_admin_info.data })
+
+    if(get_admin_info.data[0][0]) {
+      this.props.configAction.save_admin_info({ 'info' : true })
 
       return true;
     }
@@ -147,15 +190,29 @@ class App extends Component {
   // 로그인 체크
   _checkLogin = async () => {
     const { configAction } = this.props;
-
     const login_cookie = await this._getCookie('login', 'get');
 
+    let result_data;
     if(login_cookie) {
       configAction.login_and_logout({ 'bool' : true });
 
       // 유저 정보 담기
-      // this._getLoginInfo(login_cookie);
-      configAction.save_user_info({ 'info' : JSON.stringify(login_cookie) })
+      const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '유저 정보 가져오기' };
+      
+      obj['option'] = {};
+      obj['option']['user_id'] = '=';
+
+      obj['where'] = [];
+      obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : login_cookie });
+
+      const user_info = await axios(URL + '/api/query', {
+        method : 'POST',
+        headers: new Headers(),
+        data : obj
+      })
+
+      configAction.save_user_info({ 'info' : JSON.stringify(user_info.data[0][0]) })
+      result_data = user_info.data[0][0];
 
       // 관리자 확인
       this._checkAdmin(login_cookie)
@@ -165,7 +222,7 @@ class App extends Component {
     }
 
     configAction.set_loading();
-    return login_cookie;
+    return result_data;
   }
 
   // category 이름 찾기
@@ -230,7 +287,6 @@ class App extends Component {
         start_str = '&';
       }
     }
-
     return window.location.href = url;
   }
 
@@ -274,11 +330,396 @@ class App extends Component {
       return customStyles;
   }
 
+  _loginCookieCheck = async (after) => {
+    const user_info = JSON.parse(this.props.user_info);
+    const user_cookie = await this._getCookie('login', 'get');
+
+    if(!user_info.id || !user_cookie) {
+      alert('로그인이 필요합니다.');
+
+      if(after) {
+        if(after === 'login') {
+          this._modalToggle(true);
+          return false;
+        }
+      }
+
+      window.location.replace('/');
+      return false;
+    }
+  }
+
+      // 쿠폰 조회하기
+      _getCouponList = async () => {
+        const { myPageAction } = this.props;
+        const user_info = JSON.parse(this.props.user_info);
+
+        const obj = { 'type' : 'SELECT', 'table' : 'coupon', 'comment' : '쿠폰 조회하기' };
+
+        obj['option'] = {};
+
+        obj['option']['user_id'] = '=';
+        obj['option']['state'] = '=';
+        obj['option']['limit_date'] = '>=';
+        obj['option']['use_order_id'] = 'IS NULL';
+
+        obj['where'] = [];
+        obj['where'][0] = { 'table' : 'coupon', 'key' : 'user_id', 'value' : user_info.user_id };
+        obj['where'][1] = { 'table' : 'coupon', 'key' : 'state', 'value' : 0 };
+        obj['where'][2] = { 'table' : 'coupon', 'key' : 'limit_date', 'value' : null };
+        obj['where'][3] = { 'table' : 'coupon', 'key' : 'use_order_id', 'value' : null };
+
+        const get_data = await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : obj
+        })
+
+        const cover_data = [];
+        get_data.data[0].forEach( (el) => {
+            if(coupon_list.coupon_code[el.code]) {
+                if(coupon_list.coupon_code[el.code].able === true) {
+                    cover_data.push(el);
+                }
+            }
+        })
+
+        myPageAction.save_coupon_data({ 'list' : JSON.stringify(cover_data) })
+    }
+
+  // 쿠폰 등록하기
+  _addCoupon = async (code_str, get, alerts, check, users_id) => {
+    const code = code_str ? code_str : $('input[name=coupon_add_code]').val().trim(); 
+    const { coupon_add_loading, myPageAction } = this.props;
+
+    if(coupon_add_loading === true) {
+        return;
+    }
+
+    if(code === "" || code.length === 0) {
+        $('input[name=coupon_add_code]').focus();
+        return alert('추가할 쿠폰 코드 번호를 입력해주세요.');
+
+    } else {
+        const { admin_info } = this.props;
+        const user_info = JSON.parse(this.props.user_info);
+
+        if(check === null || check === true) {
+          this._loginCookieCheck();
+        }
+
+        if(coupon_list.coupon_code[code] === undefined || coupon_list.coupon_code[code].search === false) {
+            return alert('해당 코드의 쿠폰을 찾을 수 없습니다.');
+
+        } else {
+            const coupon = coupon_list.coupon_code[code];
+            if(coupon.able === false) {
+                return alert('사용할 수 없는 쿠폰입니다.');
+            
+            } else {
+                if(coupon.admin === true) {
+                    if(admin_info !== true) {
+                        return alert('권한이 없습니다.');
+                    }
+                }
+            }
+
+            myPageAction.toggle_coupon_add({ 'bool' : true });
+
+            // 쿠폰 중복 체크
+            const obj = { 'type' : 'SELECT', 'table' : 'coupon', 'comment' : '쿠폰 중복 체크' };
+
+            obj['option'] = {};
+
+            obj['option']['user_id'] = '=';
+            obj['option']['code'] = '=';
+            obj['option']['state'] = '=';
+
+            const user_id = users_id ? users_id : user_info.user_id;
+
+            obj['where'] = [];
+            obj['where'][0] = { 'table' : 'coupon', 'key' : 'user_id', 'value' : user_id };
+            obj['where'][1] = { 'table' : 'coupon', 'key' : 'code', 'value' : code };
+            obj['where'][2] = { 'table' : 'coupon', 'key' : 'state', 'value' : 0 };
+
+            const query_result = await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : obj
+            })
+
+            if(query_result.data[0][0]) {
+                myPageAction.toggle_coupon_add({ 'bool' : false });
+
+                return alert('이미 추가된 쿠폰입니다.');
+            }
+            
+            // 쿠폰 추가
+            obj['type'] = 'INSERT';
+            obj['comment'] = '쿠폰 추가';
+
+            obj['columns'] = [];
+
+            const percent = coupon.percent === true ? 1 : 0;
+
+            obj['columns'].push({ "key" : "user_id", "value" : user_id })
+            obj['columns'].push({ "key" : "code", "value" : code })
+            obj['columns'].push({ "key" : "discount", "value" : coupon.discount })
+            obj['columns'].push({ "key" : "limit_price", "value" : coupon.limit_price })
+            obj['columns'].push({ "key" : "state", "value" : 0 })
+            obj['columns'].push({ "key" : "create_date", "value" : null })
+            obj['columns'].push({ "key" : "limit_date", "value" : coupon.limit_date })
+            obj['columns'].push({ "key" : "name", "value" : coupon.name })
+            obj['columns'].push({ "key" : "max_discount", "value" : coupon.max_discount })
+            obj['columns'].push({ "key" : "percent", "value" : percent })
+
+            await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : obj
+            })
+
+            myPageAction.toggle_coupon_add({ 'bool' : false });
+
+            $('input[name=coupon_add_code]').val("");
+
+            if(get) {
+              // 쿠폰 리스트 가져오기
+              get();
+            }
+
+            if(alerts === null || alerts === true) {
+              alert('쿠폰이 등록되었습니다.');
+              this._getCouponList();
+            }
+        }
+    }
+}
+
+  // 포인트 적립 & 삭감
+  _setPoint = async (point, type, comment, user_point) => {
+    const { _checkLogin } = this;
+    const user_info = JSON.parse(this.props.user_info);
+    const user_cookie = await this._getCookie('login', 'get');
+
+    if(!user_info.id || !user_cookie) {
+      alert('로그인이 필요합니다.');
+      return window.location.replace('/');
+    }
+
+    const obj = { 'type' : 'UPDATE', 'table' : 'userInfo' };
+
+    obj['columns'] = [];
+
+    obj['where'] = [];
+    obj['where'].push({ 'key' : 'id', 'value' : user_info.id });
+    obj['where'].push({ 'key' : 'user_id', 'value' : user_info.user_id });
+
+    obj['where_limit'] = 1;
+
+    if(type === 'add') {
+      // 적립
+      user_point += point;
+
+      obj['comment'] = '포인트 적립하기';
+
+      const acc_point = user_info.acc_point + point;
+      obj['columns'].push({ 'key' : 'acc_point', 'value' : acc_point });
+
+    } else if(type === 'remove') {
+      // 삭감
+      user_point -= point;
+
+      const get_info = await _checkLogin();
+      if(get_info.point < point) {
+        alert('결제 실패 : 포인트가 부족합니다. \n ( 보유 포인트 : ' + get_info.point + ' )');
+        return false;
+      }
+
+      obj['comment'] = '포인트 삭감하기';
+
+      const use_point = user_info.use_point + point;
+      obj['columns'].push({ 'key' : 'use_point', 'value' : use_point });
+    }
+
+    obj['columns'].push({ 'key' : 'point', 'value' : user_point })
+
+    // obj['where_limit'] = obj['where'].length;
+    await axios(URL + '/api/query', {
+      method : 'POST',
+      headers: new Headers(),
+      data : obj
+    });
+
+    this._addPointLog(type, comment, point);
+    return user_point;
+  }
+
+  // 포인트 내역 추가하기
+  _addPointLog = async (type, comment, point) => {
+    const user_info = JSON.parse(this.props.user_info);
+    const obj = { 'type' : 'INSERT', 'table' : 'point_log', 'comment' : '포인트 내역 추가하기' };
+    
+    obj['columns'] = [];
+    
+    obj['columns'].push({ "key" : "user_id", "value" : user_info.id });
+    const log_type = type === 'add' ? 0 : 1;
+    obj['columns'].push({ "key" : "type", "value" : log_type });
+    const log_point = type === 'remove' ? '-' + point : point;
+    obj['columns'].push({ "key" : "point", "value" : log_point });
+    obj['columns'].push({ "key" : "comment", "value" : comment });
+    obj['columns'].push({ "key" : "date", "value" : null });
+
+    await axios(URL + '/api/query', {
+      method : 'POST',
+      headers: new Headers(),
+      data : obj
+    });
+  }
+
+  // 문자열 해싱하기
+  _hashString = (s) => {
+    function SHA256(s){
+        
+        var chrsz   = 8;
+        var hexcase = 0;
+      
+        function safe_add (x, y) {
+            var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+            var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+            return (msw << 16) | (lsw & 0xFFFF);
+        }
+      
+        function S (X, n) { return ( X >>> n ) | (X << (32 - n)); }
+        function R (X, n) { return ( X >>> n ); }
+        function Ch(x, y, z) { return ((x & y) ^ ((~x) & z)); }
+        function Maj(x, y, z) { return ((x & y) ^ (x & z) ^ (y & z)); }
+        function Sigma0256(x) { return (S(x, 2) ^ S(x, 13) ^ S(x, 22)); }
+        function Sigma1256(x) { return (S(x, 6) ^ S(x, 11) ^ S(x, 25)); }
+        function Gamma0256(x) { return (S(x, 7) ^ S(x, 18) ^ R(x, 3)); }
+        function Gamma1256(x) { return (S(x, 17) ^ S(x, 19) ^ R(x, 10)); }
+      
+        function core_sha256 (m, l) {
+            
+            var K = new Array(0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1,
+                0x923F82A4, 0xAB1C5ED5, 0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
+                0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786,
+                0xFC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
+                0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147,
+                0x6CA6351, 0x14292967, 0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
+                0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85, 0xA2BFE8A1, 0xA81A664B,
+                0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
+                0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A,
+                0x5B9CCA4F, 0x682E6FF3, 0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
+                0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2);
+
+            var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+
+            var W = new Array(64);
+            var a, b, c, d, e, f, g, h, i, j;
+            var T1, T2;
+      
+            m[l >> 5] |= 0x80 << (24 - l % 32);
+            m[((l + 64 >> 9) << 4) + 15] = l;
+      
+            for ( var i = 0; i<m.length; i+=16 ) {
+                a = HASH[0];
+                b = HASH[1];
+                c = HASH[2];
+                d = HASH[3];
+                e = HASH[4];
+                f = HASH[5];
+                g = HASH[6];
+                h = HASH[7];
+      
+                for ( var j = 0; j<64; j++) {
+                    if (j < 16) W[j] = m[j + i];
+                    else W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+      
+                    T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+                    T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+      
+                    h = g;
+                    g = f;
+                    f = e;
+                    e = safe_add(d, T1);
+                    d = c;
+                    c = b;
+                    b = a;
+                    a = safe_add(T1, T2);
+                }
+      
+                HASH[0] = safe_add(a, HASH[0]);
+                HASH[1] = safe_add(b, HASH[1]);
+                HASH[2] = safe_add(c, HASH[2]);
+                HASH[3] = safe_add(d, HASH[3]);
+                HASH[4] = safe_add(e, HASH[4]);
+                HASH[5] = safe_add(f, HASH[5]);
+                HASH[6] = safe_add(g, HASH[6]);
+                HASH[7] = safe_add(h, HASH[7]);
+            }
+            return HASH;
+        }
+      
+        function str2binb (str) {
+            var bin = Array();
+            var mask = (1 << chrsz) - 1;
+            for(var i = 0; i < str.length * chrsz; i += chrsz) {
+                bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i%32);
+            }
+            return bin;
+        }
+      
+        function Utf8Encode(string) {
+            string = string.replace(/\r\n/g,"\n");
+            var utftext = "";
+      
+            for (var n = 0; n < string.length; n++) {
+      
+                var c = string.charCodeAt(n);
+      
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                }
+                else if((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+                else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+      
+            }
+      
+            return utftext;
+        }
+      
+        function binb2hex (binarray) {
+            var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
+            var str = "";
+            for(var i = 0; i < binarray.length * 4; i++) {
+                str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+                hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+            }
+            return str;
+        }
+      
+        s = Utf8Encode(s);
+        return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
+      
+    }
+    const hash_str = SHA256(s);
+
+    return hash_str;
+  };
+
   render() {
     const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading } = this.props;
     const { 
-          _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, 
-          _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle
+          _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint,
+          _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString
     } = this;
     const user_info = JSON.parse(this.props.user_info);
 
@@ -318,14 +759,17 @@ class App extends Component {
           :
           <div>
             {/* {JSON.stringify(user_info)} */}
-            <Header
-              user_info={user_info}
-              _pageMove={_pageMove}
-              _modalToggle={_modalToggle}
-              admin_info={admin_info}
-              _search={_search}
-              _getCookie={_getCookie}
-          />
+            <Route path='/'
+                render={(props) => <Header
+                  user_info={user_info}
+                  _pageMove={_pageMove}
+                  _modalToggle={_modalToggle}
+                  admin_info={admin_info}
+                  _search={_search}
+                  _getCookie={_getCookie}
+                  _hashString={_hashString}
+                  {...props}  />}
+              />
 
           <div>
             <Route path='/'
@@ -394,6 +838,9 @@ class App extends Component {
                           _pageMove={_pageMove}
                           _searchCategoryName={_searchCategoryName}
                           price_comma={price_comma}
+                          _addCoupon={_addCoupon}
+                          _getCouponList={_getCouponList}
+                          _setPoint={_setPoint}
                         {...props} 
                   />}
                 />
@@ -424,6 +871,7 @@ class App extends Component {
                         _modalToggle={_modalToggle}
                         _getCookie={_getCookie}
                         _moveScrollbar={_moveScrollbar}
+                        _loginCookieCheck={_loginCookieCheck}
                       {...props} 
                   />}
                 />
@@ -433,6 +881,7 @@ class App extends Component {
                         login={login}
                         user_info={user_info}
                         _getCookie={_getCookie}
+                        _addCoupon={_addCoupon}
                           {...props} 
                   />}
                 />
@@ -452,14 +901,34 @@ class App extends Component {
                       login={login}
                       user_info={user_info}
                       _getCookie={_getCookie}
+                      _pageMove={_pageMove}
                       price_comma={price_comma}
                       _modalToggle={_modalToggle}
                       _setModalStyle={_setModalStyle}
                       admin_info={admin_info}
+                      _loginCookieCheck={_loginCookieCheck}
+                      _addCoupon={_addCoupon}
+                      _getCouponList={_getCouponList}
+                      _setPoint={_setPoint}
+                      _checkLogin={_checkLogin}
+                      _filterURL={_filterURL}
+                      _hashString={_hashString}
+                      _moveScrollbar={_moveScrollbar}
                       {...props} 
                   />}
                 />
               </Switch>
+
+                <Route path='/orderCheck'
+                        render={(props) => <OrderCheck 
+                          user_info={user_info}
+                          _getCookie={_getCookie}
+                          _hashString={_hashString}
+                          _setPoint={_setPoint}
+                          _filterURL={_filterURL}
+                        {...props} 
+                  />}
+                />
             </div>
 
             <div id='body_div_right'></div>
@@ -487,11 +956,12 @@ export default connect(
     search_id_pw_modal : state.config.search_id_pw_modal,
     search_id_pw_type : state.config.search_id_pw_type,
     select_cat_open : state.config.select_cat_open,
-    loading : state.config.loading
+    loading : state.config.loading,
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),
     configAction : bindActionCreators(configAction, dispatch),
-    adminAction : bindActionCreators(adminAction, dispatch)
+    adminAction : bindActionCreators(adminAction, dispatch),
+    myPageAction : bindActionCreators(myPageAction, dispatch)
   })
 )(App);

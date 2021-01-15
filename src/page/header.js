@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import '../css/main.css';
 import * as configAction from '../Store/modules/config';
 import * as searchAction from '../Store/modules/search';
+import * as signupAction from '../Store/modules/signup';
 
 import { Link } from 'react-router-dom';
 import img from '../source/img/icon.json';
@@ -14,6 +15,7 @@ import img from '../source/img/icon.json';
 
 class Header extends Component {
     componentDidMount() {
+        this._urlCheck();
         // this._setScrollSize();
         // window.addEventListener("scroll", this._setScrollSize);
         
@@ -23,6 +25,37 @@ class Header extends Component {
         //     // 관리자 확인하기
         // }
     }
+
+    _urlCheck = async () => {
+        const { location, _getCookie, _hashString } = this.props;
+        
+        const url = location.pathname;
+        if(url.includes('/signup/complate') === false) {
+            await _getCookie('signup', 'remove');
+        }
+
+        if(url.includes('/myPage/order') === false) {
+            await _getCookie('order', 'remove');
+        }
+
+        if(url.includes('/myPage/orderComplate') === false) {
+            await _getCookie('order_complate', 'remove');
+            sessionStorage.removeItem(_hashString('order_complate'));
+        }
+
+        if(url.includes('/orderCheck') === false) {
+            console.log(33)
+            await _getCookie('order_check', 'remove');
+            sessionStorage.removeItem(_hashString('order_check'));
+        }
+
+        if(url.includes('/myPage/order_list') === false) {
+            await _getCookie(_hashString('detail_order_id'), 'remove');
+            sessionStorage.removeItem('after_move');
+
+        }
+
+      }
     
     componentWillUnmount() {
         window.removeEventListener("scroll", this._setScrollSize);
@@ -91,13 +124,20 @@ class Header extends Component {
     }
 
     _loginCheckAndMove = async (type) => {
-        const { user_info, _getCookie, _modalToggle } = this.props;
+        const { user_info, _getCookie, _modalToggle, signupAction, _hashString } = this.props;
         const login_cookie = await _getCookie('login', 'get');
 
         if(!user_info || !login_cookie) {
             alert('로그인이 필요합니다.');
 
+            const after_url = '/myPage/' + type;
+            signupAction.set_login_after({ 'url' : after_url })
+
             return _modalToggle(true);
+        }
+
+        if(type === 'order_list') {
+            await _getCookie(_hashString('detail_order_id'), 'remove');
         }
 
         return window.location.href = '/myPage/' + type;
@@ -178,7 +218,9 @@ class Header extends Component {
                         <div> 
                             <u className='pointer remove_underLine' onClick={() => _loginCheckAndMove('cart')}> 장바구니 </u>
                         </div>
-                        <div> 주문 / 배송 현황 </div>
+                        <div> 
+                            <u className='pointer remove_underLine' onClick={() => _loginCheckAndMove('order_list')}> 주문 / 배송 현황 </u>
+                        </div>
                         <div> 
                             <u className='pointer remove_underLine' onClick={() => _loginCheckAndMove('like_list')}> 찜 리스트 </u>
                         </div>
@@ -188,7 +230,7 @@ class Header extends Component {
                 <div id='header_other_mobile_div'>
                     <div> </div>
                     <div onClick={() => _loginCheckAndMove('cart')}> 장바구니 </div>
-                    <div> 주문 / 배송 현황</div>
+                    <div onClick={() => _loginCheckAndMove('order_list')}> 주문 / 배송 현황</div>
                     <div onClick={() => _loginCheckAndMove('like_list')}> 찜 리스트 </div>
                     <div> </div>
                 </div>
@@ -209,6 +251,7 @@ export default connect(
   
     (dispatch) => ({
         configAction : bindActionCreators(configAction, dispatch),
-        searchAction : bindActionCreators(searchAction, dispatch)
+        searchAction : bindActionCreators(searchAction, dispatch),
+        signupAction : bindActionCreators(signupAction, dispatch)
     })
   )(Header);

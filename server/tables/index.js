@@ -61,7 +61,8 @@ let sequelize = new Sequelize(
     db.Cart = require('./cart')(sequelize, Sequelize);
     db.Order = require('./order')(sequelize, Sequelize);
     db.Coupon = require('./coupon')(sequelize, Sequelize);
-
+    db.PointLog = require('./point_log')(sequelize, Sequelize);
+    db.OrderInfo = require('./order_info')(sequelize, Sequelize);
 
   /* UserInfo 테이블 관계 설정*/
     /* UserInfo 와 Like 의 관계 설정 (M : 1)*/
@@ -101,16 +102,41 @@ let sequelize = new Sequelize(
     /* ///////////////////////////////////// */
 
     /* UserInfo 와 Coupon 의 관계 설정 (M : 1)*/
-      db.UserInfo.hasMany(db.Coupon, {
+      // db.UserInfo.hasMany(db.Coupon, {
+      //   foreignKey: 'user_id',
+      //   sourceKey : 'user_id'
+      // });
+    
+      // db.Coupon.belongsTo(db.UserInfo, {
+      //   foreignKey: 'user_id',
+      //   targetKey : 'user_id'
+      // });
+    /* ///////////////////////////////////// */
+
+    /* UserInfo 와 PointLog 의 관계 설정 (M : 1)*/
+      db.UserInfo.hasMany(db.PointLog, {
         foreignKey: 'user_id',
         sourceKey : 'id'
       });
-    
-      db.Coupon.belongsTo(db.UserInfo, {
+
+      db.PointLog.belongsTo(db.UserInfo, {
         foreignKey: 'user_id',
         targetKey : 'user_id'
       });
     /* ///////////////////////////////////// */
+
+    /* UserInfo 와 OrderInfo 의 관계 설정 (M : 1)*/
+      db.UserInfo.hasMany(db.OrderInfo, {
+        foreignKey: 'user_id',
+        sourceKey : 'id'
+      });
+
+      db.OrderInfo.belongsTo(db.UserInfo, {
+        foreignKey: 'user_id',
+        targetKey : 'user_id'
+      });
+    /* ///////////////////////////////////// */
+
 
   /* //////////////////////////////////////// */
 
@@ -140,6 +166,23 @@ let sequelize = new Sequelize(
     /* ///////////////////////////////////// */
 
   /* //////////////////////////////////////// */
+
+
+  /* Order 테이블 관계 설정*/
+    /* Order 와 OrderInfo 의 관계 설정 (M : 1)*/
+    db.Order.hasMany(db.OrderInfo, {
+      foreignKey: 'order_id',
+      sourceKey : 'id'
+    });
+    
+    db.OrderInfo.belongsTo(db.Order, {
+      foreignKey: 'order_id',
+      targetKey : 'id'
+    });
+    /* ///////////////////////////////////// */
+
+  /* //////////////////////////////////////// */
+
 
 db.secret = 'gdf80fsadf8098qwej123l;1k9809sf8daf90sdajkl1j23';
 module.exports = db;

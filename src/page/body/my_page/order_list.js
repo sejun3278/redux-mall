@@ -1,0 +1,713 @@
+import React, { Component } from 'react';
+import axios from 'axios';
+import queryString from 'query-string';
+import DatePicker from "react-datepicker";
+import { ko } from "date-fns/esm/locale";
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import * as configAction from '../../../Store/modules/config';
+import * as myPageAction from '../../../Store/modules/my_page';
+import * as orderAction from '../../../Store/modules/order';
+
+import "react-datepicker/dist/react-datepicker.css";
+import '../../../css/responsive/signup.css';
+import '../../../css/myPage.css';
+
+// import img from '../../../source/img/icon.json';
+import URL from '../../../config/url';
+import $ from 'jquery';
+import icon from '../../../source/img/icon.json';
+
+class OrderList extends Component {
+
+    async componentDidMount() {
+        const { location, orderAction, _getCookie, _hashString, user_info } = this.props;
+        const moment = require('moment');
+
+        let get_order_id = await _getCookie(_hashString('detail_order_id'), 'get');
+        const session_info = JSON.parse(sessionStorage.getItem(_hashString('detail_order_id')));
+
+        if(get_order_id !== false && session_info !== null) {
+            // 상세 정보 쿠키가 있을 경우
+            const user_check = get_order_id[_hashString('user_id')] === _hashString(user_info.user_id);
+            get_order_id = get_order_id[_hashString('id')];
+
+            if(user_check === false) {
+                alert('잘못된 접근입니다.');
+                return window.location.replace('/myPage/order_list');
+            }
+
+            orderAction.select_order_detail({ 'bool' : true })
+            await this._selectDetail(get_order_id)
+        } 
+
+        const qry = queryString.parse(location.search);
+        const date_obj = {};
+        // const select_month = [1, 3, 6, 12];
+        const now_date = moment().add(1, 'hours').format("YYYY-MM-DD HH:MM:SS");
+
+        let select_num = 3;
+        let start_date = null;
+        let end_date = now_date.slice(0, 10);
+
+        let allow = true;
+        if(qry.month) {
+            // 월 버튼으로만 조회한 경우
+            select_num = Number(qry.month);
+
+            if(Number(qry.month) > 12 || isNaN(Number(qry.month))) {
+                allow = false;
+            }
+
+        } else {
+            if(qry.start_date && qry.end_date) {
+                
+                // 달력을 조정해 조회한 경우
+                select_num = null;
+
+                start_date = qry.start_date;
+                end_date = qry.end_date;
+
+                const t1 = moment(start_date, 'YYYY-MM-DD');
+                const t2 = moment(end_date, 'YYYY-MM-DD');
+                
+                const diff_days = Math.trunc(moment.duration(t2.diff(t1)).asDays());
+                // const diff_month = Math.trunc(moment.duration(t2.diff(t1)).asMonths());
+
+                // if(select_month.includes(diff_month)) {
+                //     // select_num = diff_month;
+                // }
+
+                if(isNaN(diff_days) === false) {
+                    if(diff_days > 367) {
+                        allow = false;
+                    }
+
+                } else {
+                    allow = false;
+                }
+
+            } else {
+                if(qry.start_date || qry.end_date) {
+                    allow = false;
+                }
+            }
+        }
+
+        if(allow === false) {
+            alert('잘못된 경로입니다.');
+            return window.location.replace('/myPage/order_list');
+        }
+
+        start_date = start_date === null ? moment().subtract(select_num, 'months').format('YYYY-MM-DD') : start_date;
+
+        // 달 선택
+        date_obj['select_num'] = select_num;
+
+        // 시작일 지정하기
+        date_obj['start_date'] = start_date;
+
+        // 최종일 지정하기
+        date_obj['end_date'] = end_date;
+
+        orderAction.set_date(date_obj);
+
+        // 내 주문 데이터 저장하기
+        await this._getOrderData(start_date, get_order_id);
+    }
+
+    _getOrderData = async (start, order_id) => {
+        const { user_info, orderAction, start_date, _moveScrollbar } = this.props;
+        const obj = { 'type' : 'SELECT', 'table' : 'order', 'comment' : '주문 정보 가져오기' };
+        const cover_start = start ? start : start_date;
+        
+        const moment = require('moment');
+        const now_date = moment().add(1, 'hours').format("YYYY-MM-DD HH:MM:SS");
+
+        obj['option'] = {};
+        obj['where'] = [];
+
+        if(order_id) {
+            obj['table'] = 'order_info'
+            obj['join'] = true;
+            obj['join_table'] = 'order';
+
+            obj['join_arr'] = [];
+            obj['join_arr'].push({ 'key1' : 'id', 'key2' : 'order_id' })
+
+            obj['join_where'] = '*';
+
+            obj['option']['order_id'] = '=';
+            obj['option']['user_id'] = '=';
+
+            obj['where'].push({ 'table' : 'order_info', 'key' : 'order_id', 'value' : order_id });
+            obj['where'].push({ 'table' : 'order_info', 'key' : 'user_id', 'value' : user_info.id });
+
+        } else {
+            obj['option']['user_id'] = '=';
+            obj['option']['order_state'] = '<>';
+            obj['option']['create_date'] = 'BETWEEN';
+
+            obj['where'].push({ 'table' : 'order', 'key' : 'user_id', 'value' : user_info.id });
+            obj['where'].push({ 'table' : 'order', 'key' : 'order_state', 'value' : 0 });
+            obj['where'].push({ 'table' : 'order', 'key' : 'create_date', 'value' : cover_start, 'option' : 'BETWEEN', 'between_value' : now_date });
+
+            obj['order'] = [];
+            obj['order'].push({ 'table' : 'order', 'key' : 'id', 'value' : "DESC" });
+        }
+
+        let get_data = await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : obj
+        })
+        
+        let data = get_data.data[0];
+        if(order_id) {
+            data = data[0];
+
+            const get_cart_data = async (cart_list, length, arr, bool) => {
+                if(cart_list.length === length) {
+                    return arr;
+                }
+
+                const obj = { 'type' : 'SELECT', 'table' : 'cart', 'comment' : '상품 리스트 정보 가져오기' };
+
+                obj['option'] = {};
+                obj['option']['id'] = '=';
+
+                obj['where'] = [];
+
+                if(bool) {
+                    obj['join'] = true;
+                    obj['join_table'] = 'goods';
+
+                    obj['join_arr'] = [];
+                    obj['join_arr'].push({ 'key1' : 'id', 'key2' : 'goods_id' })
+
+                    obj['join_where'] = [];
+                    obj['join_where'].push({ 'columns' : 'thumbnail', 'as' : 'goods_thumbnail' })
+                    obj['join_where'].push({ 'columns' : 'name', 'as' : 'goods_name' })
+
+                    obj['option']['user_id'] = '=';
+                    
+                    obj['where'].push({ 'table' : 'cart', 'key' : 'id', 'value' : cart_list[length] });
+                    obj['where'].push({ 'table' : 'cart', 'key' : 'user_id', 'value' : user_info.id });
+
+                } else {
+                    obj['table'] = 'goods';
+
+                    obj['where'].push({ 'table' : 'goods', 'key' : 'id', 'value' : cart_list[length] });
+                }
+
+                const data_get = await axios(URL + '/api/query', {
+                    method : 'POST',
+                    headers: new Headers(),
+                    data : obj
+                })
+
+                arr.push(data_get.data[0][0])
+
+                return await get_cart_data(cart_list, length + 1, arr, bool)
+            }
+
+            let cart_list = JSON.parse(data.cart_list);
+            let cart_data = null;
+
+            if(typeof cart_list !== 'object') {
+                cart_data = await get_cart_data([cart_list], 0, [], false);
+
+            } else {
+                cart_data = await get_cart_data(cart_list, 0, [], true);
+            }
+
+            orderAction.save_order_info({ 'cart_data' : JSON.stringify(cart_data) });
+        }
+
+        orderAction.save_order_info({ 'order_info' : JSON.stringify(data) });
+        orderAction.save_order_info({ 'loading' : true })
+
+        let after_move = JSON.parse(sessionStorage.getItem('after_move'));
+
+        if(after_move) {
+            after_move = after_move.id;
+
+            const height = $('#order_list_' + after_move).offset().top;
+            sessionStorage.removeItem('after_move')
+
+            return _moveScrollbar('html', 'y', height);
+        }
+    }
+
+    // 날짜 선택
+    _selectDate = (date, type) => {
+        const moment = require('moment');
+        const { orderAction, start_date, end_date, _filterURL } = this.props;
+        const cover_date = moment(date).format('YYYY-MM-DD');
+
+        const obj = {};
+        const filter_obj = {};
+
+        let cover_start_date = start_date;
+        let cover_end_date = end_date;
+
+        if(type === 'start') {
+            // 시작일 지정
+            obj['start_date'] = cover_date;
+            cover_start_date = cover_date;
+
+        } else if(type === 'end') {
+            // 최종일 지정
+            obj['end_date'] = cover_date;
+            cover_end_date = cover_date;
+        }
+        obj['select_num'] = null;
+
+        filter_obj['start_date'] = cover_start_date;
+        filter_obj['end_date'] = cover_end_date;
+        
+        orderAction.set_date(obj);
+        this._getOrderData(cover_start_date);
+
+        return _filterURL(filter_obj, "");
+    }
+
+    _removeOption = (type) => {
+        if(window.confirm('해당 옵션을 삭제하시겠습니까?')) {
+            if(type === 'date') {
+                return window.location.replace('/myPage/order_list')
+            }
+        }
+
+        return;
+    }
+
+    // 상세 정보 선택하기
+    _selectDetail = async (id, move) => {
+        const { orderAction, _getCookie, _hashString, user_info } = this.props;
+        const order_info = JSON.parse(this.props.order_info);
+        // orderAction.select_order_detail({ 'id' : id })
+
+        if(id !== null) {
+            const url_obj = {};
+            url_obj[_hashString('id')] = id;
+
+            const save_url = window.location.pathname + window.location.search;
+            url_obj[_hashString('save_url')] = save_url;
+            url_obj[_hashString('user_id')] = _hashString(user_info.user_id);
+
+            await _getCookie(_hashString('detail_order_id'), 'add', JSON.stringify(url_obj), { 'time' : 60 });
+
+            const session_obj = {};
+            session_obj[_hashString('user_id')] = _hashString(String(user_info.id));
+
+            sessionStorage.setItem(_hashString('detail_order_id'), JSON.stringify(session_obj))
+            
+            if(move === true) {
+                return window.location.href = save_url;
+
+            } else {
+                orderAction.select_order_detail({ 'id' : id })
+            }
+
+        } else {
+            let get_save_url = await _getCookie(_hashString('detail_order_id'), 'get');
+
+            get_save_url = get_save_url[_hashString('save_url')];
+
+            if(!get_save_url) {
+                get_save_url = '/myPage/order_list';
+            }
+
+            await _getCookie(_hashString('detail_order_id'), 'remove');
+            sessionStorage.removeItem(_hashString('detail_order_id'))
+
+            sessionStorage.setItem('after_move', JSON.stringify({ 'id' : order_info.id }) )
+            return window.location.href = get_save_url;
+        }
+    }
+
+    render() {
+        const { start_select_num, _filterURL, order_loading, location, order_detail_select, order_detail_bool, price_comma } = this.props;
+        const { _selectDetail } = this;
+
+        const order_info = JSON.parse(this.props.order_info);
+        const { _selectDate, _removeOption } = this;
+
+        const qry = queryString.parse(location.search);
+        const moment = require('moment');
+        
+        const now_date = Date.parse(this.props.now_date.slice(0, 10));
+        const start_date = Date.parse(this.props.start_date);
+        const end_date = Date.parse(this.props.end_date)
+
+        let min_date = moment(end_date).subtract(12, 'months').format('YYYY-MM-DD');
+        min_date = Date.parse(min_date);
+
+        let max_date = moment(start_date).add(12, 'months').format('YYYY-MM-DD');
+        max_date = Date.parse(max_date);
+
+        if(max_date > now_date) {
+            max_date = now_date;
+        }
+
+        // 검색 옵션 조건 구하기
+        const condifion_option = (qry.month || start_select_num) || qry.start_date || qry.end_date;
+        let date_option = '';
+        let diff_days = '';
+
+        if(condifion_option) {
+            const t1 = moment(this.props.start_date, 'YYYY-MM-DD');
+            const t2 = moment(this.props.end_date, 'YYYY-MM-DD');
+                
+            diff_days = Math.trunc(moment.duration(t2.diff(t1)).asDays());
+
+            date_option = "기간 : " + this.props.start_date + " ~ " + this.props.end_date;
+        }
+
+        let payment_state = '미입금';
+        let delivery_state = '-';
+
+        let payment_type = '무통장 입금';
+        let bank_ment = '[ 농협 - X ] 로 입금해주세요.';
+
+        if(order_detail_bool === true) {
+            if(order_info.payment_state === 1) {
+                payment_state = '결제 완료'
+                delivery_state = '배송 준비중'
+            }
+
+            if(order_info.order_type === 2) {
+                payment_type = '카드 결제';
+                bank_ment = '';
+
+            } else if(order_info.order_type === 3) {
+                payment_type = '포인트 & 쿠폰 결제';
+                bank_ment = '';
+            }
+        }
+
+        const cart_data = JSON.parse(this.props.cart_data);
+
+        return(
+            <div id='order_list_tools'>
+                {order_loading === true ?
+
+                order_detail_select === null ?
+                <div id='order_list_origin_page'>
+                    <div id='order_list_date_grid_div'>
+                        <div id='order_list_date_select_gird_div'>
+                                <div id='order_list_set_date_div'>
+                                    <div className='bold font_14'> 기간 설정 </div>
+                                    <div id='order_list_set_date'>
+                                        <DatePicker className='pointer aCenter' name='order_list_date_start' selected={start_date}
+                                            locale={ko} dateFormat="yyyy-MM-dd" minDate={min_date} maxDate={end_date} closeOnScroll={true}
+                                            placeholderText="조회 시작 날짜" onChange={(date) => _selectDate(date, 'start')}
+                                            showPopperArrow={false} popperModifiers
+                                        />
+                                        {/* <input type='text' className='pointer aCenter' disabled readOnly name='order_list_date_start' defaultValue={start_date} /> */}
+                                        　~　
+                                        <DatePicker 
+                                            className='pointer aCenter' name='order_list_date_end'  selected={end_date}
+                                            locale={ko} dateFormat="yyyy-MM-dd" minDate={start_date} maxDate={max_date} closeOnScroll={true}
+                                            placeholderText="조회 끝 날짜" onChange={(date) => _selectDate(date, 'end')}
+                                            showPopperArrow={false}
+                                            popperModifiers={{ // 모바일 web 환경에서 화면을 벗어나지 않도록 하는 설정 
+                                                preventOverflow: { enabled: true, }, }} 
+                                                popperPlacement="auto" // 화면 중앙에 팝업이 뜨도록
+                                        />
+                                        {/* <input type='text' className='pointer aCenter' disabled readOnly name='order_list_date_end' defaultValue={now_date} /> */}
+                                    </div>
+                                </div>
+
+                                <div id={qry.start_date && qry.end_date ? 'order_list_select_date_div_2' : 'order_list_select_date_div' } className='order_list_select_grid_div font_13'>
+                                    {qry.start_date && qry.end_date
+                                        ? <div id='filter_month' className='bold white' title='필터를 삭제합니다.'
+                                            onClick={() => window.confirm('기간 설정을 해제하시겠습니까?') ? window.location.href='/myPage/order_list'  : null}
+                                            >
+                                            필터 X
+                                        </div>
+
+                                        : null
+                                    }
+
+                                    <div id={start_select_num === 1 ? 'select_month' : null}
+                                        onClick={() => start_select_num !== 1 ? _filterURL({ 'month' : 1 }, "" ) : null}
+                                    > 
+                                        1 개월 
+                                    </div>
+                                    <div id={start_select_num === 3 ? 'select_month' : null}
+                                        onClick={() => start_select_num !== 3 ? _filterURL({ 'month' : 3 }, "" ) : null}
+                                    > 
+                                        3 개월
+                                    </div>
+                                    <div id={start_select_num === 6 ? 'select_month' : null}
+                                        onClick={() => start_select_num !== 6 ? _filterURL({ 'month' : 6 }, "" ) : null}
+                                    > 
+                                        6 개월
+                                    </div>
+                                    <div id={start_select_num === 12 ? 'select_month' : null}
+                                        onClick={() => start_select_num !== 12 ? _filterURL({ 'month' : 12 }, "" ) : null}
+                                    > 
+                                        1 년 
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div id='order_list_search_option_div'>
+                        {condifion_option
+                            ? <div id='order_list_option_div' className='aLeft'>
+                                <h4> ● 검색 옵션 </h4>
+                                    <ul id='order_list_option_ul'>
+                                        {date_option 
+                                            ? <li> {date_option} 
+                                                    {diff_days > 0 ? <b className='gray'> ( {diff_days} 일 ) </b> : null}
+                                                    {qry.month || qry.start_date || qry.end_date ? 
+                                                        <img src={icon.icon.close_black} className='order_list_remove_icon' 
+                                                            onClick={() => _removeOption('date')} />
+                                                        : null}
+                                            </li> 
+                                            : null
+                                        }
+                                    </ul>
+                            </div>
+                            : null                                
+                        }
+
+                        {order_info.length === 0
+                        
+                            ? <div className='aCenter paybook_bold'> 
+                                <h3 id='order_list_empty_title'> 주문 내역이 없습니다. </h3>
+                            </div>
+
+                            : <div> 
+                                <div id='order_length_result_div'>
+                                    <h4> {order_info.length} 건의 주문 내역들을 조회했습니다. </h4>
+                                </div>
+
+                                <div id='order_list_contents_div'>
+                                    {order_info.map( (el, key) => {
+                                        let payment_state = '결제 미확인';
+                                        const title = '[ ' + el.order_title + ' ] 상세 정보로 이동';
+
+                                        let delivery_state = '-';
+                                        if(el.payment_state === 1) {
+                                            payment_state = '결제 완료';
+                                            delivery_state = '배송 준비중';
+                                        }
+
+                                        return(
+                                            <div className='order_list_contents_divs font_13 pointer' key={key} title={title}
+                                                id={'order_list_' + el.id}
+                                                onClick={() => _selectDetail(el.id, true)}
+                                            >
+                                                <div className='order_list_top_div'>
+                                                    <div> 주문 번호　|　{el.id} </div>
+                                                    <div className='order_list_contents_date_div'> 주문 일자　|　{el.buy_date}  </div>
+                                                    <div className='order_list_contents_grid_div'> 
+                                                        <div className='aRight'> 결제 현황　|　</div>
+                                                        <div className='bold aLeft' style={ el.payment_state === 1 ? null : { 'color' : '#ababab' } }> {payment_state} </div>
+                                                    </div>
+                                                    {/* <div className='aRight'> 배송 현황　|　배송 준비 중 </div> */}
+                                                    {/* <div className='aRight'> 결제 현황　|　{payment_state} </div> */}
+                                                </div>
+
+                                                <div className='order_list_middle_div'>
+                                                    <div className='order_list_contents_title_div cut_one_line paybook_bold'> {el.order_title} </div>
+                                                    <div className='order_list_contents_grid_div'> 
+                                                        <div className='aRight'> 배송 현황　|　</div>
+                                                        <div className='aLeft'> {delivery_state} </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className='order_list_bottom_div'>
+                                                    <div className='order_list_responsive_div display_none'>
+                                                        <div> 결제 현황　|　<b style={ el.payment_state === 1 ? null : { 'color' : '#ababab' } }>{payment_state} </b> </div>
+                                                        <div> 배송 현황　|　{delivery_state} </div>
+                                                    </div>
+
+                                                    <div className='order_list_detail_move_div'>
+                                                        <u className='remove_underLine pointer gray'> 상세 정보로 이동 ▶ </u>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+
+                            </div>
+                        }
+                        </div>
+                    </div>
+
+                    </div>
+                        : <div id='order_list_detail_info_div'>
+                            <div className='order_list_back_move_div pointer paybook_bold'
+                                 onClick={() => _selectDetail(null, true)}
+                            >
+                                <div> ◀　뒤로 가기 </div>
+                            </div>
+
+                            <div id='order_list_contents_info_div'>
+                                <div className='order_list_detail_info_div'>
+                                    <h3 className='order_title_div'> 주문 정보 </h3>
+
+                                    <div className='order_list_contents'>
+                                        <div className='order_complate_num_div'>
+                                            <div> 주문 번호　|　{order_info.order_id} </div>
+                                            <div> 주문 일자　|　{order_info.buy_date} </div>
+                                        </div>
+
+                                        <div className='order_complate_num_div'>
+                                            <div> 결제 방식　|　{payment_type} {bank_ment !== '' ? <p className='order_list_bank_ment'> {bank_ment} </p> : null} </div>
+                                            <div> 결제 현황　|　<b className={order_info.payment_state !== 1 ? 'gray' : null}>{payment_state} </b> </div>
+                                        </div>
+                                        <div> 배송 현황　|　{delivery_state} </div>
+                                    </div>
+                                </div>
+
+                                <div className='order_list_detail_info_div'>
+                                    <h3 className='order_title_div'> 상품 및 결제 정보 </h3>
+
+                                    <div id='order_list_goods_and_price_div'>
+                                        <div id='order_list_goods_list_div'>
+                                            {cart_data.map( (el, key) => {
+                                                const thumbnail = el.thumbnail ? el.thumbnail : el.goods_thumbnail;
+                                                const name = el.name ? el.name : el.goods_name;
+                                                const num = el.num ? el.num : order_info.goods_num;
+
+                                                const price = el.price ? el.price : order_info.origin_price - order_info.discount_price;
+
+                                                return(
+                                                    <div key={key} className='order_list_goods_div'
+                                                         style={cart_data.length !== (key + 1) ? { 'borderBottom' : 'dotted 1px #ababab' } : null}
+                                                    >
+                                                        <div style={{ 'backgroundImage' : `url(${thumbnail})` }} className='order_list_goods_thumbnail_div'/>
+                                                        <div className='order_list_goods_contents_div'>
+                                                            <div className='order_list_goods_name_div cut_multi_line'> <b className='paybook_bold'> {name} </b> </div>
+                                                            <div className='order_list_num_and_price font_13'> 
+                                                                {price_comma(price)} 원　|　{num} 개
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+
+                                        <div id='order_list_price_info_div'>
+                                            <div className='order_list_price_info_divs'>
+                                                <div className='order_list_price_title_div'> 상품 가격 </div>
+                                                <div className='order_list_price_contents_div'> {price_comma(order_info.origin_price - order_info.discount_price)} 원 </div>
+                                            </div>
+
+                                            <div className='order_list_price_info_divs'>
+                                                <div className='order_list_price_title_div'> 배송비 </div>
+                                                <div className='order_list_price_contents_div'> + {price_comma(order_info.delivery_price)} 원 </div>
+                                            </div>
+
+                                            <div className='order_list_price_info_divs bold' 
+                                                style={order_info.coupon_price + order_info.point_price > 0 ? { 'color' : '#35c5f0' } : { 'color' : '#ababab' } }
+                                            >
+                                                <div className='order_list_price_title_div'> 할인가 </div>
+                                                <div className='order_list_price_contents_div' id='order_list_discount_grid_div'>
+                                                    <div className='aRight'>
+                                                        - {price_comma(order_info.coupon_price + order_info.point_price)} 원
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='order_list_price_info_divs bold' style={{ 'backgroundColor' : 'black', 'color' : 'white' }}>
+                                                <div className='order_list_price_title_div'> 최종 결제가 </div>
+                                                <div className='order_list_price_contents_div'> {price_comma(order_info.final_price)} 원 </div>
+                                            </div>
+
+                                            <div id='order_list_point_and_coupon_info'>
+                                                <div className='order_complate_num_div bold'>
+                                                    <div className={order_info.point_price > 0 ? null : 'gray'}> 
+                                                        사용 포인트　|　- {order_info.point_price > 0 ? price_comma(order_info.point_price) + ' P' : null} 
+                                                    </div>
+
+                                                    <div className={Math.trunc((order_info.origin_price - order_info.discount_price) * 0.01) > 0 ? 'aRight' : 'aRight gray' }> 
+                                                        적립 포인트　|　
+                                                        <b style={ Math.trunc((order_info.origin_price - order_info.discount_price) * 0.01) > 0 ? { 'color' : '#35c5f0' } : null}>
+                                                            {price_comma( Math.trunc((order_info.origin_price - order_info.discount_price) * 0.01)) } P 
+                                                        </b>
+                                                    </div>
+                                                </div>
+
+                                                <div id='order_list_coupon_price_div' className={order_info.coupon_price > 0 ? 'bold' : 'bold gray'}>
+                                                쿠폰 할인가　|　- {order_info.coupon_price > 0 ? price_comma(order_info.coupon_price) + ' 원' : null}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='order_list_detail_info_div'>
+                                    <h3 className='order_title_div'> 배송지 정보 </h3>
+
+                                    <div className='order_list_contents'>
+                                        <div className='order_complate_num_div'>
+                                            <div> 수령인　|　{order_info.get_user_name} </div>
+                                            <div> 연락처　|　{order_info.get_phone} </div>
+                                        </div>
+                                        
+                                        <div> 배송지　|　[ {order_info.get_host_code} ] </div>
+                                        <div> 　　　　　{order_info.get_host} </div>
+                                        <div> 　　　　　{order_info.get_host_detail} </div>
+
+                                        {order_info.delivery_message !== ""
+                                        ? <div> 메세지　|　{order_info.delivery_message} </div>
+                                        : null}
+                                    </div>
+
+                                </div>
+
+                                <div className='order_list_detail_info_div'>
+                                    <h3 className='order_title_div'> 주문자 정보 </h3>
+
+                                    <div className='order_list_contents'>
+                                        <div> 주문인　|　{order_info.post_name} </div>
+                                        <div> 이메일　|　{order_info.post_email} </div>
+                                        <div> 연락처　|　{order_info.post_phone} </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='order_list_back_move_div pointer paybook_bold marginTop_40'
+                                 onClick={() => _selectDetail(null, true)}
+                            >
+                                <div> ◀　뒤로 가기 </div>
+                            </div>
+                        </div>
+                : null}
+            </div>
+        )
+    }
+}
+
+OrderList.defaultProps = {
+}
+  
+  export default connect(
+    (state) => ({
+        order_info : state.order.order_info,
+        now_date : state.config.now_date,
+        start_date : state.order.start_date,
+        end_date : state.order.end_date,
+        start_select_num : state.order.start_select_num,
+        order_loading : state.order.order_loading,
+        order_detail_select : state.order.order_detail_select,
+        order_detail_bool : state.order.order_detail_bool,
+        cart_data : state.order.cart_data
+    }), 
+  
+    (dispatch) => ({
+      configAction : bindActionCreators(configAction, dispatch),
+      myPageAction : bindActionCreators(myPageAction, dispatch),
+      orderAction : bindActionCreators(orderAction, dispatch)
+    })
+  )(OrderList);

@@ -210,11 +210,16 @@ input[type='checkbox'].check_custom_1 {
 
 
 /* 글자수 제한하기 */
-.cut_multi_line {
-  /* 한 줄 자르기 */ 
+
+/* 한 줄 자르기 */ 
+.cut_one_line {
   display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-  
+}
+
+.cut_multi_line {
   /* 여러 줄 자르기 추가 스타일 */ 
+
+  display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
   white-space: normal; line-height: 1.2; height: 2.5em; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 
@@ -222,3 +227,5 @@ input[type='checkbox'].check_custom_1 {
 
 /* button 스타일 */
 .button_style_1 { background-color: #35c5f0; border: none; color: white; font-weight: bold; font-size: 13px; cursor: pointer; border-radius: 5px; }
+
+.react-datepicker__tab-loop { float: left !important; }

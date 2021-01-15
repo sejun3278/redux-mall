@@ -25,7 +25,7 @@ module.exports = {
                 where : { 
                     [Op.and] : { 'user_id' : data.user_id, 'id' : data.id }
                 },
-                attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date']
+                attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'point', 'use_point', 'acc_point', 'signup_date', 'modify_date']
             })
             .then( result => { callback(result) })
             .catch( err => { throw new createError.BadRequest(); })
@@ -170,7 +170,10 @@ module.exports = {
                 password : data.pw,
                 signup_date : data.signup_date,
                 admin : "N",
-                state : 1
+                state : 1,
+                point : 0,
+                use_point : 0,
+                acc_point : 0
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })
@@ -215,7 +218,7 @@ module.exports = {
                 where : { 
                     [Op.and] : { 'user_id' : data.user_id, 'password' : data.pw }
                 },
-                attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date']
+                attributes : ['id', 'user_id', 'nickname', 'name', 'host_code', 'host', 'host_detail', 'email', 'phone', 'signup_date', 'modify_date', 'point', 'use_point', 'acc_point' ]
             })
             .then( result => { callback(result) })
             .catch( err => { throw err })

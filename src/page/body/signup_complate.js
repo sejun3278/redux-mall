@@ -31,7 +31,7 @@ class Signup_complate extends Component {
       return window.location.replace('/');
     }
 
-    await _getCookie('signup', 'remove');    
+    // await _getCookie('signup', 'remove');    
     return signupAction.save_signup_id({ 'id' : check_cookie.id });
   }
 
@@ -53,11 +53,8 @@ class Signup_complate extends Component {
   }
 
     render() {
-      const { _pageMove, _modalToggle, signup_id, save_signup_id } = this.props;
+      const { _pageMove, _modalToggle, signup_id } = this.props;
       const { _moveModifyUserInfo } = this;
-
-      console.log(signup_id)
-      console.log(save_signup_id)
 
         return(
             <div id='signup_complate_div'>

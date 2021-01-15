@@ -3,6 +3,7 @@
         "adminGoodsCode" : {
             "able" : true,
             "admin" : true,
+            "search" : true,
             "discount" : 50,
             "percent" : true,
             "max_discount" : 5000,
@@ -14,6 +15,7 @@
         "test1" : {
             "able" : true,
             "admin" : false,
+            "search" : true,
             "discount" : 1000,
             "percent" : false,
             "max_discount" : 0,
@@ -25,12 +27,25 @@
         "test2" : {
             "able" : true,
             "admin" : false,
+            "search" : true,
             "discount" : 20,
             "percent" : true,
             "max_discount" : 0,
             "limit_price" : 30000,
             "limit_date" : 3,
             "name" : "테스트 쿠폰 2"
+        },
+
+        "welcome" : {
+            "able" : true,
+            "admin" : false,
+            "search" : false,
+            "discount" : 20,
+            "percent" : true,
+            "max_discount" : 10000,
+            "limit_price" : 30000,
+            "limit_date" : 30,
+            "name" : "회원가입 감사 쿠폰 (20% 할인)"
         }
     }
 }

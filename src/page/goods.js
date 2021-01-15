@@ -166,7 +166,7 @@ class Goods extends Component {
 
         goodsAction.save_goods_data({ 'obj' : JSON.stringify(goods_data) })
 
-        return true;
+        return get_data.data[0][0];
     }
 
     // 라이크 정보 가져오기
@@ -406,8 +406,7 @@ class Goods extends Component {
             }
         }
 
-        const obj = { };
-
+        let obj = { };
         if(update === true) {
             obj['type'] = "UPDATE";
             obj['table'] = "cart";
@@ -461,20 +460,23 @@ class Goods extends Component {
 
         } else if(stock_check && define_check) {
             // 장바구니에 추가
-            obj['type'] = 'INSERT';
-            obj['table'] = 'cart'
-            obj['comment'] = '장바구니에 추가하기';
+            // obj['type'] = 'INSERT';
+            // obj['table'] = 'cart'
+            // obj['comment'] = '장바구니에 추가하기';
 
-            obj['columns'] = [];
+            // obj['columns'] = [];
 
-            obj['columns'][0] = { "key" : "user_id", "value" : user_info.id }
-            obj['columns'][1] = { "key" : "goods_id", "value" : goods_data.id }
-            obj['columns'][2] = { "key" : "price", "value" : goods_data.result_price }
-            obj['columns'][3] = { "key" : "num", "value" : goods_num }
-            obj['columns'][4] = { "key" : "state", "value" : 1 }
-            obj['columns'][5] = { "key" : "create_date", "value" : null }
-            obj['columns'][6] = { "key" : "discount", "value" : goods_data.discount_price }
-            obj['columns'][7] = { "key" : "remove_state", "value" : 0 }
+            // obj['columns'][0] = { "key" : "user_id", "value" : user_info.id }
+            // obj['columns'][1] = { "key" : "goods_id", "value" : goods_data.id }
+            // obj['columns'][2] = { "key" : "price", "value" : goods_data.result_price }
+            // obj['columns'][3] = { "key" : "num", "value" : goods_num }
+            // obj['columns'][4] = { "key" : "state", "value" : 1 }
+            // obj['columns'][5] = { "key" : "create_date", "value" : null }
+            // obj['columns'][6] = { "key" : "discount", "value" : goods_data.discount_price }
+            // obj['columns'][7] = { "key" : "remove_state", "value" : 0 }
+
+            obj = await this._addCartData(goods_num, 0);
+            console.log(obj)
         }
 
         goodsAction.like_loading({ 'bool' : true });
@@ -554,6 +556,31 @@ class Goods extends Component {
         }
 
         return goodsAction.like_loading({ 'bool' : false });
+    }
+
+    _addCartData = async (goods_num, remove_state) => {
+        const user_info = JSON.parse(this.props.user_info);
+        const goods_data = JSON.parse(this.props.goods_data);
+        const obj = {};
+
+        // 장바구니에 추가
+        obj['type'] = 'INSERT';
+        obj['table'] = 'cart'
+        obj['comment'] = '장바구니에 추가하기';
+
+        obj['columns'] = [];
+
+        const remove = remove_state ? remove_state : 0;
+        obj['columns'][0] = { "key" : "user_id", "value" : user_info.id }
+        obj['columns'][1] = { "key" : "goods_id", "value" : goods_data.id }
+        obj['columns'][2] = { "key" : "price", "value" : goods_data.result_price }
+        obj['columns'][3] = { "key" : "num", "value" : goods_num }
+        obj['columns'][4] = { "key" : "state", "value" : 1 }
+        obj['columns'][5] = { "key" : "create_date", "value" : null }
+        obj['columns'][6] = { "key" : "discount", "value" : goods_data.discount_price }
+        obj['columns'][7] = { "key" : "remove_state", "value" : remove }
+
+        return obj;
     }
 
     // 카트 중복 처리
@@ -641,10 +668,102 @@ class Goods extends Component {
         }
     }
 
+    // 바로 구매
+    _directBuyGoods = async () => {
+        const { _loginCookieCheck, _getCookie, } = this.props;
+        const { _getGoodsData, _addCartData } = this;
+
+        const goods_num = $('input[name=goods_num]').val();
+        const goods_data = JSON.parse(this.props.goods_data);
+        const user_info = JSON.parse(this.props.user_info)
+
+        const check = await _loginCookieCheck('login');
+        if(check === false) {
+            return;
+        }
+
+        if(goods_num === 0) {
+            return alert('1개 이상 선택해주세요.');
+        }
+
+        if(!window.confirm('해당 물품을 바로 구매하시겠습니까?')) {
+            return;
+        }
+
+        const goods_info = await _getGoodsData(goods_data.id);
+
+        if(goods_num > goods_info.stock) {
+            alert('재고가 부족합니다. \n'+ goods_info.stock + ' 개 까지 구매할 수 있습니다.');
+
+            return window.location.reload();
+        }
+
+        // const cart_add_obj = await _addCartData(goods_num, 1);
+        // await axios(URL + '/api/query', {
+        //     method : 'POST',
+        //     headers: new Headers(),
+        //     data : cart_add_obj
+        // })
+
+        const insert_obj = { 'type' : 'INSERT', 'table' : 'order', 'comment' : '주문 추가하기' };
+
+        const save_cookie = {};
+
+        save_cookie['user_id'] = user_info.id;
+        save_cookie['select_list'] = goods_info.id;
+        save_cookie['goods_num'] = Number(goods_num);
+        save_cookie['direct_buy'] = true;
+
+        // 인증 코드 추가
+        let code = '';
+        for(let i = 0; i < Math.trunc(Math.random() * (10 - 6) + 6); i++) {
+            let number = Math.trunc(Math.random() * (10 - 0) + 0);
+            code += String(number);
+        }
+        save_cookie['code'] = code;
+
+        await _getCookie('order', 'add', JSON.stringify(save_cookie), { 'time' : 60 } );
+
+        insert_obj['columns'] = [];
+
+        const order_title = goods_info.name;
+        const origi_price = Number(goods_info.origin_price * goods_num);
+        // const discount_price = Number(goods_info.result_price * goods_num);
+
+        const discount_price = goods_info.discount_price === 0 ? 0 : (goods_info.origin_price - goods_info.result_price) * goods_num;
+
+        let result_price = Number(origi_price - discount_price);
+        const delivery_price = result_price > 30000 ? 0 : 2500;
+
+        result_price += delivery_price;
+
+        insert_obj['columns'][0] = { "key" : "user_id", "value" : user_info.id };
+        insert_obj['columns'][1] = { "key" : "order_state", "value" : 0 };
+        insert_obj['columns'][2] = { "key" : "cart_list", "value" : JSON.stringify(goods_info.id) };
+        insert_obj['columns'][3] = { "key" : "code", "value" : code };
+        insert_obj['columns'][4] = { "key" : "create_date", "value" : null };
+        insert_obj['columns'][5] = { "key" : "order_title", "value" : order_title };
+        insert_obj['columns'][6] = { "key" : "result_price", "value" : result_price };
+        insert_obj['columns'][7] = { "key" : "discount_price", "value" : discount_price };
+        insert_obj['columns'][8] = { "key" : "delivery_price", "value" : delivery_price };
+        insert_obj['columns'][9] = { "key" : "origin_price", "value" : origi_price };
+        insert_obj['columns'][10] = { "key" : "goods_num", "value" : goods_num };
+        insert_obj['columns'][11] = { "key" : "order_type", "value" : 0 };
+        insert_obj['columns'][12] = { "key" : "payment_state", "value" : 0 };
+        
+        await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : insert_obj
+        })
+
+        return window.location.href='/myPage/order';
+    }
+
     render() {
         const { goods_loading, _searchCategoryName, _pageMove, price_comma, like_state, goods_result_price, goods_num, overlap_cart, add_complate, open_fixed } = this.props;
         const goods_data = JSON.parse(this.props.goods_data);
-        const { _likeGoods, _likeMouseToggle, _setGoodsNumber, _moveScroll, _addCartGoods, _overlapCartData, _toggleFixedInfo, _clickComplateButton } = this;
+        const { _likeGoods, _likeMouseToggle, _setGoodsNumber, _moveScroll, _addCartGoods, _overlapCartData, _toggleFixedInfo, _clickComplateButton, _directBuyGoods } = this;
         
         let first_cat = '';
         let last_cat = '';
@@ -754,7 +873,7 @@ class Goods extends Component {
                                                     overlap_cart === false 
                                                     ?
                                                     <div id='default_add_cart_grid_div' className='add_cart_complate_grid_divs'>
-                                                        <div className='border_right'> 바로 구매 </div>
+                                                        <div className='border_right' onClick={_directBuyGoods}> 바로 구매 </div>
                                                         <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}> <img src={icon.my_page.cart_plus} /> 장바구니 </div>
                                                     </div>
 
@@ -837,7 +956,7 @@ class Goods extends Component {
                                                     overlap_cart === false 
                                                     ?
                                                     <div className='add_cart_complate_grid_divs'>
-                                                        <div className='border_right'> 바로 구매 </div>
+                                                        <div className='border_right' onClick={_directBuyGoods}> 바로 구매 </div>
                                                         <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}>  <img src={icon.my_page.cart_plus} /> 장바구니 </div>
                                                     </div>
 
@@ -951,7 +1070,7 @@ class Goods extends Component {
 
                                                     ?
                                                     <div id='goods_fixed_allow_buy_div' className='goods_other_divs border_top_black border_width_2 bold grid_half marginTop_20' >
-                                                        <div className='border_right_black border_width_2 pointer'> 바로 구매 </div>
+                                                        <div className='border_right_black border_width_2 pointer' onClick={_directBuyGoods}> 바로 구매 </div>
                                                         <div className='pointer' onClick={() => _addCartGoods(null, null)}> 장바구니 </div>
                                                     </div>
 

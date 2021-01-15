@@ -142,7 +142,8 @@
 #cart_delivery_alert_div { min-width: 290px; position: absolute !important;  margin: 50px 0px 0px 20px; }
 #cart_middle_layout { height: 50px; }
 
-.cart_grid_div { line-height: 30px; display: grid; grid-template-columns: 160px auto; font-size: 14px; }
+.cart_grid_div { margin: 15px; line-height: 50px; display: grid; grid-template-columns: 160px auto; font-size: 14px; font-weight: bold; }
+#cart_point_div div { margin-top: -15px; }
 #cart_add_coupon_button { min-width: 100px; width: 12%; height: 25px; }
 
 /* 장바구니 */
@@ -156,7 +157,7 @@
 .order_price_div { display : grid; grid-template-columns: 120px auto; text-align: right; margin: 5px 15px 0px 15px; padding: 15px 15px 15px 15px; }
 #order_result_price_div { background-color: black; color: white;}
 
-.order_delivery_top_div { display: grid; grid-template-columns: 220px auto; margin : 25px 0px 10px 20px;  }
+.order_delivery_top_div { font-weight: bold; display: grid; grid-template-columns: 220px auto; margin : 25px 0px 10px 20px;  }
 .order_delivery_top_div div input { height: 35px; line-height: 35px; padding-left: 10px; max-width: 80%; border: solid 1px #ababab; }
 
 .order_delivery_input_1 { min-width: 160px; width: 30%; }
@@ -167,21 +168,59 @@
 #close_order_delivery_code { width: 20px; margin: -70px 0px 0px 310px; float: left; }
 
 #user_info_agree_input { margin: 5px 0px 0px 10px; }
-#order_userInfo_agree_div { margin : 30px 0px 0px 20px; }
+#order_userInfo_agree_div { margin : 20px 0px 0px 20px; }
 #order_agree_notice_div { font-size: 12px; color: #ababab; margin-top:  5px; }
 
 .order_delivery_top_div { font-size: 13px; line-height: 40px; }
 #same_delivery_info { margin-left: 10px; font-size: 12px; }
 
 #order_coupon_add_button { background-color: #35c5f0; border: none; min-width: 100px; border-radius: 5px; padding: 0px; }
-#cart_coupon_div { margin: 15px; }
 
-#cart_coupon_list_div { margin-top: -15px; }
+#cart_coupon_list_div { margin-top: -15px; padding-left: 20px; }
 #cart_remove_coupon { width: 20px; position: absolute; margin: 5px 0px 0px 0px; }
 
 #cart_coupon_content_list_div div { float: left; margin-right: 20px; }
 #cart_coupon_price_div { background-color: #a3d2ca; }
 #cart_coupon_icon { margin-top: -40px; margin-left: 130px; }
+
+#cart_origin_prices_div { border: solid 2px black; }
+
+#order_bill_list_div { margin: 80px 15px 0px 15px !important; font-weight: bold; font-size: 14px !important; }
+#order_bill_list_div .order_delivery_top_div { height: 60px; line-height: 60px; margin: 0px 0px 0px 0px !important; border-bottom: solid 1px #ababab; }
+#order_bill_list_div .order_bill_contents_div { text-align: right; margin-right: 20px; }
+#order_bill_list_div .order_bill_title_div { font-weight: bold; padding-left: 20px; }
+
+#order_bill_result_div { background-color: #ababab; color: white; border-top: solid 2px white; border-bottom: solid 2px white; }
+.order_bill_option_div { border-top: dotted 3px #ababab; border-bottom: dotted 3px #ababab !important; color: #ababab; }
+/* #order_final_price_bill { background-color: black; color : white; border-top: dotted 3px #ababab; } */
+
+#order_final_price_bill .order_bill_title_div { padding-left: 0px !important; }
+#order_final_price_bill .order_bill_contents_div { margin-right: 0px !important; }
+#order_final_price_bill { display: grid; grid-template-columns: 45% auto; font-size: 19px; margin-top: 60px; }
+
+input[name=use_point_input] { height: 20px !important; padding: 5px; margin-right: 5px; }
+#order_save_user_info_close_icon { width: 20px; float: right; margin-top: -80px; }
+#order_save_user_info_agree_div h4 { padding-bottom: 20px; }
+
+#order_save_user_info_contents_div { height: 300px; overflow-y: auto; border: solid 1px #ababab; padding: 10px; }
+#order_save_user_info_agree_button { margin-top: 20px; border-radius: 5px; padding: 10px; background-color: #35c5f0; line-height: 25px; height: 20px; }
+#order_payment_final_button input{ width: 100%; height: 120px; line-height: 120px; font-size: 22px; background-color: black; color: #35c5f0; }
+
+#order_save_user_info_div { margin-bottom: 0px !important; margin-top: 40px; text-align: right; font-size: 15px; }
+#order_save_user_info_div input { height: 30px; line-height: 30px; width: 120px; background-color: #6f9eaf !important; }
+#order_point_info_div { margin-top: 50px !important; }
+/* #order_payment_final_button input { background-color: black; color: #35c5f0; } */
+/* #order_point_info_div .order_delivery_top_div { grid-template-columns: 45% auto; } */
+
+#order_select_payment_type_div { margin: 30px 25px 0px 10px !important; font-size: 15px; line-height: 30px; }
+.order_select_divs_title { padding: 10px 15px 2px 15px; color: #ababab; margin-top: 20px; }
+.order_select_divs { border-bottom: dotted 1px #ababab; }
+
+#order_payment_agree_div { margin-top: 80px; font-size: 13px; }
+#order_payment_agree_div div label { padding-left: 10px; }
+
+#order_payment_agree_div div { margin-bottom: 10px; }
+/* .order_select_contnets_div { display: none; } */
 
 /* /////////////////////////////////////////////////////////// */
 /* 쿠폰 리스트 */
@@ -195,7 +234,7 @@
 
 #coupon_list_div { display: inline-block; width: 100%; margin-top : 90px; }
 
-.coupon_div_style { padding : 3px; height: 30px; line-height: 30px; display: grid; grid-template-columns: 80px 70% auto; }
+.coupon_div_style { padding : 3px; height: 30px; line-height: 30px; display: grid; grid-template-columns: 80% auto; }
 .coupon_div_style div { padding-left: 15px; font-size: 14px;  border-right: solid 1px white; }
 .coupon_list_divs { padding: 8px 3px 8px 3px; height: auto; line-height: 30px; }
 
@@ -224,17 +263,117 @@
 #coupon_submit_button_div { height: 30px; line-height: 30px; font-size: 13px; margin-top: 10px; }
 .select_coupon { border : solid 3px #35c5f0 }
 
+/* ////////////////////////////////////////////////////// */
+#order_complate_div { margin: 60px 50px 0px 50px; }
+#order_complate_comment_div { color: #11698e; }
+#order_complate_cart_list_div { margin-top: 100px; }
+.order_complate_cart_list { display: grid; grid-template-columns: 120px auto; margin-bottom: 25px; border-bottom: dotted 1px #ababab; padding-bottom: 10px;  }
+.order_complate_thumbnail_div { width: 100%; height: 100px; background-size: contain; background-repeat: no-repeat; background-position-x: center; margin : 5px; }
+.order_complate_list_contents_div { margin: 15px 10px 0px 30px; }
+.order_complate_list_contents_name { height: 2.2em; }
+.order_complate_price_div { margin-top: 20px; }
+
+.order_complate_divs { margin-top: 100px; }
+#order_complate_payment_div { padding: 5px; border-radius: 5px; }
+#order_complate_payment_grid_div { margin : 0px 20px 0px 20px !important; display: grid; grid-template-columns: 40% 40% 20%; }
+.order_complate_price_grid_div { display: grid; grid-template-columns: 90px auto; }
+.order_complate_price_contents_div { height: 70px; line-height: 50px; font-size: 14px; margin-top: 40px; }
+#order_complate_discount_div { line-height: 30px; margin-left: 0px; color: #35c5f0; font-weight: bold; }
+
+.order_complate_contents_grid_div_name { font-weight: bold; text-align: right; margin-right: 5px; }
+
+#order_complate_only_final_price { font-size: 20px !important; text-align: right; margin-right: 20px; }
+#order_complate_only_final_price h4, #order_complate_only_final_price div { float: left; }
+#order_complate_only_final_price .order_complate_price_contents_div { display : contents; line-height: 85px; margin-top: 15px; font-size: 20px; }
+
+/* #order_complate_contents_div { line-height: 35px; } */
+#order_complate_info_div { margin-bottom: 50px; }
+.order_complate_contents_grid_div { display: grid; grid-template-columns: 130px auto; font-size: 14px; margin-bottom: 20px; }
+.order_complate_num_div { display: grid; grid-template-columns: 57% auto; }
+#bank_pay_comment { text-decoration: none; font-weight : bold; color : #ababab; margin-left: 10px; }
+/* ////////////////////////////////////////////////////// */
+
+#order_list_origin_page { margin: 35px 40px 0px 40px !important; }
+/* #order_list_date_grid_div { display: grid; grid-template-columns: 410px auto; } */
+#order_list_set_date_div { line-height: 20px; display: grid; grid-template-columns: 100px auto; }
+#order_list_set_date input { width: 100px !important; padding: 4px; }
+
+.order_list_select_grid_div { line-height: 30px; margin-top: 20px; display: grid; grid-template-columns: 20% 20% 20% 20% 20%; }
+.order_list_select_grid_div div { font-size: 11px !important; border: solid 1px #ababab; border-radius: 5px; text-align: center; width: 80%; cursor: pointer; }
+/* .order_list_select_grid_div div { float: left; min-width: 60px; cursor: pointer; border : solid 1px #ababab; text-align: center; border-radius: 5px; margin-left: 5px; } */
+#select_month { background-color: #35c5f0; color: white; font-weight: bold; }
+#filter_month { background-color: #6f9eaf; }
+
+#order_list_search_option_div { border-top: solid 1px #ababab; margin-top: 20px; min-height: 350px; }
+#order_list_empty_title { margin-top: 80px; }
+
+#order_list_option_div { margin-top: 60px; border-bottom: dotted 1px #ababab; padding-bottom: 15px;}
+#order_list_option_div h4 { color: #35c5f0; border-bottom: dotted 1px #aabbaa; margin-top: 20px; padding-bottom: 15px; }
+#order_list_option_ul { margin-left: 10px; font-size: 11px; }
+#order_list_option_ul li b { margin-left: 5px; }
+
+.order_list_remove_icon { width: 12px; position: absolute; margin: 0px 0px 0px 10px; cursor: pointer; }
+
+#order_length_result_div { margin-top: 90px; font-size: 14px; }
+#order_list_contents_div { margin-top: 20px; border-top: solid 1px #ababab; }
+
+.order_list_contents_divs { margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: dotted 1px #ababab; }
+.order_list_top_div { display: grid; grid-template-columns: 20% 50% auto; }
+.order_list_contents_date_div { text-align: center; margin-right: 10px; }
+
+.order_list_contents_grid_div { display: grid; grid-template-columns: 60% auto; }
+
+.order_list_middle_div { margin-top: 20px; display: grid; grid-template-columns: 70% auto; }
+.order_list_contents_title_div { font-weight: bold; font-size: 15px; margin-left: 10px; width: 85%; }
+/* #order_list_date_select_gird_div { display: grid; grid-template-columns: 70% 30%; } */
+.order_list_detail_move_div { margin-top: 20px; text-align: right; margin-right: 10px; }
+
+.order_list_back_move_div { border-bottom: solid 2px black; height: 60px; line-height: 65px; background-color: black; color: white; font-size: 18px; }
+.order_list_back_move_div div { padding-left: 20px; }
+
+#order_list_contents_info_div { margin-top: 35px !important; }
+.order_list_detail_info_div { margin: 80px 20px 0px 20px !important; padding-bottom: 30px; }
+
+.order_list_contents { margin-left: 20px; margin-right: 20px; font-size: 14px; line-height: 30px; }
+.order_list_bank_ment { margin-top: 0px; color: #ababab; font-size: 13px; margin-left: 20px; }
+
+#order_list_goods_list_div { border-bottom: solid 2px black; padding-bottom: 0px; }
+.order_list_goods_div { display: grid; grid-template-columns: 100px auto; margin: 20px 10px 10px 10px; padding-bottom: 10px; }
+.order_list_goods_thumbnail_div { width: 70px; height: 70px; background-repeat: no-repeat; background-size: contain; margin-left: 10px; }
+.order_list_goods_contents_div { font-size: 14px; margin-left: 10px; }
+.order_list_num_and_price { margin-top: 25px; }
+.order_list_goods_name_div { line-height: 1.0; width: 98%; }
+
+#order_list_price_info_div { margin-top: 0px; }
+.order_list_price_info_divs { display: grid; grid-template-columns: 130px auto; line-height: 50px; border-bottom: dotted 1px #ababab; font-size : 14px }
+.order_list_price_title_div { padding-left: 10px; border-right: solid 1px #ababab; padding-right: 15px; }
+.order_list_price_contents_div { text-align: right; margin-right: 20px; }
+
+#order_list_point_and_coupon_info { margin-top: 40px; font-size: 14px; margin-left: 38px; margin-right: 30px; }
+#order_list_coupon_price_div { margin-top: 5px; }
+@media (max-width : 1060px) {
+    /* #order_list_set_date_div { grid-template-columns: 80px auto; } */
+    /* #order_list_date_grid_div { grid-template-columns: 380px auto; } */
+}
+
 @media (max-width : 1051px) {
     #coupon_add_input_div { margin-top: 0px !important; }
+    #order_list_origin_page { margin-left: 20px !important; margin-right: 20px !important; }
 }
 
 @media (max-width : 950px) {
     #cart_list_div { margin-left: 30px; margin-right: 30px !important; }
+    #order_complate_payment_grid_div { margin-left: -10px !important; margin-right: -10px !important; }
 }
 
 @media (max-width : 880px) {
     .my_like_list_disable_div { width: 100%; }
     .cart_disable_divs { width: 100%; }
+}
+
+@media (max-width : 670px) {
+    /* #order_list_date_grid_div { display: block; } */
+    /* #order_list_select_date_div { margin: 10px 0px 0px 0px; } */
 }
 
 @media (max-width : 660px) {
@@ -253,7 +392,12 @@
     .cart_disable_divs .cart_disable_title_div { margin-top : 90px !important }
 
     #coupon_add_input_div { margin-left: 10px !important; }
+    #order_complate_payment_grid_div { margin: 0px !important; }
+}
 
+@media (max-width : 620px) {
+    .order_list_top_div { grid-template-columns: 22% 42% auto; }
+    .order_list_middle_div { grid-template-columns: 64% auto; }
 }
 
 @media (max-width : 600px) {
@@ -263,7 +407,29 @@
     .order_delivery_top_div { grid-template-columns: 140px auto; }
     #order_delivery_info_div { font-size: 14px; line-height: 40px; }
 
-    .coupon_div_style { grid-template-columns: 80px 65% auto; }
+    #order_complate_payment_grid_div { display: inline-block; width: 100%; }
+    .order_complate_payment_other_div { display: grid; grid-template-columns: 120px auto; text-align: left; }
+    .order_complate_price_contents_div { margin-top: 8px; text-align: right; }
+    #order_complate_discount_price_div { border-bottom: solid 1px black; padding-bottom: 20px; }
+
+    .order_complate_price_grid_div { grid-template-columns: 55% auto; }
+    .order_complate_num_div { display: block; }
+    .order_complate_contents_grid_div div { text-align: right; }
+    .order_complate_contents_show_div { text-align: left !important; }
+    /* .coupon_div_style { grid-template-columns: 80px 65% auto; } */
+
+    .order_list_contents_grid_div { display: none; }
+    .order_list_top_div { grid-template-columns: 35% auto }
+    .order_list_middle_div { grid-template-columns: 100% }
+    .order_list_contents_date_div { text-align: right; }
+
+    .order_list_responsive_div { display: grid !important; line-height: 20px; }
+    .order_list_bottom_div { display: grid !important; grid-template-columns: 70% auto !important; margin-top: 20px; }
+    .order_list_detail_move_div { margin-top: 0px; }
+
+    .order_list_bank_ment { float : right }
+    #order_list_point_and_coupon_info { line-height: 30px; margin-top: 30px; margin-left: 10px; }
+    #order_list_point_and_coupon_info div { text-align: left; }
 }
 
 @media (max-width : 570px) {
@@ -274,13 +440,15 @@
 @media (max-width : 550px) {
     #order_delivery_host_code_input { min-width: 80px; width: 15%; }
 
-    .coupon_div_style { grid-template-columns: 80px auto; }
-    #coupon_date_other_div, .coupon_limit_date_div { display: none; }
+    /* .coupon_div_style { grid-template-columns: 80px auto; } */
+    /* #coupon_date_other_div, .coupon_limit_date_div { display: none; } */
 
     #coupon_name_other_div, .coupon_name_div { border-right: none !important; }
 
     #cart_coupon_list_div { grid-template-columns: 5px auto !important; line-height: 20px !important; }
     #cart_remove_coupon { margin-top: 0px; }
+
+    /* .order_complate_num_div { display: grid; grid-template-columns: 50% auto; } */
 }
 
 @media (max-width : 500px) {
@@ -293,15 +461,25 @@
     .order_delivery_top_div { grid-template-columns: 120px auto; }
     #order_delivery_info_div { font-size: 13px; line-height: 35px; }
 
+    #order_complate_cart_list_div { margin-top: 70px; }
     #coupon_empty_div { text-align: center; margin-left: 0px !important; }
+    #order_complate_div { margin-left: 10px; margin-right: 10px; }
+    /* #order_bill_list_div { margin: 80px 15px 0px 15px !important; } */
+
+    #order_complate_payment_grid_div { margin-left: 0px !important; margin-right: 0px !important; }
+    #order_complate_contents_div { margin-right: 20px; }
+    .order_list_bottom_div { grid-template-columns: 60% auto !important; }
 }
 
 @media (max-width : 450px) {
-    .order_delivery_top_div { grid-template-columns: 100px auto; margin-left: 0px; }
+    .order_delivery_top_div { grid-template-columns: 120px auto; margin-left: 0px; }
     #order_delivery_info_div { font-size: 13px; line-height: 35px; }
 
     #cart_list_div { margin-left: 15px; margin-right: 15px !important; }
     #cart_coupon_list_div { margin-left: 20px; }
+
+    #order_bill_list_div { margin-left: 0px !important; margin-right: 0px !important; }
+    .order_list_bank_ment { float: none !important; }
 }
 
 @media (max-width : 424px) {
@@ -320,6 +498,13 @@
     #coupon_list_each_div { margin-left: 10px; margin-right: 10px; overflow-y: auto; }
     .coupon_list_each_name_div h4 { font-size: 14px; }
     #coupon_list_contents_divs { padding: 5px; }
+
+    #order_list_set_date_div { font-size: 12px !important; grid-template-columns: 70px auto !important; }
+    #order_list_origin_page { margin: 30px 10px 0px 15px !important; }
+
+    /* #order_list_set_date div { float: left !important; } */
+    #order_list_set_date input { width: 80px !important; }
+    #order_list_discount_grid_div { display: block; }
 }
 
 @media (max-width : 400px) {
@@ -344,21 +529,40 @@
     .order_delivery_top_div div { margin: 0px 15px 0px 15px; }
 
     #coupon_list_other_div { border-left: none; border-right: none; border-top: solid 2px black; border-bottom: solid 2px black; }
-    .coupon_div_style { grid-template-columns: 60px auto; border-left: none; border-right: none; }
+    .coupon_div_style { border-left: none; border-right: none; }
     .coupon_responsive_date_div { display: block !important; }
 
     .coupon_responsive_grid_div { display: grid; grid-template-columns: 63px auto; }
     .coupon_responsive_grid_div div { padding : 10px 0px 10px 15px; font-size: 13px; border-bottom: solid 2px black;}
     .coupon_responsive_date_divs { padding-right: 15px; }
 
-    #cart_list_div { margin-left: 5px; margin-right: 5px !important; }
+    #cart_list_div { margin-left: 0px; margin-right: 0px !important; }
 
     /* #coupon_other_div { margin-left: 20px; } */
     /* .order_div_style { margin-left: 15px !important; margin-right: 15px !important; } */
     #coupon_list_each_div { margin-left: 20px; margin-right: 20px; }
     .coupon_list_each_date_div b { width: 80%; margin-left: 10%; }
     #coupon_list_each_close_button { right: 40px; }
+
+    #order_bill_list_div .order_delivery_top_div .order_bill_title_div { margin: 0px 0px 0px 0px !important; }
+    #order_final_price_bill { margin-left: 20px !important; margin-right: 30px !important; }
+    #order_save_user_info_div { margin-right: 30px; }
+
+    #coupon_date_other_div, .coupon_limit_date_div { display: none; }
+    .coupon_div_style { display: block; }
+    #coupon_list_other_div { display: none; }
+
+    #order_payment_agree_div { margin: 50px 20px 0px 20px !important; }
+    #order_complate_div { margin-left: 0px; margin-right: 0px; }
+
+    /* #order_list_origin_page { margin-left: 0px !important; margin-right: 0px !important; paddin } */
+
+    .order_list_top_div { display: block; }
+    .order_list_contents_date_div { text-align: left; }
+    .order_list_detail_info_div { margin-left: 0px !important; margin-right: 0px !important; }
+    #order_list_point_and_coupon_info { margin-left: 20px; }
 }
+
 
 @media (max-width : 366px) {
     /* #order_delivery_host_code_input { min-width: 90% !important; } */
@@ -384,6 +588,9 @@
     .my_like_price_div h3 { font-size: 16px; }
     .my_like_list_disable_div { height: 185px; }
     .my_like_list_disable_div div { margin-top: 30px; }
+    #order_delivery_host_code_button { min-width: 70px !important; text-align: center; padding-left: 5px; font-size: 12px; }
+
+    .order_complate_price_grid_div { grid-template-columns: 35% auto; }
 }
 
 @media (max-width : 350px) {
@@ -402,11 +609,12 @@
     #order_delivery_host_code_input { min-width: 60px; width: 15%; }
 
     .order_delivery_input_1, .order_delivery_input_2 { min-width: 170px !important; }
-    #order_delivery_host_code_button { min-width: 100px !important; width: 10% !important; }
 
     input[name=coupon_add_code] { width: 50%; }
     #coupon_add_button { width: 95% !important; margin-left: 0px; margin-top: 10px; }
 
     #coupon_list_each_div { margin-left: 40px; margin-right: 40px; }
+    #order_delivery_host_code_button { min-width: 50% !important; }
 
+    #bank_pay_comment { display: block; margin-left: 0px !important; }
 }

@@ -12,6 +12,8 @@ const SETCONFIRMNUMBER = 'config/set_confirm_number';
 const SAVEUSERID = 'config/save_user_id';
 const SELECTCATDATA = 'config/select_cat_data';
 const SETLOADING = 'config/set_loading';
+const TOGGLEAGREEMODAL = 'config/toggle_agree_modal';
+const SETINITDATE = 'config/set_init_date';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -25,6 +27,8 @@ export const set_confirm_number = createAction(SETCONFIRMNUMBER);
 export const save_user_id = createAction(SAVEUSERID);
 export const select_cat_data = createAction(SELECTCATDATA);
 export const set_loading = createAction(SETLOADING);
+export const toggle_agree_modal = createAction(TOGGLEAGREEMODAL);
+export const set_init_date = createAction(SETINITDATE);
 
 const initialState = {
     login : false,
@@ -50,7 +54,9 @@ const initialState = {
     select_cat_open : false,
     select_cat : null,
     select_last_cat : null,
-    loading : false
+    loading : false,
+    user_info_agree_modal : false,
+    now_date : null
 }
 
 export default handleActions({
@@ -158,6 +164,20 @@ export default handleActions({
             ...state,
             loading : true
         }
-    } 
+    },
+
+    [TOGGLEAGREEMODAL] : (state, data) => {
+        return {
+            ...state,
+            user_info_agree_modal : data.payload.bool
+        }
+    },
+
+    [SETINITDATE] : (state, data) => {
+        return {
+            ...state,
+            now_date : data.payload.date
+        }
+    }
 
 }, initialState);

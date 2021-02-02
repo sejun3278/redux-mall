@@ -14,6 +14,11 @@ const SELECTCATDATA = 'config/select_cat_data';
 const SETLOADING = 'config/set_loading';
 const TOGGLEAGREEMODAL = 'config/toggle_agree_modal';
 const SETINITDATE = 'config/set_init_date';
+const SAVEPAGINGDATA = 'config/save_paging_data'
+const TOGGLEFIRSTMOVE = 'config/toggle_first_move'; 
+const TOGGLEREVIEWMODAL = 'config/toggle_review_modal'; 
+const SETSCROLL = 'config/set_scroll';
+const REMOVING = 'config/removing';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -29,6 +34,11 @@ export const select_cat_data = createAction(SELECTCATDATA);
 export const set_loading = createAction(SETLOADING);
 export const toggle_agree_modal = createAction(TOGGLEAGREEMODAL);
 export const set_init_date = createAction(SETINITDATE);
+export const save_paging_data = createAction(SAVEPAGINGDATA);
+export const toggle_first_move = createAction(TOGGLEFIRSTMOVE);
+export const toggle_review_modal = createAction(TOGGLEREVIEWMODAL);
+export const set_scroll = createAction(SETSCROLL);
+export const removing = createAction(REMOVING);
 
 const initialState = {
     login : false,
@@ -56,7 +66,26 @@ const initialState = {
     select_last_cat : null,
     loading : false,
     user_info_agree_modal : false,
-    now_date : null
+    now_date : null,
+    now_page : 1,
+    paging_cnt : 0,
+    paging_show : 20,
+    first_move : true,
+    review_modal : false,
+    review_select : null,
+    review_scroll : 0,
+    review_info : JSON.stringify([]),
+    review_loading : false,
+    review_goods_id : null,
+    review_star : 0,
+    review_writing : false,
+    review_callback : null,
+    review_order_id : null,
+    review_length : 0,
+    review_scrolling : false,
+    scroll : 0,
+    scrolling : false,
+    removing : false
 }
 
 export default handleActions({
@@ -177,6 +206,55 @@ export default handleActions({
         return {
             ...state,
             now_date : data.payload.date
+        }
+    },
+
+    [SAVEPAGINGDATA] : (state, data) => {
+        return {
+            ...state,
+            now_page : data.payload.now_page !== undefined ? data.payload.now_page : state.now_page,
+            paging_cnt : data.payload.cnt !== undefined ? data.payload.cnt : state.paging_cnt,
+            paging_show : data.payload.paging_show !== undefined ? data.payload.paging_show : state.paging_show
+        }
+    },
+
+    [TOGGLEFIRSTMOVE] : (state) => {
+        return {
+            ...state,
+            first_move : false
+        }
+    },
+
+    [TOGGLEREVIEWMODAL] : (state, data) => {
+        return {
+            ...state,
+            review_modal : data.payload.bool !== undefined ? data.payload.bool : state.review_modal,
+            review_select : data.payload.select !== undefined ? data.payload.select : state.review_select,
+            review_scroll : data.payload.scroll !== undefined ? data.payload.scroll : state.review_scroll,
+            review_info : data.payload.arr !== undefined ? data.payload.arr : state.review_info,
+            review_loading : data.payload.loading !== undefined ? data.payload.loading : state.review_loading,
+            review_goods_id : data.payload.goods_id !== undefined ? data.payload.goods_id : state.review_goods_id,
+            review_star : data.payload.star !== undefined ? data.payload.star : state.review_star,
+            review_writing : data.payload.writing !== undefined ? data.payload.writing : state.review_writing,
+            review_callback : data.payload.callback !== undefined ? data.payload.callback : state.review_callback,
+            review_order_id : data.payload.order_id !== undefined ? data.payload.order_id : state.review_order_id,
+            review_length : data.payload.length !== undefined ? data.payload.length : state.review_length,
+            review_scrolling : data.payload.scrolling !== undefined ? data.payload.scrolling : state.review_scrolling
+        }
+    },
+
+    [SETSCROLL] : (state, data) => {
+        return {
+            ...state,
+            scroll : data.payload.num !== undefined ? data.payload.num : state.scroll,
+            scrolling : data.payload.bool !== undefined ? data.payload.bool : state.scrolling
+        }
+    },
+
+    [REMOVING] : (state, data) => {
+        return {
+            ...state,
+            removing : data.payload.bool !== undefined ? data.payload.bool : state.removing
         }
     }
 

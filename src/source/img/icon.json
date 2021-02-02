@@ -12,7 +12,14 @@
         "window_icon" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/icon_all.png",
         "close_circle" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle.png",
         "close_circle_white" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle_white.png",
-        "close_circle_gray" : " https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle_gray.png"
+        "close_circle_gray" : " https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/close_circle_gray.png",
+        "reload" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/reload.png",
+        "lock" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/lock.png",
+        "filter" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/filter.png",
+        "filter_empty" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/filter_empty.png",
+        "filter_full" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/filter_full.png",
+        "plus" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/plus.png",
+        "minus" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/minus.png"
     },
 
     "my_page" : {
@@ -48,7 +55,9 @@
     },
 
     "angel" : {
-        "angel_right_orange" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/orange_right_angel.png"
+        "angel_right_orange" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/orange_right_angel.png",
+        "next_move" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/next_move.png",
+        "prev_move" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/prev_move.png"
     },
 
     "goods" : {

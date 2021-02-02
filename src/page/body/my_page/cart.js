@@ -788,10 +788,10 @@ class Cart extends Component {
                             </div>
                         </div>
 
-                        : <div className='aCenter' id='empty_cart_div'>
+                        : <div className='aCenter empty_cart_div'>
                             <h3 className='t_money_font'> 장바구니가 비어있습니다. </h3>    
 
-                            <div id='empty_select_div'> 
+                            <div className='empty_select_div'> 
                                 <u className='pointer remove_underLine'
                                    onClick={() => window.location.href='/search'}> 
                                     ◁　상품 보러 가기 

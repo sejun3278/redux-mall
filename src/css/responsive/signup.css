@@ -55,8 +55,7 @@
 
 @media ( max-width: 880px ) {
     #body_div { grid-template-columns: 5% 90% 5% !important; }
-    #body_div_left { border-right : none !important }
-    #body_div_right { border-left : none !important }
+    #body_div_center { border-right : none !important; border-left : none !important; }
 
     #signup_agree_div { margin-left: 60px !important; }
 

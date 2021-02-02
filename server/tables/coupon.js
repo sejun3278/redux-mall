@@ -75,13 +75,20 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING(20),
           allowNull : true
   
-            // 사용한 기간
+            // 사용한 날짜
         },
 
         'use_order_id' : {
           type: DataTypes.INTEGER(10),
           allowNull : true
         },
+
+        'cancel_date' : {
+          type: DataTypes.STRING(20),
+          allowNull : true
+  
+            // 취소한 날짜
+        }
       },
       {
         charset: 'utf8',

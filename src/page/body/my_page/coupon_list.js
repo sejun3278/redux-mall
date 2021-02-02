@@ -63,8 +63,6 @@ class Coupon_list extends Component {
             obj['final_price'] = 0;
         }
 
-        console.log(obj['final_price'])
-        console.log(result_price, cart_discount_price, cart_delivery_price, cover_coupon_price)
         myPageAction.select_coupon({ 'obj' : JSON.stringify(cover_coupon_select) });
         myPageAction.save_cart_result_price(obj);
 

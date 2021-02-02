@@ -11,6 +11,7 @@ const TOGGLEPAYMENTAGREE = 'order/toggle_payment_agree';
 const TOGGLEPAYMENTSELECT = 'order/toggle_payment_select';
 const SETDATE = 'order/set_date';
 const SELECTORDERDETAIL = 'order/select_order_detail';
+const TOGGLECANCELMODAL = 'order/toggle_cancel_modal';
 
 export const save_order_info = createAction(SAVEORDERINFO);
 export const toggle_delivery_code_modal = createAction(TOGGLEDELIVERYCODEMODAL);
@@ -23,10 +24,12 @@ export const toggle_payment_agree = createAction(TOGGLEPAYMENTAGREE);
 export const toggle_payment_select = createAction(TOGGLEPAYMENTSELECT);
 export const set_date = createAction(SETDATE);
 export const select_order_detail = createAction(SELECTORDERDETAIL);
+export const toggle_cancel_modal = createAction(TOGGLECANCELMODAL);
 
 const initialState = {
     order_loading : false,
     order_info : JSON.stringify({}),
+    order_list_info : JSON.stringify({}),
     cart_data : JSON.stringify({}),
     order_delivery_code_modal : false,
     order_host_code : "",
@@ -44,7 +47,9 @@ const initialState = {
     end_date : null,
     start_select_num : null,
     order_detail_select : null,
-    order_detail_bool : false
+    order_detail_bool : false,
+    order_cancel_modal : false,
+    order_canceling : false
 };
 
 export default handleActions({
@@ -52,6 +57,7 @@ export default handleActions({
       return {
         ...state,
         order_info : data.payload.order_info !== undefined ? data.payload.order_info : state.order_info,
+        order_list_info : data.payload.order_list_info !== undefined ? data.payload.order_list_info : state.order_list_info,
         cart_data : data.payload.cart_data !== undefined ? data.payload.cart_data : state.cart_data,
         order_loading : data.payload.loading !== undefined ? data.payload.loading : state.order_loading
       };
@@ -131,6 +137,14 @@ export default handleActions({
         ...state,
         order_detail_select : data.payload.id !== undefined ? data.payload.id : state.order_detail_select,
         order_detail_bool : data.payload.bool !== undefined ? data.payload.bool : state.order_detail_bool
+      }
+    },
+
+    [TOGGLECANCELMODAL] : (state, data) => {
+      return {
+        ...state,
+        order_cancel_modal : data.payload.bool !== undefined ? data.payload.bool : state.order_cancel_modal,
+        order_canceling : data.payload.cancel !== undefined ? data.payload.cancel : state.order_canceling
       }
     }
 

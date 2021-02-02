@@ -57,12 +57,40 @@ module.exports = {
                     let columns = ""
                     if(body.columns) {
                         body.columns.forEach( (el, key) => {
-                            columns += "`" + el + "`";
+                            if(el.table) {
+                                columns += "`" + el.table + "`." + el.columns;
+                            } else {
+                                columns += "`" + el + "`";
+                            }
 
                             if(body.columns.length !== (key + 1)) {
                                 columns += ", ";
                             }
                         })
+                        
+                    } else if(body.count === true) { 
+                        columns = "count(*)";
+                    
+                    } else if(body.on === true) {
+                        // on 사용
+                        body.on_arr.forEach( (el) => {
+                            columns += "`" + el.name + "`.";
+
+                            if(typeof el.value === 'object') {
+                                el.value.forEach( (cu) => {
+                                    columns += cu.name + " as ";
+                                    columns += cu.as;
+
+                                    if(!cu['last']) {
+                                        columns += ", ";
+                                    }
+                                })
+
+                            } else {
+                                columns += el.value + ", ";
+                            }
+                        })
+                    
                     } else {
                         columns = "`" + body.table + "`.*";
                     }
@@ -71,35 +99,86 @@ module.exports = {
                     if(body['join_where']) {
                         if(body['join_where'] !== '*') {
                             body['join_where'].forEach( (el) => {
-                                qry += ', `' + body.join_table + '`.' + el.columns + ' AS "' + el.as + '"'; 
+                                if(el.opt === 'count') {
+                                     qry += ', count(*) as count'
+
+                                } else {
+                                    let table = el.table ? el.table : body.join_table
+
+                                    qry += ', `' + table + '`.' + el.columns + ' AS "' + el.as + '"'; 
+                                }
                             })
 
                         } else if(body['join_where'] === '*') {
                             qry += ', `' + body.join_table + '`.*';
                         }
                     }
-
+                    
                     qry += ' FROM `' + body.table + '`';
+                    if(body.on === true) {
+                        qry += ' ' + body.on_arr[0].name;
+                    }
 
                     if(body.join === true) {
-                        qry += ' INNER JOIN `' + body.join_table + '`'; 
-                        qry += ' ON ';
+                        let join_name = ' INNER JOIN `';
 
+                        if(body.join_type) {
+                            join_name = ' ' + body.join_type + ' `'
+                        }
+
+                        if(!body.on) {
+                            qry += join_name + body.join_table + '`'; 
+
+                        } else {
+
+                            if(!body.special_opt) {
+                                join_name = ' LEFT JOIN `'
+                            }
+
+                            qry += join_name + body.table + '` ' + body.on_arr[1].name;
+                        }
+
+                        qry += ' ON ';
+                        
                         body.join_arr.forEach( (el) => {
-                            qry += '`' + body.join_table + '`.' + el.key1 + ' = ';
-                            qry += '`' + body.table + '`.' + el.key2;
+                            const join_table = !body.on ? body.join_table : body.on_arr[0].name;
+                            const table = !body.on ? body.table : body.on_arr[1].name;
+
+                            qry += '`' + join_table + '`.' + el.key1 + ' = ';
+                            qry += '`' + table + '`.' + el.key2;
                         })
                     }
+
+                    if(body.add_table) {
+                        body.add_table.forEach( (el) => {
+                            let add_table_qry = "";
+
+                            add_table_qry += " " + el.type + " `" + el.table + "` ON ";
+                            add_table_qry += "`" + el['key1']['table'] + "`." + el['key1']['value'] + ' = ';
+                            add_table_qry += "`" + el['key2']['table'] + "`." + el['key2']['value'];
+
+                            qry += add_table_qry;
+                        })
+                    }
+
                     qry += ' WHERE ';
 
                     body.where.forEach( (el, cnt) => {
                         // let result_entries = Object.entries(el);
                         // for (let [key, value] of result_entries) {
                         //     // where += key + " = '" + value + "'"
+                        if(body.on === true) {
+                            el.table = body.on_arr[0].name;
+                        }
+
                             if(el.key === 'result_price') {
                                 where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
                                 where += '`' + el.table + "`.result_price <= " + el.value[1];
     
+                            } else if(el.key === 'final_price') { 
+                                where += '`' + el.table + "`.final_price >= " + el.value[0] + " AND ";
+                                where += '`' + el.table + "`.final_price <= " + el.value[1] + ' ';
+
                             } else if(el.key.includes('date')) {
                                 if(el.value === null) {
                                     where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
@@ -129,18 +208,29 @@ module.exports = {
                     })
                     qry += where;
 
-                    if(body['order']) {
-                        qry += " ORDER BY ";
+                    if(!body['count']) {
+                        if(body['order']) {
+                            qry += " ORDER BY ";
+    
+                            let order = '';
+                            body['order'].forEach( (el) => {
+                                if(body.on === true) {
+                                    el.table = body.on_arr[0].name;
+                                }
 
-                        let order = '';
-                        body['order'].forEach( (el) => {
-                            order += "`" + el.table + "`." + el.key + " " + el.value
-                            if(el.key === 'limit') {
-                                order = " limit " + el.value;
-                            }
+                                order += "`" + el.table + "`." + el.key + " " + el.value
 
-                            qry += order
-                        })
+                                if(el.key === 'limit') {
+                                    order = " limit " + el.value[0];
+                                    
+                                    if(el.value[1]) {
+                                        order += ', ' + el.value[1];
+                                    }
+                                }
+    
+                                qry += order
+                            })
+                        }
                     }
 
                 } else if(body.type === 'INSERT') {
@@ -230,12 +320,12 @@ module.exports = {
                 qry = body.qry;
             }
 
-            console.log(qry)
             model.api.query(qry, body.type, result => {
                 if(result) {
                     return res.send(result);
                 }
-                throw new createError.BadRequest();
+                
+                // throw new createError.BadRequest();
                 return res.send(false);
             })
         },

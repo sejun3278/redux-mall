@@ -706,14 +706,14 @@ class Order extends Component {
             coupon_obj['option']['id'] = '=';
             coupon_obj['option']['code'] = '=';
             coupon_obj['option']['limit_date'] = '>=';
-            coupon_obj['option']['use_order_id'] = 'IS NULL';
+            // coupon_obj['option']['use_order_id'] = 'IS NULL';
 
             coupon_obj['where'] = [];
             coupon_obj['where'].push({ 'table' : 'coupon', 'key' : 'user_id', 'value' : user_info.user_id });
             coupon_obj['where'].push({ 'table' : 'coupon', 'key' : 'id', 'value' : coupon_select.id });
             coupon_obj['where'].push({ 'table' : 'coupon', 'key' : 'code', 'value' : coupon_select.code });
             coupon_obj['where'].push({ 'table' : 'coupon', 'key' : 'limit_date', 'value' : null });
-            coupon_obj['where'].push({ 'table' : 'coupon', 'key' : 'use_order_id', 'value' : null });
+            // coupon_obj['where'].push({ 'table' : 'coupon', 'key' : 'use_order_id', 'value' : null });
 
             get_data = await axios(URL + '/api/query', {
                 method : 'POST',
@@ -721,7 +721,8 @@ class Order extends Component {
                 data : coupon_obj
             })
 
-            if(get_data.data[0][0].state === undefined) {
+            console.log(get_data)
+            if(get_data.data[0][0] === undefined) {
                 alert('쿠폰 정보를 조회할 수 없습니다. \n관리자에게 문의해주세요.');
                 result = false;
 

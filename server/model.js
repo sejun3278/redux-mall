@@ -236,6 +236,7 @@ module.exports = {
                 callback(set_query);
 
             } else {
+                callback(false);
                 throw new createError.BadRequest();
             }
         }

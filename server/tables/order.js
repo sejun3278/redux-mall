@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
             allowNull : false
             // 0 : 임시
             // 1 : 구매
-            // 2 : 취소
+            // 2 : 확정
+            // 3 : 취소
         },
 
         "order_type" : {
@@ -31,6 +32,16 @@ module.exports = (sequelize, DataTypes) => {
 
             // 0 : 결제 전 (= 무통장 입금)
             // 1 : 결제 완료 (카드 결제 및 입금 확인)
+        },
+
+        "delivery_state" : {
+            type : DataTypes.INTEGER(10),
+            allowNull : false
+
+            // 0 : null
+            // 1 : 상품 준비중 (취소 가능)
+            // 2 : 배송중
+            // 3 : 배송 완료
         },
 
         "cart_list" : {
@@ -123,6 +134,13 @@ module.exports = (sequelize, DataTypes) => {
         'payment_date' : {
             type: DataTypes.STRING(20),
             allowNull : true
+        },
+
+        'order_complate_date' : {
+            type: DataTypes.STRING(20),
+            allowNull : true
+
+            // 주문 확정된 날짜
         },
 
         'cancel_date' : {

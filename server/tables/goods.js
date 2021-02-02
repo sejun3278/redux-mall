@@ -42,6 +42,27 @@ module.exports = (sequelize, DataTypes) => {
         allowNull : false
        },
 
+       sales: { 
+        type: DataTypes.INTEGER(15), 
+        allowNull : false
+
+        // 판매량
+       },
+
+       star: { 
+        type: DataTypes.INTEGER(5), 
+        allowNull : false
+
+        // 평점
+       },
+
+       acc_star : {
+        type: DataTypes.INTEGER(5), 
+        allowNull : false
+
+        // 누적 평점
+       },
+
        bonus_img: { 
         type: DataTypes.TEXT(), 
         allowNull : true

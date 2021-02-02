@@ -16,6 +16,8 @@ const TOGGLECOUPONMODAL = 'my_page/toggle_coupon_modal';
 const TOGGLECOUPONADD = 'my_page/toggle_coupon_add';
 const SETCOUPONPRICE = 'my_page/set_coupon_price';
 const SELECTCOUPON = 'my_page/select_coupon';
+const SAVEQANDADATA = 'my_page/save_QandA_data'; 
+const SAVEMYPAGEREVIEWDATA = 'my_page/save_mypage_reivew_data';
 
 export const custom_email_toggle = createAction(CUSTOMEMAILTOGGLE);
 export const toggle_host = createAction(TOGGLEHOST);
@@ -33,6 +35,8 @@ export const toggle_coupon_modal = createAction(TOGGLECOUPONMODAL);
 export const toggle_coupon_add = createAction(TOGGLECOUPONADD);
 export const set_coupon_price = createAction(SETCOUPONPRICE);
 export const select_coupon = createAction(SELECTCOUPON);
+export const save_QandA_data = createAction(SAVEQANDADATA);
+export const save_mypage_reivew_data = createAction(SAVEMYPAGEREVIEWDATA);
 
 const initialState = {
     email_custom : false,
@@ -66,6 +70,14 @@ const initialState = {
     coupon_discount_price : 0,
     cover_coupon_select : JSON.stringify({}),
     coupon_select : JSON.stringify({}),
+    qna_select : JSON.stringify({}),
+    qna_all_check : false,
+    mypage_review_info : JSON.stringify([]),
+    mypage_review_length : 0,
+    mypage_review_loading : false,
+    mypage_review_scroll : 0,
+    mypage_review_select : JSON.stringify({}),
+    mypage_review_all_select : false
 };
 
 export default handleActions({
@@ -201,5 +213,25 @@ export default handleActions({
         coupon_select : data.payload.obj !== undefined ? data.payload.obj : state.coupon_select
       }
     },
+
+    [SAVEQANDADATA] : (state, data) => {
+      return {
+        ...state,
+        qna_select : data.payload.obj !== undefined ? data.payload.obj : state.qna_select,
+        qna_all_check : data.payload.bool !== undefined ? data.payload.bool : state.qna_all_check
+      }
+    },
+
+    [SAVEMYPAGEREVIEWDATA] : (state, data) => {
+      return {
+        ...state,
+        mypage_review_info : data.payload.arr !== undefined ? data.payload.arr : state.mypage_review_info,
+        mypage_review_length : data.payload.length !== undefined ? data.payload.length : state.mypage_review_length,
+        mypage_review_loading : data.payload.loading !== undefined ? data.payload.loading : state.mypage_review_loading,
+        mypage_review_scroll : data.payload.scroll !== undefined ? data.payload.scroll : state.mypage_review_scroll,
+        mypage_review_select : data.payload.select !== undefined ? data.payload.select : state.mypage_review_select,
+        mypage_review_all_select : data.payload.all_select !== undefined ? data.payload.all_select : state.mypage_review_all_select
+      }
+    }
  
 }, initialState);

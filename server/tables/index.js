@@ -63,6 +63,8 @@ let sequelize = new Sequelize(
     db.Coupon = require('./coupon')(sequelize, Sequelize);
     db.PointLog = require('./point_log')(sequelize, Sequelize);
     db.OrderInfo = require('./order_info')(sequelize, Sequelize);
+    db.QandA = require('./q&a')(sequelize, Sequelize);
+    db.Review = require('./review')(sequelize, Sequelize);
 
   /* UserInfo 테이블 관계 설정*/
     /* UserInfo 와 Like 의 관계 설정 (M : 1)*/
@@ -137,6 +139,29 @@ let sequelize = new Sequelize(
       });
     /* ///////////////////////////////////// */
 
+    /* UserInfo 와 Q&A 의 관계 설정 (M : 1)*/
+      db.UserInfo.hasMany(db.QandA, {
+        foreignKey: 'user_id',
+        sourceKey : 'id'
+      });
+
+      db.QandA.belongsTo(db.UserInfo, {
+        foreignKey: 'user_id',
+        targetKey : 'user_id'
+      });
+    /* ///////////////////////////////////// */
+
+    /* UserInfo 와 Review 의 관계 설정 (M : 1)*/
+      db.UserInfo.hasMany(db.Review, {
+        foreignKey: 'user_id',
+        sourceKey : 'id'
+      });
+
+      db.Review.belongsTo(db.UserInfo, {
+        foreignKey: 'user_id',
+        targetKey : 'user_id'
+      });
+    /* ///////////////////////////////////// */
 
   /* //////////////////////////////////////// */
 
@@ -160,6 +185,18 @@ let sequelize = new Sequelize(
     });
     
     db.Cart.belongsTo(db.Goods, {
+      foreignKey: 'goods_id',
+      targetKey : 'id'
+    });
+    /* ///////////////////////////////////// */
+
+    /* Goods 와 Q&A 의 관계 설정 (M : 1)*/
+    db.Goods.hasMany(db.QandA, {
+      foreignKey: 'goods_id',
+      sourceKey : 'id'
+    });
+    
+    db.QandA.belongsTo(db.Goods, {
       foreignKey: 'goods_id',
       targetKey : 'id'
     });

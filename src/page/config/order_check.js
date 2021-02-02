@@ -21,8 +21,7 @@ class OrderCheck extends Component {
 
         const order_check = await _getCookie('order_check', 'get');
         const user_cookie = await _getCookie('login', 'get');
-        console.log(order_check)
-        
+
         const check = await this._acessCheck(order_check, user_cookie);
         if(check === false) {
             await this._complateOrder(order_check, user_cookie);
@@ -35,7 +34,6 @@ class OrderCheck extends Component {
         const { _hashString, user_info } = this.props;
         const acess_session = JSON.parse(sessionStorage.getItem(_hashString('order_check')));
 
-        console.log(order_check)
         const session_user_id = _hashString(user_info.user_id);
         const session_order_id = _hashString(String(order_check.order_info.id));
 
@@ -65,7 +63,7 @@ class OrderCheck extends Component {
 
     // 주문 진행하기
     _complateOrder = async (order_check) => {
-        const { user_info, _setPoint, _getCookie, _hashString } = this.props;
+        const { user_info, _setPoint, _getCookie, _hashString, _setGoodsStock } = this.props;
 
         // 0. 상세 주문 정보 추가
         const insert_order_info = await this._addDetailOrderInfo(order_check.form_data, order_check.order_info, order_check.payment_info);
@@ -110,7 +108,7 @@ class OrderCheck extends Component {
             }
 
             // 6. 상품 재고 최신화
-            await this._setGoodsStock(order_check.cart_data, order_check.order_info);
+            await _setGoodsStock(order_check.cart_data, order_check.order_info, 'remove');
         }
 
         const complate = {};
@@ -222,17 +220,20 @@ class OrderCheck extends Component {
         let payment_state = payment_select === 'card' ? 1 : 0;
         payment_state = buy_complate === true ? 1 : payment_state;
 
+        let delivery_state = payment_state === 1 ? 1 : 0
+
         update_order['columns'] = [];
-        update_order['columns'][0] = { 'key' : 'order_type', 'value' : order_type };
-        update_order['columns'][1] = { 'key' : 'buy_date', 'value' : null };
-        update_order['columns'][2] = { 'key' : 'payment_state', 'value' : payment_state };
-        update_order['columns'][3] = { 'key' : 'point_price', 'value' : use_point };
-        update_order['columns'][4] = { 'key' : 'coupon_price', 'value' : cart_coupon_price };
-        update_order['columns'][5] = { 'key' : 'final_price', 'value' : cart_final_price };
-        update_order['columns'][6] = { 'key' : 'order_state', 'value' : 1 };
+        update_order['columns'].push({ 'key' : 'order_type', 'value' : order_type });
+        update_order['columns'].push({ 'key' : 'buy_date', 'value' : null });
+        update_order['columns'].push({ 'key' : 'payment_state', 'value' : payment_state });
+        update_order['columns'].push({ 'key' : 'point_price', 'value' : use_point });
+        update_order['columns'].push({ 'key' : 'coupon_price', 'value' : cart_coupon_price });
+        update_order['columns'].push({ 'key' : 'final_price', 'value' : cart_final_price });
+        update_order['columns'].push({ 'key' : 'order_state', 'value' : 1 });
+        update_order['columns'].push({ 'key' : 'delivery_state', 'value' : delivery_state });
 
         if(order_type !== 1) {
-            update_order['columns'][7] = { 'key' : 'payment_date', 'value' : null } 
+            update_order['columns'].push({ 'key' : 'payment_date', 'value' : null });
         }
         
         update_order['where'] = [];        
@@ -271,33 +272,33 @@ class OrderCheck extends Component {
         });
     }
 
-    // 6. 상품 재고 최신화
-    _setGoodsStock = async (cart_data, order_info) => {
-        const obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '상품 재고 최신화' };
+    // // 6. 상품 재고 최신화
+    // _setGoodsStock = async (cart_data, order_info) => {
+    //     const obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '상품 재고 최신화' };
 
-        obj['columns'] = [];
-        obj['where'] = [];
-        obj['where_limit'] = 0;
+    //     obj['columns'] = [];
+    //     obj['where'] = [];
+    //     obj['where_limit'] = 0;
 
-        const set_goods_stock = async () => {
-            return await cart_data.forEach( async (el) => {
-                const num = order_info.goods_num ? order_info.goods_num : el.num;
-                const cover_stock = el.stock ? el.stock : el.goods_stock;
-                const stock = (cover_stock - num) < 0 ? 0 : cover_stock - num;
+    //     const set_goods_stock = async () => {
+    //         return await cart_data.forEach( async (el) => {
+    //             const num = order_info.goods_num ? order_info.goods_num : el.num;
+    //             const cover_stock = el.stock ? el.stock : el.goods_stock;
+    //             const stock = (cover_stock - num) < 0 ? 0 : cover_stock - num;
 
-                obj['columns'][0] = { 'key' : 'stock', 'value' : stock };
-                obj['where'][0] = { 'key' : 'id', 'value' : el.goods_id }
+    //             obj['columns'][0] = { 'key' : 'stock', 'value' : stock };
+    //             obj['where'][0] = { 'key' : 'id', 'value' : el.goods_id }
 
-                await axios(URL + '/api/query', {
-                    method : 'POST',
-                    headers: new Headers(),
-                    data : obj
-                });
-            });
-        }
+    //             await axios(URL + '/api/query', {
+    //                 method : 'POST',
+    //                 headers: new Headers(),
+    //                 data : obj
+    //             });
+    //         });
+    //     }
 
-        return await set_goods_stock();
-    }
+    //     return await set_goods_stock();
+    // }
 
     render() {
 

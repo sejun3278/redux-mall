@@ -21,7 +21,7 @@ import $ from 'jquery';
 class Search extends Component {
 
     componentDidMount() {
-        const { searchAction, location, configAction, _moveScrollbar, search_ready } = this.props;
+        const { searchAction, location, configAction } = this.props;
 
         // 검색 정보 가져오기
         this._getData();

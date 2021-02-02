@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import { MyPage, ModifyUser, LikeList, Cart, Order, Coupon, Order_complate, OrderList } from './index';
+import { 
+    MyPage, ModifyUser, LikeList, Cart, Order, Coupon, Order_complate, OrderList, QnA, Review
+} from './index';
+
 import { Route, Switch } from 'react-router-dom';
 
 import { connect } from 'react-redux';
@@ -166,7 +169,8 @@ class MyPageHome extends Component {
     render() {
         const { 
             user_info, _getCookie, price_comma, _modalToggle, admin_info, coupon_list_open_modal, _setModalStyle, 
-            _loginCookieCheck, _addCoupon, _getCouponList, _setPoint, _checkLogin, _filterURL, _hashString, _moveScrollbar
+            _loginCookieCheck, _addCoupon, _getCouponList, _setPoint, _checkLogin, _filterURL, _hashString, _moveScrollbar, _setGoodsStock,
+            _removeReview, _checkScrolling, _searchStringColor
         } = this.props;
 
         const coupon_list = JSON.parse(this.props.coupon_list);
@@ -182,12 +186,13 @@ class MyPageHome extends Component {
             page_icon = icon.my_page[path +  '_black']
         }
 
+        const move_url = '/myPage/' + path;
         return(
             <div id='my_page_div'>
                 {user_info ? <div>
                 <div id='my_page_title_div' className='my_page_title border_bottom'>
-                    <img src={page_icon}/>
-                    <b className='aCenter'> {page_name} </b>
+                    <img src={page_icon} alt='' className='pointer' onClick={() => window.location.href = move_url }/>
+                    <b className='aCenter pointer' onClick={() => window.location.href = move_url }> {page_name} </b>
                 </div>
                 
                 <Switch>
@@ -288,6 +293,29 @@ class MyPageHome extends Component {
                             _filterURL={_filterURL}
                             _hashString={_hashString}
                             _moveScrollbar={_moveScrollbar}
+                            _setPoint={_setPoint}
+                            _setGoodsStock={_setGoodsStock}
+                            _setModalStyle={_setModalStyle}
+                            _removeReview={_removeReview}
+                        {...props}  />}
+                    />
+
+                    {/* 문의 / 답변 */}
+                    <Route path='/myPage/QandA'
+                        render={(props) => <QnA
+                            user_info={user_info}
+                            price_comma={price_comma}
+                            _checkScrolling={_checkScrolling}
+                            _checkLogin={_checkLogin}
+                            _filterURL={_filterURL}
+                            _searchStringColor={_searchStringColor}
+                        {...props}  />}
+                    />
+
+                    {/* 리뷰 */}
+                    <Route path='/myPage/star'
+                        render={(props) => <Review
+                            user_info={user_info}
                         {...props}  />}
                     />
 

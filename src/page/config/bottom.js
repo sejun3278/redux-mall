@@ -10,23 +10,19 @@ import * as signupAction from '../../Store/modules/signup';
 
 import img from '../../source/img/img.json';
 import icon from '../../source/img/icon.json';
-class Loading extends Component {
+class Bottom extends Component {
 
     render() {
         return(
-            <div className='loading_div'>
-                <div style={{ 'backgroundImage' : `url(${img.img.loading})`  }} />
+            <div id='bottom_div'>
 
-                <div>
-                    <img src={icon.icon.reload} className='pointer' id='loading_reload_icon' onClick={() => window.location.reload()}/>
-                    <b className='pointer' onClick={() => window.location.reload()}> 새로 고침 </b>
-                </div>
+                dafasdfsdfsadfasdf
             </div>
         )
     }
 }
 
-Loading.defaultProps = {
+Bottom.defaultProps = {
 }
 
 export default connect(
@@ -37,4 +33,4 @@ export default connect(
     signupAction : bindActionCreators(signupAction, dispatch),
     configAction : bindActionCreators(configAction, dispatch)
   })
-)(Loading);
+)(Bottom);

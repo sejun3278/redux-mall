@@ -15,7 +15,10 @@ import * as myPageAction from './Store/modules/my_page';
 import { MyPageHome } from './page/body/my_page/index';
 import { AdminHome, AdminCategory } from './page/body/admin/index';
 import { Header, Login, Signup, SignupComplate, TopCategory, SearchIDPW, Search } from './page/index';
+
+import ReviewList from './page/config/review_list';
 import OrderCheck from './page/config/order_check';
+import Bottom from './page/config/bottom';
 
 import category_list from './source/admin_page.json';
 import { Loading, Goods } from './page/index';
@@ -58,36 +61,18 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    const { loading, user_info } = this.props;
-    // this._checkLogin();
+    const { review_modal } = this.props;
 
-    if(loading === true && user_info === null) {
+    if(review_modal === true) {
+      $('body').css({ 'overflow' : 'hidden' });
+      $('#goods_main_other_div, #goods_fixed_toggle_div, #goods_fixed_price_div').css({ 'display' : 'none' });
+
+    } else {
+      $('body').css({ 'overflow' : 'auto' });
+      $('#goods_main_other_div, #goods_fixed_toggle_div, #goods_fixed_price_div').css({ 'display' : 'block' });
+
     }
   }
-
-  // _getCookie = async (key, type, value) => {
-  //   let cookie;
-  //   if(type === 'get') {
-  //     cookie = window.sessionStorage.getItem(key);
-
-  //     if(key === 'login' || key === 'order') {
-  //       cookie = JSON.parse(cookie)
-  //     }
-
-  //   } else if(type === 'remove') {
-  //     window.sessionStorage.removeItem(key)
-
-  //   } else if(type === 'add') {
-  //     window.sessionStorage.setItem(key, value)
-  //   }
-
-  //   if(cookie) {
-  //     return cookie;
-
-  //   } else {
-  //     return false;
-  //   }
-  // }
 
   // 쿠키 출력하기
   _getCookie = async (key, type, value, opt) => {
@@ -361,13 +346,13 @@ class App extends Component {
         obj['option']['user_id'] = '=';
         obj['option']['state'] = '=';
         obj['option']['limit_date'] = '>=';
-        obj['option']['use_order_id'] = 'IS NULL';
+        // obj['option']['use_order_id'] = 'IS NULL';
 
         obj['where'] = [];
         obj['where'][0] = { 'table' : 'coupon', 'key' : 'user_id', 'value' : user_info.user_id };
         obj['where'][1] = { 'table' : 'coupon', 'key' : 'state', 'value' : 0 };
         obj['where'][2] = { 'table' : 'coupon', 'key' : 'limit_date', 'value' : null };
-        obj['where'][3] = { 'table' : 'coupon', 'key' : 'use_order_id', 'value' : null };
+        // obj['where'][3] = { 'table' : 'coupon', 'key' : 'use_order_id', 'value' : null };
 
         const get_data = await axios(URL + '/api/query', {
             method : 'POST',
@@ -715,11 +700,207 @@ class App extends Component {
     return hash_str;
   };
 
+  // 상품 재고 최신화하기
+  _setGoodsStock = async (cart_data, order_info, type) => {
+    const obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '상품 재고 최신화' };
+
+    obj['columns'] = [];
+    obj['where'] = [];
+    obj['where_limit'] = 0;
+
+    const set_goods_stock = async () => {
+        return await cart_data.forEach( async (el) => {
+            const num = order_info.goods_num ? order_info.goods_num : el.num;
+            const cover_stock = el.stock ? el.stock : el.goods_stock;
+            const goods_id = el.goods_id ? el.goods_id : el.id;
+
+            let stock = 0;
+            let sales = 0;
+
+            if(type === 'remove') {
+              // 재고 삭제 및 판매량 증가
+              stock = (cover_stock - num) < 0 ? 0 : cover_stock - num;
+              sales = el.sales + num;
+
+            } else if(type === 'add') {
+              // 재고 증가 및 판매량 감소
+              stock = el.stock + num;
+              sales = (el.sales - num) < 0 ? 0 : el.sales - num;
+            }
+
+            obj['columns'][0] = { 'key' : 'stock', 'value' : stock };
+            obj['columns'][1] = { 'key' : 'sales', 'value' : sales };
+
+            obj['where'][0] = { 'key' : 'id', 'value' : goods_id }
+
+            await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : obj
+            });
+        });
+    }
+
+    return await set_goods_stock();
+  }
+
+  // 로그인 후 url 이동하기
+  _loginAfter = async (url, check) => {
+    const { signupAction } = this.props;
+    const { _modalToggle, _getCookie, _hashString } = this;
+
+    const user_info = JSON.parse(this.props.user_info);
+    const user_cookie = await this._getCookie('login', 'get');
+
+    if(user_info === false || user_cookie === false) {
+      alert('로그인이 필요합니다.');
+
+      signupAction.set_login_after({ 'url' : url })
+      _modalToggle(true);
+
+      return false;
+    
+    } else {
+      if(check === true) {
+        return true;
+      }
+    }
+
+    if(url === '/myPage/order_list') {
+      await _getCookie(_hashString('detail_order_id'), 'remove');
+    }
+
+  return window.location.href = url;
+  }
+
+  // 리뷰 삭제하기
+  _removeReview = async (review_id, goods_id, score, user_id) => {
+    if(!window.confirm('리뷰를 삭제하시면 해당 주문에서는 리뷰를 재작성 할 수 없습니다. \n정말 리뷰를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    const location = document.location;
+    const url = location.pathname + location.search;
+
+    const login_check = await this._loginAfter(url, true);
+    if(login_check !== true) {
+      return;
+    }
+
+    const user_info = JSON.parse(this.props.user_info);
+
+    const obj = { 'type' : 'SELECT', 'table' : 'goods', 'comment' : '상품 평점 정보 가져오기', 'join' : true, 'join_table' : 'review' };
+
+    obj['columns'] = [];
+    obj['columns'].push({ "table" : "goods", "columns" : "star" })
+    obj['columns'].push({ "table" : "goods", "columns" : "acc_star" })
+
+    obj['join_arr'] = [];
+    obj['join_arr'][0] = { 'key1' : 'goods_id', 'key2' : 'id' }
+
+    obj['join_where'] = [];
+    obj['join_where'].push({ 'opt' : 'count' });
+
+    obj['option'] = {};
+    obj['where'] = [];
+
+    obj['option']['id'] = '=';
+    obj['option']['state'] = '=';
+
+    obj['where'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : goods_id };
+    obj['where'][0] = { 'table' : 'review', 'key' : 'state', 'value' : 0 };
+
+    const get_data = await axios(URL + '/api/query', {
+        method : 'POST',
+        headers: new Headers(),
+        data : obj
+    })
+
+    const count = get_data.data[0][0].count - 1;
+    const acc_star = get_data.data[0][0].acc_star - score;
+
+    const star = Math.floor(acc_star / count);
+    // // 별점 업데이트
+    const update_obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '별점 취소하기' };
+    
+    update_obj['columns'] = [];
+    update_obj['columns'].push({ 'key' : 'star', 'value' : star });
+    update_obj['columns'].push({ 'key' : 'acc_star', 'value' : acc_star });
+    
+    update_obj['where'] = [];
+    update_obj['where'].push({ 'key' : 'id', 'value' : goods_id });
+
+    update_obj['where_limit'] = 0;
+
+    await axios(URL + '/api/query', {
+      method : 'POST',
+      headers: new Headers(),
+      data : update_obj
+    })
+
+    const remove_obj = { 'type' : 'UPDATE', 'table' : 'review', 'comment' : '리뷰 삭제하기' };
+
+    remove_obj['columns'] = [];
+    remove_obj['columns'].push({ 'key' : 'state', 'value' : 1 });
+    remove_obj['columns'].push({ 'key' : 'remove_date', 'value' : null });
+
+    remove_obj['where'] = [];        
+    remove_obj['where'].push({ 'key' : 'user_id', 'value' : user_id ? user_id : user_info.id });
+    remove_obj['where'].push({ 'key' : 'id', 'value' : review_id });
+
+    remove_obj['where_limit'] = 1;
+
+    const remove_review = await axios(URL + '/api/query', {
+      method : 'POST',
+      headers: new Headers(),
+      data : remove_obj
+    });
+
+    if(remove_review.data[0]) {
+      return true;
+
+    } else {
+      alert('문제 발생으로 리뷰를 삭제하지 못했습니다. \n관리자에게 문의해주세요.');
+      
+      return false;
+    }
+  }
+  
+  // Infinite 스크롤링에서 최하단에 도달했는지를 감지
+  _checkScrolling = (event) => {
+
+    const scroll_top = $(event).scrollTop();
+    // 현재 스크롤바의 위치
+
+    const inner_height = $(event).innerHeight();
+    // 해당 div 의 총 높이
+
+    const scroll_height = $(event).prop('scrollHeight');
+
+    if( Math.round(scroll_top + inner_height) >= scroll_height) {
+      return true;
+    }
+
+    return false;
+  }
+
+  _searchStringColor = (goods_name, search) => {
+    const first_idx = goods_name.indexOf(search);
+    const slice_str = goods_name.slice(0, first_idx);
+    const last_str = goods_name.slice((first_idx + search.length), goods_name.length);
+
+    goods_name = slice_str + `<b class='bold search_line'> ${search} </b>` + last_str;
+
+    return goods_name;
+  }
+
+
   render() {
-    const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading } = this.props;
+    const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading, review_modal } = this.props;
     const { 
-          _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint,
-          _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString
+          _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint, _loginAfter,
+          _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString, _setGoodsStock,
+          _removeReview, _checkScrolling, _searchStringColor
     } = this;
     const user_info = JSON.parse(this.props.user_info);
 
@@ -749,6 +930,15 @@ class App extends Component {
           cat_name = '회원 관리';
         }
     }
+    
+    // 5 초간 로딩 확인하기
+    setTimeout(() => {
+      const { loading } = this.props;
+
+        if(loading === false) {
+          return window.location.reload();
+        }
+    }, 3000);
 
     return(
       <div className='App'>
@@ -768,6 +958,7 @@ class App extends Component {
                   _search={_search}
                   _getCookie={_getCookie}
                   _hashString={_hashString}
+                  _loginAfter={_loginAfter}
                   {...props}  />}
               />
 
@@ -872,6 +1063,11 @@ class App extends Component {
                         _getCookie={_getCookie}
                         _moveScrollbar={_moveScrollbar}
                         _loginCookieCheck={_loginCookieCheck}
+                        _loginAfter={_loginAfter}
+                        _filterURL={_filterURL}
+                        loading={loading}
+                        _setModalStyle={_setModalStyle}
+                        _removeReview={_removeReview}
                       {...props} 
                   />}
                 />
@@ -914,6 +1110,10 @@ class App extends Component {
                       _filterURL={_filterURL}
                       _hashString={_hashString}
                       _moveScrollbar={_moveScrollbar}
+                      _setGoodsStock={_setGoodsStock}
+                      _removeReview={_removeReview}
+                      _checkScrolling={_checkScrolling}
+                      _searchStringColor={_searchStringColor}
                       {...props} 
                   />}
                 />
@@ -926,13 +1126,31 @@ class App extends Component {
                           _hashString={_hashString}
                           _setPoint={_setPoint}
                           _filterURL={_filterURL}
+                          _setGoodsStock={_setGoodsStock}
                         {...props} 
                   />}
                 />
+
+                <Modal
+                  isOpen={review_modal}
+                  // onRequestClose={review_modal ? () => configAction.toggle_review_modal({ 'bool' : false }) : null}
+                  style={_setModalStyle('50%', '450px')}
+                >
+                  <ReviewList 
+                    user_info={user_info}
+                    price_comma={price_comma}
+                    _moveScrollbar={_moveScrollbar}
+                    _checkLogin={_checkLogin}
+                    _checkScrolling={_checkScrolling}
+                  />
+                </Modal>
             </div>
 
             <div id='body_div_right'></div>
             </div>
+
+          <Bottom />
+
           </div>
         }
         {/* </div>  */}
@@ -957,6 +1175,7 @@ export default connect(
     search_id_pw_type : state.config.search_id_pw_type,
     select_cat_open : state.config.select_cat_open,
     loading : state.config.loading,
+    review_modal : state.config.review_modal
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),

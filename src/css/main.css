@@ -4,13 +4,22 @@
     border-bottom: solid 1px #ababab;
 }
 
-#body_div_left { border-right: solid 1px #ababab; }
-#body_div_right { border-left: solid 1px #ababab; }
+/* #body_div_left { border-right: solid 1px #ababab; } */
+/* #body_div_right { border-left: solid 1px #ababab; } */
 
 #body_div {
     display: grid;
     grid-template-columns: 15% 70% 15%;
 }
+
+#bottom_div { height: 50px; padding: 50px 0px 50px 0px; border-top: solid 1px #ababab; }
+
+#body_div_center { 
+    border-right: solid 1px #ababab; 
+    border-left: solid 1px #ababab;
+    padding-bottom: 50px;
+
+ }
 
 #main_header_div #main_header_center {
     text-align: center;

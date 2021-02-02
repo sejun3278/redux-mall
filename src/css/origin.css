@@ -28,7 +28,7 @@ body { cursor: default; }
 .white { color : white }
 .red { color : #fd3a69 }
 .orange { color : orange !important }
-.select_color { color : #52BFFF !important }
+.select_color, .custom_color_1 { color : #52BFFF !important }
 
 /* 글씨 굵게 */
 .bold { font-weight: bold; }
@@ -206,26 +206,32 @@ input[type='checkbox'].check_custom_1 {
 .t_money_font { font-family: 'TmoneyRoundWindExtraBold'; }
 .kotra_bold_font { font-family: 'KOTRA_BOLD-Bold'; }
 .recipe_korea { font-family: 'Recipekorea'; }
-.paybook_bold { font-family: 'Recipekorea'; }
+.paybook_bold { font-family: 'paybooc-Bold'; }
 
 
 /* 글자수 제한하기 */
 
 /* 한 줄 자르기 */ 
 .cut_one_line {
-  display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  display: inline-block; width: -webkit-fill-available; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
 }
 
 .cut_multi_line {
   /* 여러 줄 자르기 추가 스타일 */ 
 
-  display: inline-block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+  display: inline-block; width: -webkit-fill-available; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
   white-space: normal; line-height: 1.2; height: 2.5em; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 
-.search_line { background-color: #ff8e71; padding : 0px 5px 0px 5px; color: white; }
+.search_line { background-color: #ff8e71; padding : 15px 5px 0px 5px; color: white; }
 
 /* button 스타일 */
 .button_style_1 { background-color: #35c5f0; border: none; color: white; font-weight: bold; font-size: 13px; cursor: pointer; border-radius: 5px; }
 
 .react-datepicker__tab-loop { float: left !important; }
+
+/* 페이징 현재 페이지 */
+#select_page { font-size: 18px; font-weight: bold; text-decoration: underline; color: #35c5f0; cursor: default !important; }
+
+/* 별점 컬러 */
+.star_color { color : rgb(253, 184, 39) }

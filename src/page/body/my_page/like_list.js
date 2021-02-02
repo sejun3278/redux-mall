@@ -182,89 +182,102 @@ class LikeList extends Component {
 
         return(
             <div id='like_list_div'>
-                <div id='like_list_other_div'>
-                    <input type='checkbox' id='like_list_all_check' className='pointer' onClick={() => _controllSelectLike(null, true)} />
-                    <label htmlFor='like_list_all_check' className='pointer'> <b> 전체 선택　[ {select_like_list.length} / {my_like_list.length} ] </b> </label>
-                    
-                    <div id='like_list_select_remove_div'> 
-                        <b className='pointer' onClick={_selectRemove}> 선택 삭제 </b> 
+                {my_like_list.length > 0 ? 
+                <div>
+                    <div id='like_list_other_div'>
+                        <input type='checkbox' id='like_list_all_check' className='pointer' onClick={() => _controllSelectLike(null, true)} />
+                        <label htmlFor='like_list_all_check' className='pointer'> <b> 전체 선택　[ {select_like_list.length} / {my_like_list.length} ] </b> </label>
+                        
+                        <div id='like_list_select_remove_div'> 
+                            <b className='pointer' onClick={_selectRemove}> 선택 삭제 </b> 
+                        </div>
+                    </div>
+
+                    <div id='like_list_index_div'>
+                        <ul className='list_none'>
+                        {my_like_list.map( (el, key) => {
+                            const disable = el.state === 0 || el.stock === 0;
+
+                            let _class = 'my_like_list_check_and_number_div font_12 border_bottom pointer';
+                            if(select_like_list.includes(el.like_id)) {
+                                _class += ' select_like_list';
+                            }
+
+                            return(
+                                <li key={key}>
+                                    <div className='my_like_list_divs' id={'my_list_index_' + key}>
+                                        {disable 
+                                        ? <div className='my_like_list_disable_div aCenter'>
+                                            <h2 className='red recipe_korea'> 구매 불가 </h2>
+                                            <div className='recipe_korea'> 
+                                                품절된 상품입니다.
+                                                <p> 
+                                                    <input className='my_like_list_disable_button pointer' type='button' value='삭제'
+                                                        onClick={() => _removeLike(el.id, el.like_id)}
+                                                    /> 
+                                                </p>
+                                            </div>
+                                        </div>
+                                        : null}
+
+                                        <div className={_class}
+                                            onClick={() => _controllSelectLike(el.like_id, null)}
+                                        >
+                                            <p>
+                                                <input type='checkbox' className='pointer' id={'my_like_list_checkbox_' + el.like_id} 
+                                                    onChange={() => _controllSelectLike(el.like_id, null)}
+                                                    checked={select_like_list.includes(el.like_id)}
+                                                />
+                                                <label htmlFor={'my_like_list_checkbox_' + el.like_id} className='my_like_checkbox pointer'> 
+                                                    선택 
+                                                </label>
+                                            </p>
+
+                                            <p className='my_like_list_date_div gray'> 등록일　|　{el.like_date} </p>
+                                            <p className='my_like_list_each_remove_button'> 
+                                                <input type='button' value='삭제' className='pointer' 
+                                                    onClick={() => _removeLike(el.id, el.like_id)}
+                                                />
+                                            </p>
+                                        </div>
+
+                                        <div className='my_like_list_detail_contents_div'>
+                                            <div className='my_like_list_grid_contents_div border_right'>
+                                                <div className='my_like_list_thumbnail pointer' style={{ 'backgroundImage' : `url(${el.thumbnail})` }} 
+                                                    onClick={() => window.location.href='/goods?goods_num=' + el.id}
+                                                />
+                                            </div>
+
+                                            <div className='my_like_list_info_div'>
+                                                <div className='my_like_list_name_div t_money_font'>
+                                                    <b onClick={() => window.location.href='/goods?goods_num=' + el.id} className='pointer'>  {el.name} </b> 
+                                                </div>
+
+                                                <div className='my_like_price_and_state'> 
+                                                    <div className='my_like_price_div'> <h4> {price_comma(el.result_price)} 원 </h4> </div>
+                                                    <div className='my_like_stock_div font_12'> 구매 가능 수량　|　{price_comma(el.stock)} 개 </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            )
+                        })}
+                        </ul>
                     </div>
                 </div>
 
-                {my_like_list ? 
-                <div id='like_list_index_div'>
-                    <ul className='list_none'>
-                    {my_like_list.map( (el, key) => {
-                        const disable = el.state === 0 || el.stock === 0;
+                :  <div className='aCenter empty_cart_div'>
+                        <h3 className='t_money_font'> 찜 리스트가 비어있습니다. </h3>    
 
-                        let _class = 'my_like_list_check_and_number_div font_12 border_bottom pointer';
-                        if(select_like_list.includes(el.like_id)) {
-                            _class += ' select_like_list';
-                        }
-
-                        return(
-                            <li key={key}>
-                                <div className='my_like_list_divs' id={'my_list_index_' + key}>
-                                    {disable 
-                                    ? <div className='my_like_list_disable_div aCenter'>
-                                        <h2 className='red recipe_korea'> 구매 불가 </h2>
-                                        <div className='recipe_korea'> 
-                                            품절된 상품입니다.
-                                            <p> 
-                                                <input className='my_like_list_disable_button pointer' type='button' value='삭제'
-                                                       onClick={() => _removeLike(el.id, el.like_id)}
-                                                /> 
-                                            </p>
-                                        </div>
-                                      </div>
-                                    : null}
-
-                                    <div className={_class}
-                                         onClick={() => _controllSelectLike(el.like_id, null)}
-                                    >
-                                        <p>
-                                            <input type='checkbox' className='pointer' id={'my_like_list_checkbox_' + el.like_id} 
-                                                   onChange={() => _controllSelectLike(el.like_id, null)}
-                                                   checked={select_like_list.includes(el.like_id)}
-                                            />
-                                            <label htmlFor={'my_like_list_checkbox_' + el.like_id} className='my_like_checkbox pointer'> 
-                                                선택 
-                                            </label>
-                                        </p>
-
-                                        <p className='my_like_list_date_div gray'> 등록일　|　{el.like_date} </p>
-                                        <p className='my_like_list_each_remove_button'> 
-                                            <input type='button' value='삭제' className='pointer' 
-                                                   onClick={() => _removeLike(el.id, el.like_id)}
-                                            />
-                                        </p>
-                                    </div>
-
-                                    <div className='my_like_list_detail_contents_div'>
-                                        <div className='my_like_list_grid_contents_div border_right'>
-                                            <div className='my_like_list_thumbnail pointer' style={{ 'backgroundImage' : `url(${el.thumbnail})` }} 
-                                                 onClick={() => window.location.href='/goods?goods_num=' + el.id}
-                                            />
-                                        </div>
-
-                                        <div className='my_like_list_info_div'>
-                                            <div className='my_like_list_name_div t_money_font'>
-                                                <b onClick={() => window.location.href='/goods?goods_num=' + el.id} className='pointer'>  {el.name} </b> 
-                                            </div>
-
-                                            <div className='my_like_price_and_state'> 
-                                                <div className='my_like_price_div'> <h4> {price_comma(el.result_price)} 원 </h4> </div>
-                                                <div className='my_like_stock_div font_12'> 구매 가능 수량　|　{price_comma(el.stock)} 개 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        )
-                    })}
-                    </ul>
-                </div>
-                : null}
+                        <div className='empty_select_div'> 
+                            <u className='pointer remove_underLine'
+                            onClick={() => window.location.href='/search'}> 
+                                ◁　상품 보러 가기 
+                            </u>
+                        </div>
+                    </div>
+                }
             </div>
         )
     }

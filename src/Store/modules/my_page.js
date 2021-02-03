@@ -77,7 +77,8 @@ const initialState = {
     mypage_review_loading : false,
     mypage_review_scroll : 0,
     mypage_review_select : JSON.stringify({}),
-    mypage_review_all_select : false
+    mypage_review_all_select : false,
+    mypage_review_removing : false
 };
 
 export default handleActions({
@@ -230,7 +231,8 @@ export default handleActions({
         mypage_review_loading : data.payload.loading !== undefined ? data.payload.loading : state.mypage_review_loading,
         mypage_review_scroll : data.payload.scroll !== undefined ? data.payload.scroll : state.mypage_review_scroll,
         mypage_review_select : data.payload.select !== undefined ? data.payload.select : state.mypage_review_select,
-        mypage_review_all_select : data.payload.all_select !== undefined ? data.payload.all_select : state.mypage_review_all_select
+        mypage_review_all_select : data.payload.all_select !== undefined ? data.payload.all_select : state.mypage_review_all_select,
+        mypage_review_removing : data.payload.remove !== undefined ? data.payload.remove : state.mypage_review_removing
       }
     }
  

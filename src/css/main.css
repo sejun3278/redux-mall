@@ -12,7 +12,13 @@
     grid-template-columns: 15% 70% 15%;
 }
 
-#bottom_div { height: 50px; padding: 50px 0px 50px 0px; border-top: solid 1px #ababab; }
+#bottom_div { padding: 30px 40px 30px 40px; border-top: solid 1px #ababab; }
+#bottom_stack_grid_div { margin-top: 20px; }
+.bottom_stack_grid { display: grid; grid-template-columns: 100px auto; padding-bottom: 10px; }
+
+@media (max-width : 425px) {
+    #bottom_div { padding: 30px 15px 30px 15px !important; }
+}
 
 #body_div_center { 
     border-right: solid 1px #ababab; 

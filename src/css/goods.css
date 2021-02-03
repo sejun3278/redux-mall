@@ -206,6 +206,12 @@
 /* .review_star_div { float: right; margin: 0px !important; margin-right: 5px !important; } */
 /* #goods_review_list .qna_review_data_list_grid_div div { margin-right: 5px; margin-left: 1px; } */
 
+#goods_main_delivery_info_div { padding: 0px 20px 10px 50px; }
+.goods_main_info_div { font-size: 12px; margin-left: 30px; }
+.goods_main_info_div li { padding-bottom: 10px; }
+
+.goods_main_paybook_info_div { margin-top: 50px; }
+
 @media (max-width : 1150px) {
     #goods_detail_not_responsive { margin-left: 20px; }
 }

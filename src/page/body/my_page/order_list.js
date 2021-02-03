@@ -946,7 +946,7 @@ class OrderList extends Component {
 
         const start_date = qry.start_date ? Date.parse(qry.start_date) : Date.parse(this.props.start_date);
         
-        const remove_review = await _removeReview(review_id, goods_id, score);
+        const remove_review = await _removeReview(review_id, goods_id, score, null, true);
 
         if(remove_review === true) {
             await _getOrderData(start_date, order_id);

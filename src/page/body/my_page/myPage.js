@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,8 +11,6 @@ import page_list from '../../../source/myPage.json';
 
 import '../../../css/responsive/signup.css';
 import $ from 'jquery';
-
-// import $ from 'jquery';
 
 class MyPage extends Component {
 
@@ -111,8 +108,8 @@ class MyPage extends Component {
                                          className='my_page_select_divs'
                                          onMouseEnter={_el.path !== null ? () => _iconToggle(_el.path, 'mouseOver') : null}
                                          onMouseLeave={_el.path !== null ? () => _iconToggle(_el.path, 'mouseLeave') : null}
-                                         onClick={_el.path !== null ? () => _iconToggle(_el.path, 'move') : null}
-                                    >
+                                         onClick={_el.path !== null && _el.path !== 'se_bot' ? () => _iconToggle(_el.path, 'move') : null}
+                                    >   
                                         {_el.path !== null 
                                         ?
                                             <div> 

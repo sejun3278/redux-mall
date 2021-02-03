@@ -774,9 +774,11 @@ class App extends Component {
   }
 
   // 리뷰 삭제하기
-  _removeReview = async (review_id, goods_id, score, user_id) => {
-    if(!window.confirm('리뷰를 삭제하시면 해당 주문에서는 리뷰를 재작성 할 수 없습니다. \n정말 리뷰를 삭제하시겠습니까?')) {
-      return;
+  _removeReview = async (review_id, goods_id, score, user_id, confirm) => {
+    if(confirm === true) {
+      if(!window.confirm('리뷰를 삭제하시면 해당 주문에서는 리뷰를 재작성 할 수 없습니다. \n정말 리뷰를 삭제하시겠습니까?')) {
+        return;
+      }
     }
 
     const location = document.location;

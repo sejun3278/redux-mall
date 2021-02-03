@@ -316,6 +316,11 @@ class MyPageHome extends Component {
                     <Route path='/myPage/star'
                         render={(props) => <Review
                             user_info={user_info}
+                            price_comma={price_comma}
+                            _checkLogin={_checkLogin}
+                            _filterURL={_filterURL}
+                            _searchStringColor={_searchStringColor}
+                            _removeReview={_removeReview}
                         {...props}  />}
                     />
 

@@ -449,15 +449,16 @@ select[name=order_cancel_reason] { display: block; width: 100%; padding: 5px; ma
 #mypage_qna_search_grid_div div input { border: none; border-bottom: solid 1px #ababab; padding: 3px; }
 input[name=search_goods_id] { width: 50px;  text-align: center; }
 input[name=search_contents] { width: 60%; }
-.mypage_qna_search_button { width: 15px; border: none !important; position: absolute; margin-top : 3px; margin-left : 5px }
+.mypage_qna_search_button, .mypage_review_search_button { width: 15px; border: none !important; position: absolute; margin-top : 3px; margin-left : 5px }
 
 #mypage_qna_filtering_div { margin-top: 50px; }
+#mypage_qna_filter_reset_button { margin: 0px 0px 0px 10px; width: 18px; position: absolute; }
 #mypage_qna_filtering_div ul li { padding-bottom: 10px; }
 .mypage_qna_remove_filter_icon { cursor : pointer; width: 12px; position: absolute; margin: 4px 0px 0px 15px; }
 
 #mypage_review_info_div { padding : 20px 45px 10px 45px; }
 #mypage_review_length_title { margin-top: 30px }
-#mypage_reivew_info_list_div { margin-top : 10px; padding: 5px 0px 5px 0px; }
+#mypage_reivew_info_list_div { margin-top : 10px; padding: 30px 0px 35px 0px; }
 
 /* .mypage_review_list_div { padding: 10px 0px 10px 0px; } */
 .mypage_review_list_div { padding: 10px 0px 40px 0px; }
@@ -494,6 +495,20 @@ input[name=search_contents] { width: 60%; }
 
 #mypage_all_select_div { padding : 20px 0px 5px 0px; min-height: 15px;}
 #mypage_review_select_remove_button { border: none; font-size: 13px; background-color: white; font-weight: bold; }
+
+#mypage_review_all_filter_div { border-bottom: solid 1px #ababab; padding: 20px 10px 25px 10px; } 
+#mypage_review_filter_div { display: grid; grid-template-columns: 33% 34% 33%; line-height: 35px;  }
+#mypage_review_filter_div div u { cursor: pointer; text-decoration: none; }
+#mypage_review_custom_star_select { font-size: 12px; padding: 3px; }
+
+#mypage_review_filter_option_div { padding: 15px 15px 0px 15px; border-top : solid 2px #ababab; margin-top: 30px; }
+#mypage_review_filter_option_div h4 { margin: 15px 0px 5px 0px !important; }
+#mypage_review_filter_option_list_div { font-size: 12px; margin-left: 30px; line-height: 30px; }
+/* .mypage_review_filter_remove_icon { width: 15px; position } */
+
+#mypage_review_filter_option_list_div li img { margin : 8px 0px 0px 10px; }
+#mypage_review_search_filter_div { display: grid; grid-template-columns: 45% auto; margin-top: 20px; border-top: dotted 1px #ababab; padding : 30px 20px 0px 20px }
+#mypage_review_search_filter_div div input { border: none; border-bottom: solid 1px #ababab; }
 
 @media (max-width : 1200px) {
     #order_list_filter_grid_div { display: grid; grid-template-columns: 50% 50%; }
@@ -685,14 +700,28 @@ input[name=search_contents] { width: 60%; }
     .mypage_review_other_list_div { grid-template-columns: 160px auto !important; }
     .mypage_review_goods_info_and_contents_div { margin-top: 20px; }
 
-    #mypage_review_info_div { padding : 20px 0px 0px 0px !important; }
+    #mypage_review_info_div { padding : 50px 0px 0px 0px !important; }
     #mypage_review_length_title { padding-left: 10px; }
     /* #mypage_reivew_info_list_div { padding-left: 10px; padding-right: 10px; } */
-    
+
     #mypage_reivew_info_list_div { padding : 0px; }
     .mypage_review_list_div { padding: 15px 0px 15px 0px; }
     #mypage_all_select_div { padding: 5px 10px 5px 10px; }
     /* .mypage_review_other_grid_div { padding-left: 5px; } */
+
+    #mypage_review_filter_div { display: block; text-align: left !important; }
+    #mypage_review_all_filter_div { padding: 0px !important; }
+    #mypage_review_filter_div .mypage_review_filter_float_div { border-bottom: dotted 1px #ababab; padding: 5px 15px 5px 15px; }
+    #mypage_review_filter_div .mypage_review_filter_float_div div { display: inline-block; margin-right: 30px; }
+    #mypage_review_filter_div .mypage_review_filter_float_div #mypage_review_custom_star_div { margin-right: 0px !important; }
+    #mypage_review_remove_filter_div { border-bottom: solid 1px #ababab !important; }
+    /* #mypage_review_filter_div */
+
+    #mypage_review_all_filter_div { border-bottom: none !important; }
+    #mypage_review_filter_option_div { margin-top: 0px; padding-bottom: 15px; border-bottom: solid 3px #ababab; }
+
+    #mypage_review_search_filter_div { border-top: none; margin-top: 0px; padding: 25px 0px 25px 15px; display: block; line-height: 30px; }
+    .mypage_review_search_button { margin-top: 8px; margin-left: 10px; }
 }
 
 @media (max-width : 450px) {

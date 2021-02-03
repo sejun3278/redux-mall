@@ -64,6 +64,11 @@ class ReviewList extends Component {
 
         const obj = { 'type' : 'SELECT', 'table' : 'order', 'comment' : '유저의 주문 내역 조회', 'join' : true, 'join_table' : 'review' };
         
+        // 해당 쿼리의 결과에서 다시 조회
+        obj['re_qry'] = true;
+        obj['re_qry_where'] = [];
+        obj['re_qry_where'][0] = { 'key' : 'review_id', 'value' : 'IS NULL' };
+
         obj['join_type'] = 'LEFT JOIN'
         obj['join_arr'] = [];
         obj['join_arr'][0] = { 'key1' : 'order_id', 'key2' : 'id' };
@@ -90,8 +95,8 @@ class ReviewList extends Component {
             obj['where'].push({ 'table' : 'order', 'key' : 'id', 'value' : review_order_id });
             
         } else {
-            obj['option']['order_id'] = 'IS NULL';
-            obj['where'].push({ 'table' : 'review', 'key' : 'order_id', 'value' : null });
+            // obj['option']['order_id'] = 'IS NULL';
+            // obj['where'].push({ 'table' : 'review', 'key' : 'order_id', 'value' : null });
         }
 
         obj['order'] = [];
@@ -110,6 +115,7 @@ class ReviewList extends Component {
         // 총 갯수 구하기
         const cover_obj = obj;
         cover_obj['count'] = true;
+        cover_obj['re_qry_count'] = true;
 
         const get_cnt = await axios(URL + '/api/query', {
             method : 'POST',
@@ -168,7 +174,7 @@ class ReviewList extends Component {
             const el = cart_data[limit];
 
             if(el !== undefined) {
-                const review_goods_id = Number(this.props.review_goods_id);
+                const review_goods_id = Number(this.props.review_goods_id) === 0 ? null : Number(this.props.review_goods_id);
 
                 // 상품 정보 가져오기
                 const cart_obj = { 'type' : 'SELECT', 'table' : 'goods', 'comment' : '상품 정보 가져오기' };
@@ -248,6 +254,9 @@ class ReviewList extends Component {
                         if(review_goods_id === data.id) {
                             info_arr.push(data);
                         }
+
+                    } else {
+                        info_arr.push(data);
                     }
                 }
 
@@ -265,14 +274,35 @@ class ReviewList extends Component {
 
         const result_cart_info = await get_cart_info(0, [], cart_data);
         
-        configAction.toggle_review_modal({ 'arr' : JSON.stringify(result_cart_info), 'loading' : true });
+        const all_length = get_cnt.data[0][0]['count(*)'];
+        // 카트 데이터 5개 채우기
+
+        // const scroll_limit = Math.round(all_length / review_scroll);
+
+        // if(!review_goods_id && !review_order_id) {
+            if( (cover_scroll * 5) - all_length < 0) {
+                if(result_cart_info.length < 5) {
+                    await this._getUserOrderInfo(cover_scroll + 1);
+                }
+            }
+        // }
+
+        // if(result_cart_info.length < 5) {
+        //     console.log((5 * cover_scroll) + 5, cover_scroll, all_length)
+
+        //     if( (5 * cover_scroll) + 5 < all_length ) {
+        //         await this._getUserOrderInfo(cover_scroll + 1);
+        //     }
+        // }
+
+        configAction.toggle_review_modal({ 'arr' : JSON.stringify(result_cart_info), 'loading' : true, 'scroll' : cover_scroll });
         orderAction.save_order_info({ 'order_info' : JSON.stringify(get_data.data[0]), 'loading' : true })
         
         return true;
     }
 
     _toggleWriteReview = (bool, key) => {
-        const { configAction, _moveScrollbar, review_start, review_select } = this.props;
+        const { configAction, review_start, review_select } = this.props;
 
         const obj = {};
         obj['star'] = 0;
@@ -479,7 +509,7 @@ class ReviewList extends Component {
                 <div id='review_list_title_div'>
                     <h4 className='aCenter paybook_bold'> 리뷰 리스트 </h4>
                     <img src={icon.icon.close_black} id='review_list_close_icon' className='pointer'
-                        onClick={() => review_writing === false ? configAction.toggle_review_modal({ 'bool' : false, 'loading' : false, 'select' : null, 'star' : 0, 'scroll' : 0 }) : null} alt=''
+                        onClick={() => review_writing === false ? configAction.toggle_review_modal({ 'bool' : false, 'loading' : false, 'goods_id' : null, 'select' : null, 'star' : 0, 'scroll' : 0 }) : null} alt=''
                     />
                 </div>
 

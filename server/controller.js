@@ -213,12 +213,16 @@ module.exports = {
                             qry += " ORDER BY ";
     
                             let order = '';
-                            body['order'].forEach( (el) => {
+                            body['order'].forEach( (el, key) => {
+
                                 if(body.on === true) {
                                     el.table = body.on_arr[0].name;
                                 }
 
                                 order += "`" + el.table + "`." + el.key + " " + el.value
+                                if(key < body['order_limit']) {
+                                    order += ', ';
+                                }
 
                                 if(el.key === 'limit') {
                                     order = " limit " + el.value[0];
@@ -227,8 +231,19 @@ module.exports = {
                                         order += ', ' + el.value[1];
                                     }
                                 }
-    
                                 qry += order
+                            })
+                        }
+                    }
+
+                    if(body.re_qry === true) {
+                        const from_where = body.re_qry_count === true ? 'count(*)' : '*'
+                        
+                        qry = 'SELECT ' + from_where + ' FROM (' + qry + ') AS re_qry WHERE ';
+                        
+                        if(body.re_qry_where) {
+                            body.re_qry_where.forEach( (el) => {
+                                qry += el.key + " " + el.value;
                             })
                         }
                     }

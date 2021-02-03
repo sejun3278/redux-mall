@@ -138,6 +138,12 @@ class Search extends Component {
 
         } else if(view_filter === 'low_price') {
             obj['order'][0] = { 'table' : 'goods', 'key' : 'result_price', 'value' : "ASC" }
+
+        } else if(view_filter === 'popular') {
+            obj['order'][0] = { 'table' : 'goods', 'key' : 'sales', 'value' : "DESC" };
+
+        } else if(view_filter === 'star') {
+            obj['order'][0] = { 'table' : 'goods', 'key' : 'star', 'value' : "DESC" };
         }
 
         const get_data = await axios(URL + '/api/query', {
@@ -165,7 +171,17 @@ class Search extends Component {
         const { location, _filterURL } = this.props;
         const qry = queryString.parse(location.search);
 
-        qry[filter_type] = type;
+        if(qry[filter_type] === type) {
+            delete qry[filter_type];
+
+        } else {
+            qry[filter_type] = type;
+        }
+
+        if(Object.keys(qry).length === 0) {
+            return window.location.href ='/search'
+        }
+
         return _filterURL(qry, 'search');
     }
 
@@ -254,6 +270,7 @@ class Search extends Component {
         }
 
         const view_filter = qry.view_filter;
+        const star_arr = [1, 2, 3, 4, 5];
 
         return(
             <div id='search_body_div'>
@@ -342,8 +359,17 @@ class Search extends Component {
                                 가격 낮은 순 
                             </div>
 
-                            <div onClick={() => _filter('view_filter', 'popular')}> 인기도 순 </div>
-                            <div onClick={() => _filter('view_filter', 'high_score')}> 평점 높은 순 </div>
+                            <div onClick={() => _filter('view_filter', 'popular')}
+                                id={view_filter === 'popular' ? 'select_view_filter' : null}
+                            > 
+                                인기도 순 
+                            </div>
+                            
+                            <div onClick={() => _filter('view_filter', 'star')}
+                                id={view_filter === 'star' ? 'select_view_filter' : null}
+                            > 
+                                평점 순
+                            </div>
                             <div onClick={() => _filter('view_filter', 'my_like')}> 내가 찜한 상품 </div>
                         </div>
                     </div>
@@ -403,6 +429,12 @@ class Search extends Component {
 
                                         } else if(opt_value === 'low_price') {
                                             opt_value = '낮은 가격순'
+                                        
+                                        } else if(opt_value === 'popular') {
+                                            opt_value = '인기도 순'
+
+                                        } else if(opt_value === 'star') {
+                                            opt_value = '평점 순'
                                         }
                                     }
 
@@ -467,6 +499,17 @@ class Search extends Component {
 
                                             // : icon.goods.like_on
 
+                                let goods_star = '<div class="aCenter"> </div>';
+                                star_arr.map( (cu) => {
+                                    if(el.star >= cu) {
+                                        goods_star += '<div class="inline_block star_color"> ★ </div>';
+
+                                    } else {
+                                        goods_star += '<div class="inline_block"> ☆ </div>';
+                                    }
+                                })
+                                goods_star += ' <div class="inline_block gray"> ( ' + el.star + ' ) </div>'
+
                                 return(
                                     <div className='search_contents_each_list pointer' key={key}
                                         title={el.name}
@@ -492,6 +535,13 @@ class Search extends Component {
                                             /　
                                             <u className='remove_underLine' onClick={() => _clickCategory(qry, el.first_cat, el.last_cat)}> { last_cat_name } </u>　]
                                         </div>
+                                        
+                                        <div className='search_goods_star_div' dangerouslySetInnerHTML={{ __html : goods_star }} />
+                                        {qry.view_filter === 'popular'
+                                            ? <div className='search_sales_div bold font_12 aCenter custom_color_1'> 판매　|　{price_comma(el.sales)} 개 </div>
+
+                                            : null
+                                        } 
 
                                         <div className='search_goods_name aCenter marginTop_10 cut_multi_line'
                                             dangerouslySetInnerHTML={{__html : goods_name}}

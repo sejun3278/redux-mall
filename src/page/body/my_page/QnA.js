@@ -260,11 +260,10 @@ class QnA extends Component {
         const obj = { 'type' : 'UPDATE', 'table' : 'q&a', 'comment' : '문의 삭제하기' };
 
         obj['columns'] = [];
-        // obj['columns'].push({ 'key' : 'remove_date', 'value' : null });
+        obj['columns'].push({ 'key' : 'remove_date', 'value' : null });
         obj['columns'].push({ 'key' : 'state', 'value' : 2 });
 
         obj['where'] = [];
-        
         obj['where'].push({ 'key' : 'user_id', 'value' : user_info.id });
 
         obj['where_limit'] = 1;
@@ -423,7 +422,11 @@ class QnA extends Component {
                             {Object.keys(qry).length > 0
                             ?
                             <div id='mypage_qna_filtering_div'>
-                                <h4> 적용중인 필터 옵션 </h4>
+                                <h4> 적용중인 필터 옵션 
+                                    <img alt='' src={icon.icon.reload} id='mypage_qna_filter_reset_button' className='pointer' title='필터 옵션 초기화' 
+                                         onClick={() => window.confirm('모든 필터 옵션을 삭제하시겠습니까?') ? window.location.href='/myPage/QandA' : null}
+                                    /> 
+                                </h4>
 
                                 <ul className='font_13 gray'>
                                     {qry.date

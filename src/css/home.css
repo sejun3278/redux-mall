@@ -33,8 +33,9 @@ ul { padding-left: 0px !important; }
 /* #search_result_str_div div { margin-left: 20% !important;  } */
 #search_album_div .search_contents_each_list { float: left; width: 23%; margin : 5px 0px 80px 8%; }
 .search_contents_thumb_list { padding: 5px; min-height: 180px !important; background-repeat: no-repeat; background-size: contain; background-position-x: center; background-position-y: center; }
-.search_goods_name { height: auto; }
+.search_goods_name { height: 40px }
 .search_price_div { margin-top: 10px; }
+.search_goods_star_div { text-align: center; font-size: 11px; padding-top: 5px; }
 
 .serach_each_div { border-left: none; border-right: none; padding: 5px; }
 .search_album_goods_number { margin-bottom: 3px !important; }
@@ -61,7 +62,7 @@ ul { padding-left: 0px !important; }
 .search_album_each_div { display : grid; grid-template-columns: 10% 80% 10%; }
 .search_album_grid_div { display: grid; grid-template-columns: 30% auto !important; }
 
-.search_album_thumbnail { width: auto; height: 150px; background-repeat: no-repeat; background-position-x: center !important; background-position-y: center !important; background-size: contain; padding : 5px }
+.search_album_thumbnail { width: auto; height: 125px; background-repeat: no-repeat; background-position-x: center !important; background-position-y: center !important; background-size: contain; margin : 10px }
 .search_album_category_div { padding : 10px }
 
 .search_album_name_and_price_grid { display: grid; grid-template-columns: 75% auto !important; }
@@ -151,7 +152,7 @@ ul { padding-left: 0px !important; }
 #goods_review_filter_div div u { cursor: pointer; }
 
 #goods_review_filter_selector { padding: 5px; margin-top: -10px; margin-right: 15px; }
-
+.search_sales_div { padding: 5px 0px 10px 0px; }
 
 @media (max-width : 1200px) {
     #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
@@ -243,7 +244,7 @@ ul { padding-left: 0px !important; }
     #search_view_filter_div { display: none; }
     #search_album_div { display: none; }
 
-    .search_album_thumbnail { height: 130px; }
+    /* .search_album_thumbnail { height: 130px; } */
     .search_album_each_div { grid-template-columns: 0% 100% 0% !important; }
     .serach_each_div { margin-bottom: 35px !important; padding-left: 0px; padding-right: 0px; }
     .search_album_grid_div { border: solid 2px black; border-left: none !important; border-right: none !important; }
@@ -297,6 +298,7 @@ ul { padding-left: 0px !important; }
     #review_order_list { padding-left: 10px; padding-right: 10px; }
 
     #review_write_loading { width: 69.8%; }
+    .search_album_thumbnail { margin: 5px; }
 }
 
 /* @media (max-width : 375px) {

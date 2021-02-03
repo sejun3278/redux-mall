@@ -1292,7 +1292,7 @@ class Goods extends Component {
         review_remove = true;
         const cover_user_id = user_id ? user_id : user_info.id;
 
-        const remove_review = await _removeReview(review_id, goods_id, score, cover_user_id);
+        const remove_review = await _removeReview(review_id, goods_id, score, cover_user_id, true);
         if(remove_review === true) {
 
             // await this._getGoodsData(goods_id);
@@ -1670,7 +1670,7 @@ class Goods extends Component {
                                         style={{ 'borderRight' : 'none' }}
                                         id='forth_goods_info'
                                     > 
-                                        배송 정보 
+                                        상세 정보 
                                     </div>
                                 </div>
                             </div>
@@ -2232,7 +2232,28 @@ class Goods extends Component {
 
                                 <div id='goods_main_delivery_area' className='goods_main_area'/> 
                                 <div id='goods_main_delivery_div' className='goods_info_divs'>
-                                    <h3 className='goods_info_title' id='goods_main_delivery_title'> 배송 정보 </h3> 
+                                    <h3 className='goods_info_title' id='goods_main_delivery_title'> 상세 정보 </h3> 
+
+                                    <div id='goods_main_delivery_info_div'>
+                                        <div className='goods_main_paybook_info_div'>
+                                            <h3> 결제 및 상품 정보</h3>
+
+                                            <ul className='goods_main_info_div'>
+                                                <li> 세준몰에서 결제를 통한 모든 과정에서는 실제로 결제되지 않습니다.  </li>
+                                                <li> 상품의 재고에 따라서 매진이 될 수 있습니다. </li>
+                                                <li> 구매한 상품의 주문건을 확정하면 상품에 대한 리뷰를 작성할 수 있습니다. </li>
+                                            </ul>
+                                        </div>
+
+                                        <div className='goods_main_paybook_info_div'>
+                                            <h3> 배송 정보</h3>
+
+                                            <ul className='goods_main_info_div'>
+                                                <li> 세준몰에서 구매한 모든 상품은 실제로 배송이 되지 않습니다.  </li>
+                                                <li> 배송중인 상품에 대해서는 <u> 상품 취소가 불가능 </u>합니다. </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

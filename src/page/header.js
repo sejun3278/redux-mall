@@ -158,7 +158,7 @@ class Header extends Component {
                     <div id='main_header_center'> 
                         { /* Center */ }
                         <h4 id='main_title'> <b onClick={() => _pageMove('href', '/')} className='pointer'> Sejun's Mall </b> </h4>
-                        {admin_info && user_info ? 
+                        {user_info && user_info.admin === 'Y' ? 
                             <div> 
                                 <img src={img.icon.admin}
                                     id='admin_icon'

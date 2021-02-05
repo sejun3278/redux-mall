@@ -65,6 +65,7 @@ let sequelize = new Sequelize(
     db.OrderInfo = require('./order_info')(sequelize, Sequelize);
     db.QandA = require('./q&a')(sequelize, Sequelize);
     db.Review = require('./review')(sequelize, Sequelize);
+    db.AdminLogin = require('./admin_login')(sequelize, Sequelize);
 
   /* UserInfo 테이블 관계 설정*/
     /* UserInfo 와 Like 의 관계 설정 (M : 1)*/
@@ -158,6 +159,18 @@ let sequelize = new Sequelize(
       });
 
       db.Review.belongsTo(db.UserInfo, {
+        foreignKey: 'user_id',
+        targetKey : 'user_id'
+      });
+    /* ///////////////////////////////////// */
+
+    /* UserInfo 와 AdminLogin 의 관계 설정 (M : 1)*/
+      db.UserInfo.hasMany(db.AdminLogin, {
+        foreignKey: 'user_id',
+        sourceKey : 'id'
+      });
+
+      db.AdminLogin.belongsTo(db.UserInfo, {
         foreignKey: 'user_id',
         targetKey : 'user_id'
       });

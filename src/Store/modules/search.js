@@ -10,6 +10,7 @@ export const toggle_view_type = createAction(TOGGLEVIEWTYPE);
 
 const initialState = {
     search_data : JSON.stringify([]),
+    search_length : 0,
     search : "",
     search_view_type : "album",
     serach_first_cat : null,
@@ -21,7 +22,8 @@ export default handleActions({
    [SETSEARCHDATA] : (state, data) => {
       return {
         ...state,
-        search_data : data.payload.arr,
+        search_data : data.payload.arr !== undefined ? data.payload.arr : state.search_data,
+        search_length : data.payload.length !== undefined ? data.payload.length : state.search_length,
         search_ready : true
       };
     },

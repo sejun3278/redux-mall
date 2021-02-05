@@ -12,12 +12,12 @@ import URL from '../../../config/url';
 
 class PassAdmin extends Component {
 
-    componentDidMount() {
-        this._setCheckCode();
+    async componentDidMount() {
+        await this._setCheckCode();
     }
 
     _setCheckCode = async () => {
-        const { adminAction, user_info, _checkAdmin } = this.props; 
+        const { adminAction, _checkAdmin } = this.props; 
 
         // 인증 코드 생성
         let code_length = Math.trunc(Math.random() * (11 - 6) + 6);
@@ -29,17 +29,17 @@ class PassAdmin extends Component {
         }
 
         // 관리자 재 확인하기
-        const recheck_admin = await _checkAdmin(user_info);
+        // const user_info = await _checkLogin();
 
-        if(recheck_admin.data === false) {
-            alert('로그인 및 관리자 권한을 다시 확인해주세요.')
-
-            return window.location.replace('/');
-        }
+        // if(user_info.admin !== 'Y') {
+        //     alert('로그인 및 관리자 권한을 다시 확인해주세요.')
+        //     return window.location.replace('/');
+        // }
+        await _checkAdmin();
 
         const contents = `
-            <h4> ${code} </h4>
-            <div> 위의 코드를 입력해주세요. </div>
+            ${code}
+            위의 코드를 입력해주세요.
         `
         const obj = {
             'email' : 'sejun3278@naver.com',
@@ -61,28 +61,19 @@ class PassAdmin extends Component {
 
     _checkAdmin = async (event) => {
         event.preventDefault();
-        const { admin_code, login, _checkLogin, _checkAdmin, admin_check, adminAction, user_info } = this.props;
+        const { admin_code, _checkLogin, _checkAdmin, adminAction, _getCookie, _hashString } = this.props;
 
         const check_code = event.target['admin_code'].value;
-        _checkLogin();
+        const user_info = await _checkLogin();
         
-        console.log(login, user_info)
         adminAction.admin_check_toggle({ 'bool' : true  })
-        if(admin_check === false) {
-            if(!login || !user_info) {
+        // if(admin_check === false) {
+            if(!user_info) {
                 alert('로그아웃 된 아이디 입니다.');
-
-                // return window.location.replace('/');
+                return window.location.replace('/')
 
             } else {
-                // 관리자 재 확인하기
-                const recheck_admin = await _checkAdmin(user_info);
-
-                if(recheck_admin.data === false) {
-                    alert('로그인 및 관리자 권한을 다시 확인해주세요.')
-        
-                    return window.location.replace('/');
-                }
+                await _checkAdmin();
             }
 
             if(check_code.length === 0) {
@@ -93,10 +84,30 @@ class PassAdmin extends Component {
             }
 
             if(admin_code === check_code) {
-                sessionStorage.setItem('admin', user_info.user_id)
-
                 alert('관리자 권한 인증 성공');
 
+                const inser_obj = { 'type' : 'INSERT', 'table' : 'admin_login', 'comment' : '관리자 로그인 로그 추가' };
+
+                inser_obj['columns'] = [];
+
+                inser_obj['columns'].push({ "key" : "user_id", "value" : user_info.id });
+                inser_obj['columns'].push({ "key" : "code", "value" : admin_code });
+                inser_obj['columns'].push({ "key" : "login_date", "value" : null });
+
+                await axios(URL + '/api/query', {
+                    method : 'POST',
+                    headers: new Headers(),
+                    data : inser_obj
+                });
+
+                const cookie_name = _hashString('admin_check');
+                const cookie_obj = {}
+                cookie_obj[_hashString('admin_id')] = _hashString(user_info.id);
+                cookie_obj[_hashString('code')] = _hashString(admin_code);
+
+                // 쿠키 추가
+                await _getCookie(cookie_name, 'add', cookie_obj, { 'time' : 60 * 60 } );
+                
                 return window.location.replace('/admin');
 
             } else {
@@ -104,7 +115,7 @@ class PassAdmin extends Component {
                 adminAction.admin_check_toggle({ 'bool' : false  })
                 return alert('일치하지 않는 코드입니다.');
             }
-        }
+        // }
     }
 
     render() {

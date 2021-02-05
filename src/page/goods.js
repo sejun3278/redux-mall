@@ -1470,9 +1470,7 @@ class Goods extends Component {
 
                                                 <div id='goods_num_div'>
                                                     <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('minus', 'goods_num') : null}
-                                                        style={{ 'backgroundImage' : `url(${icon.icon.minus})` }}
-                                                    >
-                                                    </div>
+                                                        style={{ 'backgroundImage' : `url(${icon.icon.minus})` }} />
                                                     <div> 
                                                         <input defaultValue={goods_num} type='number' max={99999} min={0} name='goods_num'
                                                                className='goods_change_goods_num_input'
@@ -1481,10 +1479,7 @@ class Goods extends Component {
                                                         /> 
                                                     </div>
                                                     <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('plus', 'goods_num') : null}
-                                                        style={{ 'backgroundImage' : `url(${icon.icon.plus})` }}
-                                                    >
-                                                        {/* <img src={icon.icon.plus} className='goods_plus_minus_buttons' alt=''/> */}
-                                                    </div>
+                                                        style={{ 'backgroundImage' : `url(${icon.icon.plus})` }} />
                                                 </div>
 
                                                 <div id='goods_result_price_div' className='aRight'>
@@ -1525,7 +1520,7 @@ class Goods extends Component {
                                                   </div>
 
                                                 :
-                                                    <div style={{ 'color' : '#ec5858' }}>
+                                                    <div className='goods_sold_out_div' style={{ 'color' : '#ec5858' }}>
                                                         <b> 품절된 상품입니다. </b> 
                                                     </div>
                                                 }
@@ -1582,7 +1577,9 @@ class Goods extends Component {
                                                 </p>
 
                                                 <div id='goods_num_div'>
-                                                    <div className='pointer bold' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('minus', 'goods_nums') : null}> － </div>
+                                                    <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('minus', 'goods_num') : null}
+                                                        style={{ 'backgroundImage' : `url(${icon.icon.minus})` }} />
+
                                                     <div> 
                                                         <input value={goods_num} type='number' max={99999} min={0} name='goods_nums'
                                                                className='goods_change_goods_num_input'
@@ -1590,7 +1587,8 @@ class Goods extends Component {
                                                                readOnly={goods_data.stock === 0 ? true : false}
                                                         /> 
                                                     </div>
-                                                    <div className='pointer bold' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('plus', 'goods_nums') : null}> ＋ </div>
+                                                    <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('plus', 'goods_num') : null}
+                                                        style={{ 'backgroundImage' : `url(${icon.icon.plus})` }} />
                                                 </div>
 
                                                 <div id='goods_result_price_div' className='aRight'>
@@ -1630,7 +1628,7 @@ class Goods extends Component {
                                                   </div>
 
                                                 :
-                                                    <div style={{ 'color' : '#ec5858' }}>
+                                                    <div  className='goods_sold_out_div' style={{ 'color' : '#ec5858' }}>
                                                         <b> 품절된 상품입니다. </b> 
                                                     </div>
                                                 }
@@ -1741,7 +1739,7 @@ class Goods extends Component {
                                                   </div>
 
 
-                                            : <div id='goods_fixed_disable_but_div' className='goods_other_divs bold aCenter marginTop_20' 
+                                            : <div id='goods_fixed_disable_but_div' className='goods_other_divs bold aCenter marginTop_20 goods_sold_out_div'
                                                    style={{ 'color' : '#ec5858' }}>
                                                     품절된 상품입니다.
                                               </div>
@@ -1761,7 +1759,7 @@ class Goods extends Component {
                                     <h3 className='goods_info_title' id='goods_main_content_title'> 상품 정보 </h3> 
                                     {img_where === 'top'
                                     
-                                    ? <div>
+                                    ? <div style={{ 'padding' : '0px 40px 0px 40px' }}>
                                         <div className='goods_bonus_img_div'>
                                             {img_arr.map( (el, key) => {
 

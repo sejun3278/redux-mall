@@ -1,6 +1,7 @@
 const path = require('path');
 const AWS = require('aws-sdk');
-const fs = require('fs');
+// const fs = require('fs');
+const sharp = require('sharp');
 
 const model = require('./model');
 
@@ -32,6 +33,7 @@ const MyError = createError({
     // Used when no message is handed to the constructor:
     message: '/////// 에러 발생　:　'
 });
+
 
 module.exports = {
     needs: () => upload,
@@ -161,52 +163,55 @@ module.exports = {
                         })
                     }
 
-                    qry += ' WHERE ';
+                    if(body.where && body.where.length > 0) {
+                        qry += ' WHERE ';
 
-                    body.where.forEach( (el, cnt) => {
-                        // let result_entries = Object.entries(el);
-                        // for (let [key, value] of result_entries) {
-                        //     // where += key + " = '" + value + "'"
-                        if(body.on === true) {
-                            el.table = body.on_arr[0].name;
-                        }
+                        body.where.forEach( (el, cnt) => {
+                            // let result_entries = Object.entries(el);
+                            // for (let [key, value] of result_entries) {
+                            //     // where += key + " = '" + value + "'"
+                            if(body.on === true) {
+                                el.table = body.on_arr[0].name;
+                            }
 
-                            if(el.key === 'result_price') {
-                                where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
-                                where += '`' + el.table + "`.result_price <= " + el.value[1];
-    
-                            } else if(el.key === 'final_price') { 
-                                where += '`' + el.table + "`.final_price >= " + el.value[0] + " AND ";
-                                where += '`' + el.table + "`.final_price <= " + el.value[1] + ' ';
+                                if(el.key === 'result_price') {
+                                    where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
+                                    where += '`' + el.table + "`.result_price <= " + el.value[1] + ' ';
+        
+                                } else if(el.key === 'final_price') { 
+                                    where += '`' + el.table + "`.final_price >= " + el.value[0] + " AND ";
+                                    where += '`' + el.table + "`.final_price <= " + el.value[1] + ' ';
 
-                            } else if(el.key.includes('date')) {
-                                if(el.value === null) {
-                                    where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
+                                } else if(el.key.includes('date')) {
+                                    if(el.value === null) {
+                                        where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
 
-                                } else {
-                                    if(el.option) {
-                                        if(el.option === 'BETWEEN') {
-                                            where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
-                                            where += 'AND "' + el.between_value + '" ';
+                                    } else {
+                                        if(el.option) {
+                                            if(el.option === 'BETWEEN') {
+                                                where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+                                                where += 'AND "' + el.between_value + '" ';
+                                            }
                                         }
                                     }
-                                }
-
-                            } else {
-                                if(el.value !== null) {
-                                    where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
 
                                 } else {
-                                    where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " ";
+                                    if(el.value !== null) {
+                                        where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+
+                                    } else {
+                                        where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " ";
+                                    }
                                 }
-                            }
-    
-                            if(body.where.length !== (cnt + 1)) {
-                                where += "AND ";
-                            }
-                        // }
-                    })
-                    qry += where;
+        
+                                if(body.where.length !== (cnt + 1)) {
+                                    where += "AND ";
+                                }
+                            // }
+                        })
+
+                        qry += where;
+                    }
 
                     if(!body['count']) {
                         if(body['order']) {
@@ -310,7 +315,14 @@ module.exports = {
                             columns += "`" + el.key + "` = '" + now_date + "'";
 
                         } else {
-                            columns += "`" + el.key + "` = '" + el.value + "'";
+                            columns += "`" + el.key + "` = " 
+                            
+                            if(el.option) {
+                                columns += "`" + el.key + "` " + el.option + ' ' + el.value + ' '
+
+                            } else {
+                                columns += "'" + el.value + "'";
+                            }
                         }
 
                         if((body.columns.length - 1) !== key) {
@@ -402,6 +414,7 @@ module.exports = {
             const file = date + '_' + files.md5 + '.' + file_type[1];
 
             const fileUpload = req.files.files;
+            
             fileUpload.mv(
                 `${dir}/upload/goods/origin/${file}`,
 
@@ -428,6 +441,8 @@ module.exports = {
 
             // 사이즈 조절하기
             const filename = body.filename;
+
+            console.log(body)
             // const file_arr = filename.split('.');
             // const file_type = file_arr[file_arr.length - 1];
 
@@ -437,11 +452,8 @@ module.exports = {
             // const target_file = file_path + '/' + filename;
             // const thumb_name = filename + '_thumb.' + file_type
 
-            const params_files = path.normalize(__dirname + '/..') + '/upload/goods/origin/' + filename
-            const bucket_params = S3_info.create_bucket(params_files, filename);
-
-            const _s3_upload = async () => {
-                await S3.upload(bucket_params, function(err, data) {
+            const _s3_upload = async (bucket) => {
+                await S3.upload(bucket, function(err, data) {
     
                     if(err) {
                         result['ment'] = err;
@@ -455,7 +467,28 @@ module.exports = {
                 })
             }
 
-            return await _s3_upload();
+            let params_files = path.normalize(__dirname + '/..') + '/upload/goods/origin/' + filename
+            let bucket_params = S3_info.create_bucket(params_files, filename);
+
+            if(body.thumb === true) {
+                sharp(params_files).resize(200, 200).toFile(path.normalize(__dirname + '/..') + '/upload/goods/thumb/' + filename, async (err, thumb) => {
+                    if(err) {
+                        result['result'] = false;
+                        result['ment'] = err;
+
+                        return res.send(result);
+
+                    } else if(thumb) {
+                        params_files = path.normalize(__dirname + '/..') + '/upload/goods/thumb/' + filename;
+                        bucket_params = S3_info.create_bucket(params_files, filename);
+
+                        return await _s3_upload(bucket_params);
+                    }
+                })
+
+            } else {
+                return await _s3_upload(bucket_params);
+            }
         },
 
         s3_upload : (req, res) => {

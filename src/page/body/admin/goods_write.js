@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as adminAction from '../../../Store/modules/admin';
-import '../../../css/responsive/admin.css';
+import '../../../css/admin/admin_goods.css';
 
 import $ from 'jquery';
 import category_list from '../../../source/admin_page.json';
@@ -282,6 +282,8 @@ class AdminGoodsWrite extends Component {
                     return alert('이미지를 업로드 할 수 없습니다.');
                 }
 
+                const thumb_able = thumb ? true : false
+
                 // S3에 업로드하기
                 const upload_image = await axios(URL + '/api/upload_file', {
                     method : 'POST',
@@ -289,7 +291,8 @@ class AdminGoodsWrite extends Component {
                     data : { 
                         'filename' : img_file_upload.data.ment,
                         'origin_path' : 'goods/origin',
-                        'thumb_path' : 'goods/thumbnail' 
+                        'thumb_path' : 'goods/thumbnail',
+                        'thumb' : thumb_able
                     }
                 })
     
@@ -375,7 +378,10 @@ class AdminGoodsWrite extends Component {
             'stock' : Number(goods_stock),
             'bonus_img' : JSON.stringify(image_obj['bonus']),
             'img_where' : write_select_img_where,
-            'contents' : write_contents
+            'contents' : write_contents,
+            'sales' : 0,
+            'star' : 0,
+            'acc_star' : 0,
         }
 
         if(modify_check) {
@@ -421,9 +427,11 @@ class AdminGoodsWrite extends Component {
         const first_category_list = category_list.first_category.category;
         let last_category_list = null;
 
-        if(write_first_cat !== '') {
+        if(write_first_cat !== 'none') {
             last_category_list = category_list.last_category[write_first_cat];
         }
+
+        console.log(last_category_list)
         
         const result_price = write_result_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
@@ -485,11 +493,11 @@ class AdminGoodsWrite extends Component {
                                 <li> 
                                     <b> 카테고리 * </b>
                                     <div className='list_none admin_goods_write_inline' id='admin_goods_write_category_div'>
-                                        <div>
+                                        <div className='font_13'>
                                             1차 카테고리
                                                 <select name='goods_first_category' 
                                                         onChange={()=> _setCategory('first')}
-                                                        className='pointer'
+                                                        className='pointer admin_goods_write_category_select'
                                                         title='상품의 상위 카테고리를 지정합니다.'
                                                 >
                                                     <option value=''> - 선택 </option>-
@@ -502,11 +510,11 @@ class AdminGoodsWrite extends Component {
                                                 </select>
                                         </div>
 
-                                        <div> 
+                                        <div className='font_13'> 
                                             2차 카테고리
                                                 <select name='goods_last_category'
                                                         onChange={() => _setCategory('last')}
-                                                        className='pointer'
+                                                        className='pointer admin_goods_write_category_select'
                                                         title='지정된 상위 카테고리의 하위 카테고리를 지정합니다.'
                                                         // defaultValue={goods_data.last_cat}
                                                 >
@@ -530,7 +538,7 @@ class AdminGoodsWrite extends Component {
                                 <li>
                                     <b> 썸네일 등록 * </b>
                                     <div id='admin_goods_write_select_image_div'>
-                                        <div>
+                                        <div className='font_13'>
                                             <input type='radio' id='admin_goods_write_image_direct' className='check_custom_1'
                                                     defaultChecked={true} onClick={() => _selectRadioToggle('thumbnail', 'direct')}
                                             />
@@ -542,7 +550,7 @@ class AdminGoodsWrite extends Component {
                                             </label>
                                         </div>
 
-                                        <div>
+                                        <div className='font_13'>
                                             <input type='radio' id='admin_goods_write_image_url' className='check_custom_1' 
                                                    onClick={() => _selectRadioToggle('thumbnail', 'url')}
                                             />
@@ -581,7 +589,7 @@ class AdminGoodsWrite extends Component {
                                                      className='pointer' onChange={() => this._addThumbNail('direct', null, null, true)}  />
 
                                             : <span id='admin_goods_write_img_url_div'> 
-                                                    URL 입력 <input type='text' name='admin_goods_write_url_img' maxLength='120' 
+                                                    URL 입력 <input type='text' name='admin_goods_write_url_img'
                                                                     onBlur={() => this._addThumbNail('url', null, null, true)} defaultValue={cover_write_img_collect.thumb} /> 
                                               </span>
                                             }
@@ -590,9 +598,9 @@ class AdminGoodsWrite extends Component {
 
                                 <li id='admin_goods_write_price_div'> 
                                     <b> 상품 가격 * </b>
-                                    <div id='admin_goods_write_price_grid_div'>
+                                    <div id='admin_goods_write_price_grid_div' className='font_13'>
                                         <div>
-                                            원 가격 : * 
+                                            원가 : * 
                                             <br />
                                             할인율 : 
                                             <p className='border_top marginTop_20'>
@@ -619,7 +627,7 @@ class AdminGoodsWrite extends Component {
                                 <li> 
                                     <b> 상품 재고 * </b>
                                     <div id='admin_goods_write_stock_div' className='marginTop_20'>
-                                        <div>
+                                        <div className='font_13'>
                                             판매 가능 재고 : 
                                         </div>
 
@@ -633,8 +641,8 @@ class AdminGoodsWrite extends Component {
                                     <b> 추가 이미지 </b>
 
                                     <div>
-                                        <p className='gray'> - 이미지 배치 위치 </p>
-                                        <div className='grid_half' id='admin_goods_write_img_where_div'>
+                                        <p className='gray font_13'> - 이미지 배치 위치 </p>
+                                        <div className='grid_half font_13' id='admin_goods_write_img_where_div'>
                                             <div> 
                                                 <input type='radio' id='admin_goods_write_img_top_div' className='check_custom_1'
                                                         defaultChecked={true} onClick={() => _selectRadioToggle('where', 'top')}
@@ -700,7 +708,7 @@ class AdminGoodsWrite extends Component {
                                                                         className='pointer' onChange={() => this._addThumbNail('direct', null, key, false)}  />
 
                                                                 : <span id='admin_goods_write_img_url_div'> 
-                                                                        URL 입력 <input type='text' name={'admin_goods_write_url_img_' + key} maxLength='120' 
+                                                                        URL 입력 <input type='text' name={'admin_goods_write_url_img_' + key}
                                                                                         onBlur={() => this._addThumbNail('url', null, key, false)} defaultValue={cover_write_img_collect['bonus'][key]} /> 
                                                                 </span>
                                                             }

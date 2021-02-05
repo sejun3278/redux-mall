@@ -95,6 +95,9 @@ class App extends Component {
   }
 
   _checkAdmin = async (info) => {
+    const { configAction } = this.props;
+    // const user_info = this._checkLogin();
+
     const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '관리자 정보 가져오기' };
 
     obj['option'] = {};
@@ -102,7 +105,7 @@ class App extends Component {
     obj['option']['admin'] = '=';
 
     obj['where'] = [];
-    obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : info });
+    obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : info.id });
     obj['where'].push({ 'table' : 'userInfo', 'key' : 'admin', 'value' : 'Y' });
 
     const get_admin_info = await axios(URL + '/get/query', {
@@ -112,33 +115,11 @@ class App extends Component {
     })
 
     if(get_admin_info.data[0][0]) {
-      this.props.configAction.save_admin_info({ 'info' : true })
+      configAction.save_admin_info({ 'info' : true })
 
       return true;
     }
     return false;
-  }
-
-  _getLoginInfo = async (info) => {
-    const { configAction } = this.props;
-    const get_user_info = await axios(URL + '/get/user_info', {
-      method : 'POST',
-      headers: new Headers(),
-      data : { id : info.id, user_id : info.user_id }
-    })
-
-    console.log(get_user_info)
-    return;
-
-    if(!get_user_info.data) {
-      alert('잘못된 로그인 방식입니다. \n다시 로그인을 시도해주세요.');
-      // sessionStorage.removeItem('login');
-      this._getCookie('login', 'remove')
-
-      return window.location.replace('/');
-    }
-
-    return configAction.save_user_info({ 'info' : JSON.stringify(get_user_info.data) })
   }
 
   _pageMove = (type, location) => {
@@ -564,6 +545,11 @@ class App extends Component {
 
   // 문자열 해싱하기
   _hashString = (s) => {
+
+    if(typeof s !== 'string') {
+      s = String(s);
+    }
+
     function SHA256(s){
         
         var chrsz   = 8;
@@ -1034,6 +1020,10 @@ class App extends Component {
                           _addCoupon={_addCoupon}
                           _getCouponList={_getCouponList}
                           _setPoint={_setPoint}
+                          _getCookie={_getCookie}
+                          _filterURL={_filterURL}
+                          _hashString={_hashString}
+                          _searchStringColor={_searchStringColor}
                         {...props} 
                   />}
                 />
@@ -1049,6 +1039,7 @@ class App extends Component {
                         _moveScrollbar={_moveScrollbar}
                         _modalToggle={_modalToggle}
                         user_info={user_info}
+                        _checkLogin={_checkLogin}
                         // cat_name={cat_name}
                         // _pageMove={_pageMove}
                       {...props} 

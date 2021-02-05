@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
+import Modal from 'react-modal';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,9 +13,10 @@ import {
     PassAdmin, AdminGoodsWrite, AdminCategory, AdminGoods, AdminOrder, AdminUser
 } from './index';
 
+import $ from 'jquery';
 import img from '../../../source/img/icon.json'
+import URL from '../../../config/url';
 
-import Modal from 'react-modal';
 const customStyles = {
     content : {
       top                   : '230px',
@@ -31,45 +33,87 @@ const customStyles = {
   };
 
 class AdminHome extends Component {
-    componentDidMount() {
-        const { login, user_info, _checkAdmin, _checkLogin, adminAction } = this.props;
-        _checkLogin();
+
+    async componentDidMount() {
+        const { login, _checkLogin, adminAction, _getCookie, _hashString } = this.props;
+        const user_info = await _checkLogin();
+
+        $('body').css({ 'minWidth' : '1250px' })
 
         if(!user_info || !login) {
             return window.location.replace('/');
 
         } else {
-            if(user_info) {
-                const check_admin_fn = async () => {
-                    const check_admin = await _checkAdmin(user_info);
-
-                    if(check_admin === false) {
-                        alert('관리자 권한이 없습니다.');
-                         return window.location.replace('/');
-                    }
-                }
-                check_admin_fn();
-
-                if(sessionStorage.getItem('admin')) {
-                    adminAction.login_admin({ 'bool' : true })
-
-                } else {
-                    // adminAction.login_admin({ 'bool' : false })
-                }
+            if(user_info.admin !== 'Y') {
+                alert('관리자만 접근할 수 있습니다.');
+                return window.location.replace('/');
             }
         }
-    }
 
-    _getAdminCheck = async () => {
-        // 관리자 인증 확인하기
-        // const all_cookies = await this.props._getAllCookies();
-        const admin_session = sessionStorage.getItem('admin');
+        const cookie_name = _hashString('admin_check');
+        let check_cookie = await _getCookie(cookie_name, 'get');
 
-        if(admin_session) {
-            return true;
+        // 이미 인증을 했는지 검색
+        if(check_cookie) {
+            const select_obj = { 'type' : 'SELECT', 'table' : 'admin_login', 'comment' : '관리자 로그인 로그와 비교하기' };
+            
+            select_obj['option'] = {};
+            select_obj['option']['user_id'] = '=';
+
+            select_obj['where'] = [];
+            select_obj['where'].push({ 'table' : 'admin_login', 'key' : 'user_id', 'value' : user_info.id });
+
+            select_obj['order'] = [];
+            select_obj['order'][0] = { 'table' : 'admin_login', 'key' : 'id', 'value' : "DESC" };
+            select_obj['order'][1] = { 'table' : 'admin_login', 'key' : 'limit', 'value' : "1" };
+
+            const get_login_log = await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : select_obj
+            });
+            const result = get_login_log.data[0][0];
+
+            let allow = true;
+            if(user_info.id !== result.user_id) {
+                allow = false;
+
+            } else {
+                const ld_check = check_cookie[_hashString('admin_id')] === _hashString(result.user_id);
+                const code_check = check_cookie[_hashString('code')] === _hashString(result.code);
+
+                if(ld_check !== true && code_check !== true) {
+                    allow = false;
+                }
+            }
+
+            if(allow === false) {
+                alert('관리자 인증 내역이 일치하지 않습니다.');
+
+                _getCookie(cookie_name, 'remove');
+
+                return window.location.replace('/');
+
+            } else if(allow === true) {
+                adminAction.login_admin({ 'loading' : true, 'bool' : true });
+            }
+
+        } else {
+            // 인증 쿠키가 없다면 인증 페이지로 이동
+            adminAction.login_admin({ 'loading' : true });
         }
-        return false;
     }
+
+    // _getAdminCheck = async () => {
+    //     // 관리자 인증 확인하기
+    //     // const all_cookies = await this.props._getAllCookies();
+    //     const admin_session = sessionStorage.getItem('admin');
+
+    //     if(admin_session) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     // 목록 Modal Toggle
     _listModalToggle = (bool) => {
@@ -78,15 +122,33 @@ class AdminHome extends Component {
         adminAction.list_modal_toggle({ 'bool' : bool })
     }
 
+    // 관리자 체크
+    _checkAdmin = async () => {
+        const { _checkLogin } = this.props;
+        const user_info = await _checkLogin();
+        
+        if(user_info.admin === 'Y') {
+            return true;
+
+        } else {
+            alert('관리자 권한이 없습니다.');
+            return window.location.replace('/');
+        }
+    }
+
     render() {
         const { 
-            admin_info, user_info, _checkAdmin, login, _checkLogin, admin_state, _pageMove,
-            list_modal, cat_name, _searchCategoryName, price_comma
+            admin_info, user_info, login, _checkLogin, admin_state, _pageMove, _filterURL, _searchStringColor,
+            list_modal, cat_name, _searchCategoryName, price_comma, admin_loading, _getCookie, _hashString
         } = this.props;
-        
+        const { _checkAdmin } = this;
+
         return(
             <div id='admin_page_div'>
-                {user_info && admin_info
+                {admin_loading === true 
+                ?
+
+                user_info && user_info.admin === 'Y'
                 
                 ? admin_state === null ? 
                                         <div>
@@ -95,7 +157,9 @@ class AdminHome extends Component {
                                                 _checkAdmin={_checkAdmin}
                                                 _checkLogin={_checkLogin}
                                                 login={login}
+                                                _getCookie={_getCookie}
                                                 admin_info={admin_info}
+                                                _hashString={_hashString}
                                             />
                                         </div>
 
@@ -138,9 +202,10 @@ class AdminHome extends Component {
                                                     <Switch>
                                                         <Route path='/admin' exact
                                                             render={(props) => <AdminGoods
-                                                                        _pageMove={_pageMove}
                                                                         _searchCategoryName={_searchCategoryName}
                                                                         price_comma={price_comma}
+                                                                        _filterURL={_filterURL}
+                                                                        _searchStringColor={_searchStringColor}
                                                                         {...props} 
                                                             />}
                                                         />
@@ -156,12 +221,14 @@ class AdminHome extends Component {
                                                         <Route path='/admin/goods/?search'
                                                                path='/admin/goods'
                                                             render={(props) => <AdminGoods
-                                                                        _pageMove={_pageMove}
                                                                         _searchCategoryName={_searchCategoryName}
                                                                         price_comma={price_comma}
+                                                                        _filterURL={_filterURL}
+                                                                        _searchStringColor={_searchStringColor}
                                                                         {...props} 
                                                             />}
                                                         />
+
 {/* 
                                                         <Route path='/admin/goods'
                                                             render={(props) => <AdminGoods
@@ -190,7 +257,12 @@ class AdminHome extends Component {
                                             
                                         </div>
             
-                : null}
+                : null
+
+                : <div id='admin_loading_div' className='aCenter recipe_korea'>
+                    <h2> 로딩중입니다. </h2>
+                  </div>
+                }
             </div>
         )
     }
@@ -202,6 +274,7 @@ AdminHome.defaultProps = {
   export default connect(
     (state) => ({
         admin_state : state.admin.admin_state,
+        admin_loading : state.admin.admin_loading,
         list_modal : state.admin.list_modal,
     }), 
   

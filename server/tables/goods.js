@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
        },
 
        thumbnail: { 
-        type: DataTypes.STRING(256), 
+        type: DataTypes.TEXT(), 
         allowNull : false
        },
 

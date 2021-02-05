@@ -16,6 +16,7 @@ const WRITECONTENTS = 'admin/write_contents';
 const SETGOODSDATA = 'admin/set_goods_data';
 const SAVEWRITEGOODS = 'admin/save_write_goods';
 const MODIFYCHECK = 'admin/modify_check';
+const CHANGEFILTER = 'admin/change_filter';
 
 export const set_admin_code = createAction(SETADMINCODE);
 export const login_admin = createAction(LOGINADMIN);
@@ -33,16 +34,18 @@ export const write_contents = createAction(WRITECONTENTS);
 export const set_goods_data = createAction(SETGOODSDATA);
 export const save_write_goods = createAction(SAVEWRITEGOODS);
 export const modify_check = createAction(MODIFYCHECK);
+export const change_filter = createAction(CHANGEFILTER);
 
 const initialState = {
     admin_code : "",
     admin_state : null,
     admin_login : false,
     admin_check : false,
+    admin_loading : false,
     list_modal : false,
     now_page : 'admin',
-    write_first_cat : '',
-    write_last_cat : '',
+    write_first_cat : 'none',
+    write_last_cat : 'none',
     write_select_img : 'direct',
     write_thumbnail : "",
     write_origin_price : 0,
@@ -55,6 +58,14 @@ const initialState = {
     write_contents : "",
     goods_loading : false,
     goods_data : JSON.stringify([]),
+    goods_length : 0,
+    goods_select : JSON.stringify({}),
+    goods_min_price : 0,
+    goods_max_price : 0,
+    goods_search_id : null,
+    goods_search_name : "",
+    goods_state : 'none',
+    goods_view_filter : null,
     modify_check : false,
     write_goods_data : JSON.stringify({}),
 };
@@ -68,9 +79,11 @@ export default handleActions({
     },
 
     [LOGINADMIN] : (state, data) => {
+
       return {
         ...state,
-        admin_state : data.payload.bool
+        admin_state : data.payload.bool !== undefined ? data.payload.bool : state.admin_state,
+        admin_loading : data.payload.loading !== undefined ? data.payload.loading : state.admin_loading
       }
     },
 
@@ -93,8 +106,8 @@ export default handleActions({
 
       return {
         ...state,
-        write_first_cat : body.first,
-        write_last_cat : body.last
+        write_first_cat : body.first !== undefined ? body.first : state.write_first_cat,
+        write_last_cat : body.last !== undefined ? body.last : state.write_last_cat
       }
     },
     
@@ -162,7 +175,9 @@ export default handleActions({
     [SETGOODSDATA] : (state, data) => {
       return {
         ...state,
-        goods_data : data.payload.data,
+        goods_data : data.payload.data !== undefined ? data.payload.data : state.goods_data,
+        goods_length : data.payload.length !== undefined ? data.payload.length : state.goods_length,
+        goods_select : data.payload.select !== undefined ? data.payload.select : state.goods_select,
         goods_loading : true
       }
     },
@@ -187,6 +202,20 @@ export default handleActions({
       return {
         ...state,
         modify_check : data.payload.bool
+      }
+    },
+
+    [CHANGEFILTER] : (state, data) => {
+      return {
+        ...state,
+        write_first_cat : data.payload.first_cat !== undefined ? data.payload.first_cat : state.write_first_cat,
+        write_last_cat : data.payload.last_cat !== undefined ? data.payload.last_cat : state.write_last_cat,
+        goods_min_price : data.payload.min_price !== undefined ? data.payload.min_price : state.goods_min_price,
+        goods_max_price : data.payload.max_price !== undefined ? data.payload.max_price : state.goods_max_price,
+        goods_search_id : data.payload.goods_id !== undefined ? data.payload.goods_id : state.goods_search_id,
+        goods_search_name : data.payload.goods_name !== undefined ? data.payload.goods_name : state.goods_search_name,
+        goods_state : data.payload.state !== undefined ? data.payload.state : state.goods_state,
+        goods_view_filter : data.payload.view !== undefined ? data.payload.view : state.goods_view_filter
       }
     }
 

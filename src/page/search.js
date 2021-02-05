@@ -18,10 +18,11 @@ import img from '../source/img/img.json';
 import cat_list from '../source/admin_page.json';
 import $ from 'jquery';
 
+let like_loadng = false
 class Search extends Component {
 
-    componentDidMount() {
-        const { searchAction, location, configAction } = this.props;
+    async componentDidMount() {
+        const { searchAction, location, configAction, _checkLogin } = this.props;
 
         // 검색 정보 가져오기
         this._getData();
@@ -29,6 +30,18 @@ class Search extends Component {
         // 현재 search 정보 저장하기
         const qry_obj = queryString.parse(location.search);
         qry_obj['search'] = qry_obj['search'] === undefined ? "" :qry_obj['search'];
+
+        const login_check = await _checkLogin();
+        
+        if(qry_obj['view_filter']) {
+            if(qry_obj['view_filter'] === 'my_like') {
+                if(!login_check) {
+                    alert('잘못된 접근입니다.');
+
+                    return window.location.replace('/search')
+                }
+            }
+        }
 
         searchAction.save_qry(qry_obj);
 
@@ -38,10 +51,13 @@ class Search extends Component {
                 alert('최소 가격을 최대 가격보다 낮게 설정하거나 \n최대 가격을 최소 가격보다 더 높게 설정해주세요.');
                 allow = false;
             }
+        } else if(Number(qry_obj['min_price']) <= 0 && Number(qry_obj['max_price']) <= 0) {
+            alert('가격 설정을 최소 1 원 이상 설정해주세요.');
+            allow = false;
         }
 
         if(allow === false) {
-            return window.location.replace('/');
+            return window.location.replace('/search');
         }
 
         let first_cat = qry_obj['first_cat'] ? qry_obj['first_cat'] : null;
@@ -83,10 +99,10 @@ class Search extends Component {
         const qry = queryString.parse(location.search);
         const obj = { 'type' : "SELECT", 'table' : "goods", 'comment' : "검색 정보 가져오기" };
 
-        if(user_info) {
+        // if(user_info) {
             // obj['join'] = true;
             // obj['join_table'] = 'like'
-        }
+        // }
  
         // obj['columns'] = [];
         // 컬럼 조건 담기
@@ -101,14 +117,14 @@ class Search extends Component {
         obj['option']['state'] = "=";
         obj['option']['price'] = "";
 
-        if(obj.join) {
-            // join 이 있는 경우
-            obj['join_arr'] = [];
-            obj['join_arr'][0] = { 'key1' : 'goods_id', 'key2' : 'id' }
+        // if(obj.join) {
+        //     // join 이 있는 경우
+        //     obj['join_arr'] = [];
+        //     obj['join_arr'][0] = { 'key1' : 'goods_id', 'key2' : 'id' }
 
-            obj['join_where'] = [];
-            obj['join_where'][0] = { 'columns' : 'state', 'as' : 'like_state' }
-        }
+        //     obj['join_where'] = [];
+        //     obj['join_where'][0] = { 'columns' : 'state', 'as' : 'like_state' }
+        // }
 
         obj['where'] = [];
         // 검색 조건 담기
@@ -131,7 +147,7 @@ class Search extends Component {
         const view_filter = qry.view_filter;
 
         obj['order'] = [];
-        obj['order'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : "" }
+        obj['order'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : "DESC" }
 
         if(view_filter === 'high_price') {
             obj['order'][0] = { 'table' : 'goods', 'key' : 'result_price', 'value' : "DESC" }
@@ -146,13 +162,91 @@ class Search extends Component {
             obj['order'][0] = { 'table' : 'goods', 'key' : 'star', 'value' : "DESC" };
         }
 
+        if(qry.filter === 'my_like') {
+            obj['join'] = true;
+            obj['join_table'] = 'like'
+
+            obj['join_arr'] = [];
+            obj['join_arr'][0] = { 'key1' : 'goods_id', 'key2' : 'id' }
+
+            obj['join_where'] = [];
+            obj['join_where'][0] = { 'columns' : 'state', 'as' : 'like_state' }
+
+            obj['option']['user_id'] = "=";
+            obj['where'].push({ 'table' : 'like', 'key' : 'user_id', 'value' : user_info.id });
+
+            obj['option']['state'] = "=";
+            obj['where'].push({ 'table' : 'like', 'key' : 'state', 'value' : 1 });
+        }
+
+        obj['order'][1] = { 'table' : 'goods', 'key' : 'limit', 'value' : [0, 20] }
+
         const get_data = await axios(URL + '/api/query', {
             method : 'POST',
             headers: new Headers(),
             data : obj
         })
 
-        searchAction.set_search_data({ 'arr' : JSON.stringify(get_data.data[0]) })
+        let data_info = get_data.data[0];
+
+        // 갯수 가져오기
+        const cover_obj = obj;
+        cover_obj['count'] = true;
+
+        const get_cnt = await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : cover_obj
+        })
+
+        if(user_info && data_info.length > 0) {
+        const add_like_info = async (limit) => {
+        // 로그인 시 상품에 대한 라이크 정보 가져오기
+            const info = data_info[limit];
+                    const like_obj = { 'type' : 'SELECT', 'table' : 'like', 'comment' : '라이크 정보 저장하기' }
+
+                    like_obj['option'] = {};
+                    like_obj['option']['user_id'] = '=';
+                    like_obj['option']['goods_id'] = '=';
+                    like_obj['option']['state'] = '=';
+
+                    like_obj['where'] = [];
+                    like_obj['where'].push({ 'table' : 'like', 'key' : 'user_id', 'value' : user_info.id });
+                    like_obj['where'].push({ 'table' : 'like', 'key' : 'goods_id', 'value' : info.id});
+                    like_obj['where'].push({ 'table' : 'like', 'key' : 'state', 'value' : 1 });
+
+                    const get_like_info = await axios(URL + '/api/query', {
+                        method : 'POST',
+                        headers: new Headers(),
+                        data : like_obj
+                    })
+
+                    const like_info = get_like_info.data[0][0];
+                    if(like_info) {
+                        info['like_state'] = like_info.state;
+
+                    } else {
+                        info['like_state'] = 0;
+                    }
+
+                limit += 1;
+
+                if(data_info.length <= limit) {
+                    return data_info;
+
+                } else {
+                    return await add_like_info(limit);
+                }
+            }
+
+            data_info = await add_like_info(0);
+        }
+
+        const save_obj = {};
+        save_obj['arr'] = JSON.stringify(data_info);
+        save_obj['length'] = get_cnt.data[0][0]['count(*)'];
+
+        searchAction.set_search_data( save_obj )
     }
 
     // 검색
@@ -167,14 +261,23 @@ class Search extends Component {
     }
 
     // 필터
-    _filter = (filter_type, type) => {
-        const { location, _filterURL } = this.props;
+    _filter = async (filter_type, type) => {
+        const { location, _filterURL, _checkLogin, _modalToggle } = this.props;
         const qry = queryString.parse(location.search);
+
+        const login_check = await _checkLogin();
 
         if(qry[filter_type] === type) {
             delete qry[filter_type];
 
         } else {
+            if(type === 'my_like') {
+                if(!login_check) {
+                    alert('로그인이 필요합니다.');
+                    return _modalToggle(true);
+                }
+            }
+
             qry[filter_type] = type;
         }
 
@@ -199,6 +302,10 @@ class Search extends Component {
                 alert('최소 가격을 최대 가격보다 낮게 설정하거나 \n최대 가격을 최소 가격보다 더 높게 설정해주세요.');
                 return $('input[name=min_price]').focus();
             }
+
+        } else if(min_price === 0 && max_price === 0) {
+            alert('최소 1 원 이상 설정해주세요.');
+            return $('input[name=min_price]').focus();
         }
 
         qry['min_price'] = min_price;
@@ -229,17 +336,59 @@ class Search extends Component {
     }
 
     // 라이크 on / off
-    _likeToggle = (goods_id, type) => {
-        const { user_info, _modalToggle } = this.props;
+    _likeToggle = async (goods_id, type) => {
+        const { _checkLogin, _modalToggle } = this.props;
 
+        const user_info = await _checkLogin();
         if(!user_info) {
             alert('로그인이 필요합니다.');
             return _modalToggle(true);
+
+        } else if(like_loadng === true) {
+            alert('처리중입니다.');
+            return;
         }
+
+        like_loadng = true;
+
+        const update_obj = { 'type' : 'UPDATE', 'table' : 'like', 'comment' : '상품 찜 설정 및 해제하기' }
+        update_obj['where_limit'] = 1;
+
+        update_obj['columns'] = [];
+        update_obj['columns'].push({ 'key' : 'modify_date', 'value' : null });
+
+        update_obj['where'] = [];
+        
+        update_obj['where'].push({ 'key' : 'user_id', 'value' : user_info.id });
+        update_obj['where'].push({ 'key' : 'goods_id', 'value' : goods_id });
+
+        let complate_alert = '찜을 추가했습니다.'
+        if(type === true) {
+          // 찜 설정
+          update_obj['columns'].push({ 'key' : 'state', 'value' : 1 });
+
+        } else {
+          // 찜 해제
+          update_obj['columns'].push({ 'key' : 'state', 'value' : 0 });
+          complate_alert = '찜을 해제했습니다.'
+
+        }
+
+        await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : update_obj
+        })
+
+        await this._getData();
+        alert(complate_alert);
+
+        like_loadng = false;
+        return
     }
 
     render() {
-        const { search, _searchCategoryName, search_view_type, price_comma, _clickCategory, search_ready, user_info } = this.props;
+        const { search, _searchCategoryName, search_view_type, price_comma, _clickCategory, search_ready, user_info, search_length } = this.props;
         const { _filter, _search, _removeSearchOption, _priceFilter, _likeToggle } = this;
 
         const search_data = JSON.parse(this.props.search_data);
@@ -251,14 +400,16 @@ class Search extends Component {
         const first_cat = qry.first_cat === undefined ? null : qry.first_cat;
         const last_cat = qry.last_cat === undefined ? null : qry.last_cat;
         const _view_filter = qry.view_filter === undefined ? null : qry.view_filter;
+        const _filter_ = qry.filter === undefined ? null : qry.filter;
 
-        const filter_option_check = search || first_cat || last_cat || (min_price > 0 || max_price > 0) || _view_filter;
+        const filter_option_check = search || first_cat || last_cat || (min_price > 0 || max_price > 0) || _view_filter || _filter_;
         const opt_name_obj = {
             "search" : "검색어",
             "first_cat" : "상위 카테고리",
             "last_cat" : "하위 카테고리",
             "max_price" : "가격 설정",
-            "view_filter" : "검색 필터"
+            "view_filter" : "검색 필터",
+            "filter" : "검색 옵션"
         }
         
         let last_cat_list = [];
@@ -370,7 +521,14 @@ class Search extends Component {
                             > 
                                 평점 순
                             </div>
-                            <div onClick={() => _filter('view_filter', 'my_like')}> 내가 찜한 상품 </div>
+
+                            <div onClick={() => _filter('filter', 'my_like')}
+                                id={qry.filter === 'my_like' ? 'select_view_filter' : null}
+                                className={!user_info.id ? 'gray' : null}
+                                title={!user_info.id ? '로그인이 필요합니다.' : '내가 찜한 상품만 보기'}
+                            > 
+                                내가 찜한 상품 
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -381,7 +539,7 @@ class Search extends Component {
                         <b> {search === "" ? "전체 검색" : "검색 결과"} </b>
 
                         <div id='search_result_cnt_div' className='font_14 marginTop_30'>
-                            총 { search_data.length } 개의 상품이 조회되었습니다.
+                            총 { search_length } 개의 상품이 조회되었습니다.
                         </div>
 
                         <div id='search_result_str_div' className='font_14 bold'>
@@ -436,6 +594,9 @@ class Search extends Component {
                                         } else if(opt_value === 'star') {
                                             opt_value = '평점 순'
                                         }
+
+                                    } else if(opt_value === 'my_like') {
+                                        opt_value = '내가 찜한 상품'
                                     }
 
                                     return(
@@ -478,7 +639,6 @@ class Search extends Component {
                     <div>
                         <div id='search_album_div' className={search_view_type !== 'album' ? 'display_none' : null}> 
                             {search_data.map( (el, key) => {
-
                                 const first_cat_name = _searchCategoryName(el.first_cat, 'first');
                                 const last_cat_name = _searchCategoryName(el.last_cat, 'last', el.first_cat);
 
@@ -491,13 +651,20 @@ class Search extends Component {
                                     goods_name = slice_str + "<b class='bold search_line'>" + search + "</b>" + last_str;
                                 }
 
-                                const like_state = user_info === false 
-                                    ? icon.goods.like_none
-                                    
-                                    : icon.goods.like_none
-                                            // ? icon.goods.like_none
+                                let like_title = '';
+                                let like_state = icon.goods.like_none;
+                                if(!user_info.id) {
+                                    like_title = '로그인이 필요합니다.';
 
-                                            // : icon.goods.like_on
+                                } else {
+                                    if(el.like_state === 0) {
+                                        like_title = '찜 설정';
+
+                                    } else if(el.like_state === 1) {
+                                        like_title = '찜 해제';
+                                        like_state = icon.goods.like_on
+                                    }
+                                }
 
                                 let goods_star = '<div class="aCenter"> </div>';
                                 star_arr.map( (cu) => {
@@ -518,10 +685,20 @@ class Search extends Component {
                                         <div className='search_contents_thumb_list border' key={key} 
                                             style={{ 'backgroundImage' : `url(${el.thumbnail})` }}
                                             onClick={() => window.location.href='/goods/?goods_num=' + el.id}
-                                        />
+                                        >
+                                        {el.stock === 0
+                                            ? <div className='search_goods_sold_out_alert_div aCenter white'
+                                                    title='매진된 상품입니다.'
+                                            >
+                                                <h4> Sold Out </h4>
+                                              </div>
+                                            
+                                            : null
+                                        }
+                                        </div>
 
                                         <div id='search_album_like_div'
-                                             title={el.like_state === 0 ? "찜 추가" : "찜 해제"}
+                                             title={like_title}
                                              onClick={() => el.like_state === 0
                                                 ? _likeToggle(el.id, true) // like 적용
                                                 : _likeToggle(el.id, false) // like 해제
@@ -634,7 +811,8 @@ Search.defaultProps = {
         search_data : state.search.search_data,
         search : state.search.search,
         search_view_type : state.search.search_view_type,
-        search_ready : state.search.search_ready
+        search_ready : state.search.search_ready,
+        search_length : state.search.search_length
     }), 
   
     (dispatch) => ({

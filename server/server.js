@@ -17,6 +17,24 @@ const session = require('express-session');
 //   store: new FileStore()
 // }));
 
+app.set('trust proxy', 1)
+
+// app.enable('trust proxy')
+app.use(session({
+  name: "random_session",
+  secret: "adas%#$%ASDas51231ASq41WDzx3432s",
+  resave: false,
+  proxy : true,
+  secureProxy : true,
+  saveUninitialized: true,
+  cookie: {
+      path: "/",
+      secure: true,
+      //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
+      httpOnly: true
+  }
+}));
+
 app.use(express.json());
 app.use(cors());
 app.use(fileUpload());

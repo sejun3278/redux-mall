@@ -207,7 +207,10 @@ class Header extends Component {
                                     </div>
 
                                     <div className='inline_block'> 
-                                        <Link to='/signup'> 회원가입 </Link> 
+                                        <u className='remove_underLine pointer'
+                                            onClick={() => window.location.href='/signup'}>  
+                                            회원가입
+                                        </u>
                                     </div>
                                 </div>
                                 
@@ -222,7 +225,10 @@ class Header extends Component {
                                     </div>
 
                                     <div className='inline_block'> 
-                                        <Link to='/myPage'> 마이 페이지 </Link> 
+                                        <u className='remove_underLine pointer'
+                                            onClick={() => window.location.href='/myPage'}>  
+                                            마이 페이지
+                                        </u>
                                     </div>
                                 </div>
                                 }

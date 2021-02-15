@@ -53,6 +53,13 @@ class App extends Component {
       // configAction.set_loading();
     }
 
+    const test_cookie = this._getCookie('test', 'get');
+
+    if(!test_cookie) {
+      await this._getCookie('test', 'add', { 'test' : '123' }, { 'time' : 60 * 60 } );
+    }
+    console.log(test_cookie)
+
     const moment = require('moment');
     const now_date = moment().format("YYYY-MM-DD HH:MM:SS");
 
@@ -80,6 +87,8 @@ class App extends Component {
       headers: new Headers(),
       data : { 'key' : key, 'type' : type, 'value' : value, 'opt' : opt }
     })
+
+    console.log(login_cookie)
 
     if(login_cookie.status === 500) {
       return window.location.reload();

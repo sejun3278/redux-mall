@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4002;
 
 const fileUpload = require('express-fileupload');
 const router = require('./router');
@@ -25,25 +25,22 @@ app.all('*', function(req, res, next) {
 });
 
 app.set('trust proxy', 1)
+app.enable('trust proxy')
 
-// app.enable('trust proxy')
 app.use(session({
-  name: "random_session",
-  secret: "adas%#$%ASDas51231ASq41WDzx3432s",
-  resave: false,
-  proxy : true,
-  secureProxy : true,
-  saveUninitialized: true,
-  cookie: {
-      path: "/",
-      secure: true,
-      //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
-      httpOnly: true
+  secret : 'somesecret',
+  store : '',
+  key : 'sid',
+  cookie : {
+      secure : true, // it works without the secure flag (cookie is set)
+      proxy : true,  // tried using this as well, no difference
+      maxAge: 5184000000 // 2 months
   }
 }));
 
 app.use(express.json());
 app.use(cors());
+
 app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());

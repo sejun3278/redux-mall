@@ -446,7 +446,7 @@ class Cart extends Component {
         }
         save_cookie['code'] = code;
 
-        await _getCookie('order', 'add', JSON.stringify(save_cookie), { 'time' : 60 } );
+        await _getCookie('order', 'add', JSON.stringify(save_cookie), true);
 
         const obj = { "type" : "INSERT", "table" : "order", "comment" : "임시 주문 내역 추가하기" };
 

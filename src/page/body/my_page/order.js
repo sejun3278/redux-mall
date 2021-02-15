@@ -56,8 +56,8 @@ class Order extends Component {
     }
 
     _checkAcess = async () => {
-        const { user_info, _getCookie, myPageAction } = this.props;
-        const cookie_check = await _getCookie("order", "get");
+        const { user_info, _getCookie, myPageAction, orderAction } = this.props;
+        const cookie_check = JSON.parse(await _getCookie("order", "get", null, true));
 
         const check_result = { "bool" : true, "alert" : null };
         // 장바구니 접근 여부 체크하기
@@ -70,6 +70,8 @@ class Order extends Component {
                 check_result['alert'] = '비정상적인 접근입니다.';
                 check_result['bool'] = false;
             }
+
+            orderAction.save_order_info({ 'buy_info' : JSON.stringify(cookie_check) })
 
             const obj = { 'type' : 'SELECT', 'table' : 'order', 'comment' : '주문 정보 가져오기' };
 
@@ -166,7 +168,8 @@ class Order extends Component {
     _saveCartList = async (list) => {
         const { user_info, _getCookie } = this.props;
         // const order_info = JSON.parse(this.props.order_info);
-        const order_cookie = await _getCookie('order', 'get');
+        // const order_cookie = JSON.stringify(await _getCookie('order', 'get', null, true));
+        const order_cookie = JSON.parse(this.props.buy_order_info);
 
         let obj = {};
         let save_cart_data = [];
@@ -466,12 +469,12 @@ class Order extends Component {
 
                     cookie_obj['payment_info']['payment_state'] = true;
 
-                    const session_obj = {};
-                    session_obj[_hashString('user_id')] = _hashString(user_info.user_id);
-                    session_obj[_hashString('order_id')] = _hashString(String(cookie_obj.order_info.id));
+                    // const session_obj = {};
+                    cookie_obj[_hashString('user_id')] = _hashString(user_info.user_id);
+                    cookie_obj[_hashString('order_id')] = _hashString(String(cookie_obj.order_info.id));
             
-                    await _getCookie('order_check', 'add', cookie_obj, { 'time' : 60 * 60 } );
-                    sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
+                    await _getCookie('order_check', 'add', JSON.stringify(cookie_obj), true);
+                    // sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
 
                     IMP.request_pay({
                         pg : 'kcp', // version 1.1.0부터 지원.
@@ -500,8 +503,8 @@ class Order extends Component {
                             let msg = '결제에 실패하였습니다. \n';
                             msg += '( ' + rsp.error_msg + ' )';
 
-                            await _getCookie('order_check', 'remove');
-                            sessionStorage.removeItem(_hashString('order_check'));
+                            await _getCookie('order_check', 'remove', null, true);
+                            // sessionStorage.removeItem(_hashString('order_check'));
 
                             alert(msg);
                         }
@@ -522,18 +525,18 @@ class Order extends Component {
     _moveOrderCheck = async (cookie_obj) => {
         const { _getCookie, user_info, _hashString } = this.props;
 
-        const session_obj = {};
-        session_obj[_hashString('user_id')] = _hashString(user_info.user_id);
-        session_obj[_hashString('order_id')] = _hashString(String(cookie_obj.order_info.id));
+        // const session_obj = {};
+        cookie_obj[_hashString('user_id')] = _hashString(user_info.user_id);
+        cookie_obj[_hashString('order_id')] = _hashString(String(cookie_obj.order_info.id));
 
-        await _getCookie('order_check', 'add', cookie_obj, { 'time' : 60 * 60 } );
-        sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
+        await _getCookie('order_check', 'add', JSON.stringify(cookie_obj), true);
+        // sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
 
         return window.location.replace('/orderCheck');
     }
 
     _complateOrder = async (type, payment, form_data) => {
-        const { prediction_point, user_info, _setPoint, use_point, cart_coupon_price, _getCookie, coupon_select } = this.props;
+        const { prediction_point, user_info, _setPoint, use_point, cart_coupon_price, _getCookie, coupon_select, _hashString } = this.props;
         const order_info = JSON.parse(this.props.order_info);
 
         let order_able = true;
@@ -602,8 +605,8 @@ class Order extends Component {
                 complate['cart_list'] = JSON.parse(this.props.cart_data);
 
                 // 쿠키 추가하기
-                await _getCookie('order_complate', 'add', JSON.stringify(complate), { 'time' : 60 } );
-                await _getCookie('order', 'remove');
+                await _getCookie('order_complate', 'add', JSON.stringify(complate), true );
+                await _getCookie('order', 'remove', null, true);
 
                 return window.location.replace('/myPage/orderComplate');
 
@@ -946,10 +949,11 @@ class Order extends Component {
 
     // 유저 정보 저장
     _saveUserInfo = async () => {
-        const { order_host_code, order_host, _getCookie, user_info } = this.props;
-        const user_cookie = await _getCookie('login', 'get');
+        const { order_host_code, order_host, user_info, _checkLogin } = this.props;
 
-        if(!user_info || !user_cookie) {
+        const user_cookie = await _checkLogin();
+
+        if(!user_info.id || !user_cookie.id) {
             alert('유저 정보가 일치하지 않습니다.');
             return window.location.replace('/');
         }
@@ -1573,6 +1577,7 @@ Order.defaultProps = {
         payment_agree : state.order.payment_agree,
         payment_pay_agree : state.order.payment_pay_agree,
         order_ing : state.order.order_ing,
+        buy_order_info : state.order.buy_order_info
     }), 
   
     (dispatch) => ({

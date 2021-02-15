@@ -38,10 +38,11 @@ class OrderList extends Component {
         //     alert(11)
         // }
 
-        let get_order_id = await _getCookie(_hashString('detail_order_id'), 'get');
-        const session_info = JSON.parse(sessionStorage.getItem(_hashString('detail_order_id')));
+        let get_order_id = JSON.parse(await _getCookie(_hashString('detail_order_id'), 'get', null, true));
+        // const session_info = JSON.parse(sessionStorage.getItem(_hashString('detail_order_id')));
+        console.log(get_order_id)
 
-        if(get_order_id !== false && session_info !== null) {
+        if(get_order_id) {
             // 상세 정보 쿠키가 있을 경우
             const user_check = get_order_id[_hashString('user_id')] === _hashString(user_info.user_id);
             get_order_id = get_order_id[_hashString('id')];
@@ -150,7 +151,7 @@ class OrderList extends Component {
     }
 
     _getOrderData = async (start, order_id) => {
-        const { user_info, orderAction, _moveScrollbar, location, configAction } = this.props;
+        const { user_info, orderAction, _moveScrollbar, location, configAction, _hashString, _getCookie } = this.props;
         const obj = { 'type' : 'SELECT', 'table' : 'order', 'comment' : '주문 정보 가져오기' };
         const qry = queryString.parse(location.search);
         
@@ -339,7 +340,6 @@ class OrderList extends Component {
                 })
                 
                 review_data = review_data.data[0][0];
-                console.log(review_data)
                 if(review_data && review_data.id) {
                     data_get['review_id'] = review_data.id;
                     data_get['review_date'] = review_data.create_date;
@@ -377,13 +377,13 @@ class OrderList extends Component {
         orderAction.save_order_info({ 'order_list_info' : JSON.stringify(data) });
         orderAction.save_order_info({ 'loading' : true })
 
-        let after_move = JSON.parse(sessionStorage.getItem('after_move'));
+        // let after_move = JSON.parse(sessionStorage.getItem('after_move'));
+        let after_move = JSON.parse(await _getCookie(_hashString('after_move'), 'get', null, true));
 
         if(after_move) {
-            after_move = after_move.id;
-
+            after_move = String(after_move.id);
             const height = $('#order_list_' + after_move).offset().top;
-            sessionStorage.removeItem('after_move')
+            await _getCookie(_hashString('after_move'), 'remove', null, true)
 
             return _moveScrollbar('html', 'y', height);
         }
@@ -476,12 +476,12 @@ class OrderList extends Component {
             url_obj[_hashString('save_url')] = save_url;
             url_obj[_hashString('user_id')] = _hashString(user_info.user_id);
 
-            await _getCookie(_hashString('detail_order_id'), 'add', JSON.stringify(url_obj), { 'time' : 60 });
+            await _getCookie(_hashString('detail_order_id'), 'add', JSON.stringify(url_obj), true);
 
             const session_obj = {};
             session_obj[_hashString('user_id')] = _hashString(String(user_info.id));
 
-            sessionStorage.setItem(_hashString('detail_order_id'), JSON.stringify(session_obj))
+            // sessionStorage.setItem(_hashString('detail_order_id'), JSON.stringify(session_obj))
             
             if(move === true) {
                 return window.location.href = save_url;
@@ -491,7 +491,7 @@ class OrderList extends Component {
             }
 
         } else {
-            let get_save_url = await _getCookie(_hashString('detail_order_id'), 'get');
+            let get_save_url = await _getCookie(_hashString('detail_order_id'), 'get', null, true);
 
             get_save_url = get_save_url[_hashString('save_url')];
 
@@ -499,10 +499,12 @@ class OrderList extends Component {
                 get_save_url = '/myPage/order_list';
             }
 
-            await _getCookie(_hashString('detail_order_id'), 'remove');
-            sessionStorage.removeItem(_hashString('detail_order_id'))
+            await _getCookie(_hashString('detail_order_id'), 'remove', null, true);
+            // sessionStorage.removeItem(_hashString('detail_order_id'))
 
-            sessionStorage.setItem('after_move', JSON.stringify({ 'id' : order_info.id }) )
+            await _getCookie(_hashString('after_move'), 'add', JSON.stringify({ 'id' : order_info.id }), true);
+
+            // sessionStorage.setItem('after_move', JSON.stringify({ 'id' : order_info.id }) )
             return window.location.href = get_save_url;
         }
     }

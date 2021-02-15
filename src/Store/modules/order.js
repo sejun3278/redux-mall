@@ -49,7 +49,8 @@ const initialState = {
     order_detail_select : null,
     order_detail_bool : false,
     order_cancel_modal : false,
-    order_canceling : false
+    order_canceling : false,
+    buy_order_info : JSON.stringify({})
 };
 
 export default handleActions({
@@ -59,7 +60,8 @@ export default handleActions({
         order_info : data.payload.order_info !== undefined ? data.payload.order_info : state.order_info,
         order_list_info : data.payload.order_list_info !== undefined ? data.payload.order_list_info : state.order_list_info,
         cart_data : data.payload.cart_data !== undefined ? data.payload.cart_data : state.cart_data,
-        order_loading : data.payload.loading !== undefined ? data.payload.loading : state.order_loading
+        order_loading : data.payload.loading !== undefined ? data.payload.loading : state.order_loading,
+        buy_order_info : data.payload.buy_info !== undefined ? data.payload.buy_info : state.buy_order_info
       };
     },
 

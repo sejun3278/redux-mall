@@ -92,18 +92,23 @@ class App extends Component {
   //   }
   // }
 
-  _getCookie = async (name, type, value) => {
+  _getCookie = async (name, type, value, session) => {
     const { _hashString } = this;
     const hash_name = _hashString(name);
 
+    let tool = localStorage;
+    if(session) {
+      tool = sessionStorage;
+    }
+
     if(type === 'get') {
-      return localStorage.getItem(hash_name);
+      return tool.getItem(hash_name);
 
     } else if(type === 'add') {
-      return localStorage.setItem(hash_name, value);
+      return tool.setItem(hash_name, value);
 
     } else if(type === 'remove') {
-      return localStorage.removeItem(hash_name);
+      return tool.removeItem(hash_name);
     }
   }
 
@@ -1223,8 +1228,10 @@ class App extends Component {
                         _loginAfter={_loginAfter}
                         _filterURL={_filterURL}
                         loading={loading}
+                        _checkLogin={_checkLogin}
                         _setModalStyle={_setModalStyle}
                         _removeReview={_removeReview}
+                        _stringCrypt={_stringCrypt}
                       {...props} 
                   />}
                 />
@@ -1279,6 +1286,7 @@ class App extends Component {
                 <Route path='/orderCheck'
                         render={(props) => <OrderCheck 
                           user_info={user_info}
+                          _checkLogin={_checkLogin}
                           _getCookie={_getCookie}
                           _hashString={_hashString}
                           _setPoint={_setPoint}

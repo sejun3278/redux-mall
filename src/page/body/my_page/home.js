@@ -228,6 +228,7 @@ class MyPageHome extends Component {
                         render={(props) => <Cart
                             user_info={user_info}
                             _getCookie={_getCookie}
+                            _checkLogin={_checkLogin}
                             price_comma={price_comma}
                             _modalToggle={_modalToggle}
                             _toggleCouponListModal={_toggleCouponListModal}

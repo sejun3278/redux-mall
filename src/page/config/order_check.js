@@ -15,34 +15,33 @@ import $ from 'jquery';
 class OrderCheck extends Component {
 
     async componentDidMount() {
-        const { _getCookie } = this.props;
+        const { _getCookie, _checkLogin } = this.props;
 
         $('.App').hide();
 
-        const order_check = await _getCookie('order_check', 'get');
-        const user_cookie = await _getCookie('login', 'get');
+        const order_check = JSON.parse(await _getCookie('order_check', 'get', null, true));
+        const user_cookie = await _checkLogin();
 
         const check = await this._acessCheck(order_check, user_cookie);
         if(check === false) {
             await this._complateOrder(order_check, user_cookie);
         }
-
     }
 
     // 접근 체크하기
     _acessCheck = async(order_check, user_cookie) => {
         const { _hashString, user_info } = this.props;
-        const acess_session = JSON.parse(sessionStorage.getItem(_hashString('order_check')));
+        // const acess_session = JSON.parse(sessionStorage.getItem(_hashString('order_check')));
 
         const session_user_id = _hashString(user_info.user_id);
         const session_order_id = _hashString(String(order_check.order_info.id));
 
         let acess_check = false;
-        if(user_info.id === undefined || user_info.user_id !== user_cookie || acess_session === null) {
+        if(user_info.id === undefined || user_info.id !== user_cookie.id || order_check === null) {
             acess_check = true;
 
         } else {
-            if(acess_session[_hashString('user_id')] !== session_user_id || acess_session[_hashString('order_id')] !== session_order_id) {
+            if(order_check[_hashString('user_id')] !== session_user_id || order_check[_hashString('order_id')] !== session_order_id) {
                 acess_check = true;
             }
         }
@@ -112,23 +111,25 @@ class OrderCheck extends Component {
         }
 
         const complate = {};
-        complate['user_id'] = user_info.user_id;
-        complate['order_id'] = order_check.order_info.id;
+        complate[_hashString('user_id')] = _hashString(String(user_info.id));
+        complate[_hashString('order_id')] = _hashString(String(order_check.order_info.id));
+        complate['order_id'] = order_check.order_info.id
         complate['coupon_select'] = order_check.payment_info.use_coupon
         complate['cart_list'] = order_check.cart_data
 
         // 쿠키 추가하기
-        await _getCookie('order_complate', 'add', JSON.stringify(complate), { 'time' : 60 } );
+        await _getCookie('order_complate', 'add', JSON.stringify(complate), true);
 
         // 세션 추가하기
-        const session_obj = {};
-        session_obj[_hashString('order_id')] = _hashString(String(order_check.order_info.id));
-        session_obj[_hashString('user_id')] = _hashString(String(user_info.id));
+        // const session_obj = {};
+        // session_obj[_hashString('order_id')] = _hashString(String(order_check.order_info.id));
+        // session_obj['order_id'] = String(order_check.order_info.id);
+        // session_obj[_hashString('user_id')] = _hashString(String(user_info.id));
 
-        sessionStorage.setItem(_hashString('order_complate'), JSON.stringify(session_obj));
+        // sessionStorage.setItem(_hashString('order_complate'), JSON.stringify(session_obj));
 
         sessionStorage.removeItem(_hashString('order_check'));
-        await _getCookie('order_check', 'remove');
+        await _getCookie('order_check', 'remove', null, true);
 
         return window.location.replace('/myPage/orderComplate');
     }

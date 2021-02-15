@@ -47,7 +47,7 @@ class Goods extends Component {
         // $('html').css({ 'height' : '3000px' })
         // this._setScrollSize();
         window.addEventListener("scroll", this._setScrollSize);
-        window.addEventListener("resize", this._setScreenWitdhEvent); // 화면 가로 크기
+        // window.addEventListener("resize", this._setScreenWitdhEvent); // 화면 가로 크기
 
         // 상품 정보 저장하기
         const get_goods_data = await this._getGoodsData(goods_num);
@@ -390,16 +390,16 @@ class Goods extends Component {
 
     // 상품 찜하기
     _likeGoods = async () => {
-        const { _modalToggle, goodsAction, like_loading, like_state } = this.props;
+        const { _modalToggle, goodsAction, like_loading, like_state, _checkLogin } = this.props;
         const user_info = JSON.parse(this.props.user_info);
-        const goods_data = JSON.parse(this.props.goods_data);
+        const login_check = await _checkLogin();
 
+        const goods_data = JSON.parse(this.props.goods_data);
         const cover_like_state = like_state !== false ? JSON.parse(like_state) : false;
         // $('.like_alert').fadeOut(300)
 
         if(like_loading === false) {
-            // const login_check = await _getCookie('login', 'get');
-            if(!user_info) {
+            if(!user_info || !login_check) {
                 alert('로그인이 필요합니다.');
                 return _modalToggle(true);
             }
@@ -568,13 +568,13 @@ class Goods extends Component {
 
     // 장바구니 추가
     _addCartGoods = async (stock_check, define_check, stop, update) => {
-        const { like_loading, goods_num, goodsAction, _getCookie, _modalToggle } = this.props;
+        const { like_loading, goods_num, goodsAction, _checkLogin, _modalToggle } = this.props;
         const user_info = JSON.parse(this.props.user_info);
-        const user_cookie = _getCookie('login', 'get');
+        const user_cookie = await _checkLogin();
 
         const goods_data = JSON.parse(this.props.goods_data);
 
-        if(!user_info || !user_cookie) {
+        if(!user_info.id || !user_cookie.id) {
             alert('로그인이 필요합니다.');
             return _modalToggle(true);
 
@@ -727,7 +727,7 @@ class Goods extends Component {
                     // 중복
                     this._changeOtherDivHeight(200);
 
-                    this._setScreenWitdhEvent(true);
+                    // this._setScreenWitdhEvent(true);
                     goodsAction.like_loading({ 'bool' : false });
                     return goodsAction.overlap_cart({ 'bool' : true, 'num' : query_result.data[0][0].id })
                 }
@@ -808,7 +808,7 @@ class Goods extends Component {
                 data : obj
             })
 
-            this._setScreenWitdhEvent(false, true);
+            // this._setScreenWitdhEvent(false, true);
 
             this._changeOtherDivHeight(140);
 
@@ -853,7 +853,7 @@ class Goods extends Component {
 
     // 바로 구매
     _directBuyGoods = async () => {
-        const { _loginCookieCheck, _getCookie, } = this.props;
+        const { _loginCookieCheck, _getCookie } = this.props;
         const { _getGoodsData } = this;
 
         const goods_num = $('input[name=goods_num]').val();
@@ -904,8 +904,7 @@ class Goods extends Component {
             code += String(number);
         }
         save_cookie['code'] = code;
-
-        await _getCookie('order', 'add', JSON.stringify(save_cookie), { 'time' : 60 } );
+        await _getCookie('order', 'add', JSON.stringify(save_cookie), true);
 
         insert_obj['columns'] = [];
 
@@ -1280,7 +1279,6 @@ class Goods extends Component {
         if(review_remove === true) {
             return;
         }
-
 
         if(user_info.id !== user_id) {
             if(user_info.admin !== 'Y') {

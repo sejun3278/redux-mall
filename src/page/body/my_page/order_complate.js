@@ -16,13 +16,13 @@ class Order_complate extends Component {
 
     async componentDidMount() {
         const { _getCookie, user_info, orderAction, _hashString } = this.props;
-        const get_order_cookie = await _getCookie('order_complate', 'get');
-        const get_session = JSON.parse(sessionStorage.getItem(_hashString('order_complate')));
+        const get_order_cookie = JSON.parse(await _getCookie('order_complate', 'get', null, true));
+        // const get_session = JSON.parse(sessionStorage.getItem(_hashString('order_complate')));
 
         let acess_able = true;
-        if(get_session) {
-            const session_user_id = get_session[_hashString('user_id')];
-            const session_order_id = get_session[_hashString('order_id')];
+        if(get_order_cookie) {
+            const session_user_id = get_order_cookie[_hashString('user_id')];
+            const session_order_id = get_order_cookie[_hashString('order_id')];
 
             const session_id_check = session_user_id === _hashString(String(user_info.id));
             const session_order_check = session_order_id === _hashString(String(get_order_cookie.order_id));
@@ -31,7 +31,7 @@ class Order_complate extends Component {
                 acess_able = false;
     
             } else {
-                if(get_order_cookie.user_id !== user_info.user_id || session_id_check === false || session_order_check === false) {
+                if(session_id_check === false || session_order_check === false) {
                     acess_able = false;
     
                 } else {

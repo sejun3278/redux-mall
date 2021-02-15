@@ -49,28 +49,27 @@ class Header extends Component {
         }
 
         if(url.includes('/myPage/order') === false) {
-            await _getCookie('order', 'remove');
+            await _getCookie('order', 'remove', null, true);
         }
 
         if(url.includes('/myPage/orderComplate') === false) {
-            await _getCookie('order_complate', 'remove');
-            sessionStorage.removeItem(_hashString('order_complate'));
+            await _getCookie('order_complate', 'remove', null, true);
+            // sessionStorage.removeItem(_hashString('order_complate'));
         }
 
         if(url.includes('/orderCheck') === false) {
-            await _getCookie('order_check', 'remove');
-            sessionStorage.removeItem(_hashString('order_check'));
+            await _getCookie('order_check', 'remove', null, true);
+            // sessionStorage.removeItem(_hashString('order_check'));
         }
 
         if(url.includes('/myPage/order_list') === false) {
             if(url.includes('/goods/') === false) {
-                await _getCookie(_hashString('detail_order_id'), 'remove');
-                sessionStorage.removeItem('after_move');
+                await _getCookie(_hashString('detail_order_id'), 'remove', null, true);
             }
         }
 
         if(url.includes('/goods') === false) {
-            sessionStorage.removeItem('page_move');
+            await _getCookie(_hashString('page_move'), 'remove', null, true);
         }
 
       }

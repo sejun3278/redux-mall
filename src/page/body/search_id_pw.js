@@ -33,7 +33,7 @@ class SearchIDPW extends Component {
 
     _submit = async (event) => {
         const { configAction, search_id_pw_type, searching } = this.props;
-        const { search_name, search_email_id, search_email_host, search_id } = this.props;
+        const { search_name, search_email_id, search_email_host, search_id, _sendMailer } = this.props;
 
         event.preventDefault();
 
@@ -130,12 +130,8 @@ class SearchIDPW extends Component {
                     'contents' : contents, 
                     'title' : 'Sejun\'s Mall 비밀번호 찾기 인증번호 입니다.' 
                 }
-        
-                await axios(URL + '/api/send_mail', {
-                    method : 'POST',
-                    headers: new Headers(),
-                    data : obj
-                })
+                
+                await _sendMailer(obj);
 
                 pw_result = 1;
                 configAction.searching({ 'bool' : false, 'result' : false, 'pw_result' : pw_result, 'result_id' : pw_search.data.data[0].id })

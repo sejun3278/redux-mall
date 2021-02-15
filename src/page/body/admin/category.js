@@ -17,10 +17,9 @@ class AdminCategory extends Component {
     render() {
         const { _pageMove, cat_name } = this.props;
 
-        console.log(cat_name)
         return(
             <div id='admin_category_div'>
-                <ul className='list_none aCenter' id='admin_cateogry_ul'> 
+                <ul className='list_none aCenter font_13' id='admin_cateogry_ul'> 
 
                     {admin_page.map( (el, key) => {
                         const word_check = el.name === cat_name;

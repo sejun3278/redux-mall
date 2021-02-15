@@ -21,8 +21,8 @@ let remove = false;
 class Review extends Component {
 
     async componentDidMount() {
-      const { location } = this.props;
-      const qry = queryString.parse(location.search);
+      // const { location } = this.props;
+      // const qry = queryString.parse(location.search);
 
       // if(qry['date'] && qry['star']) {
       //   alert('잘못된 경로입니다.');

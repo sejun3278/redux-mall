@@ -42,7 +42,7 @@ class Order extends Component {
             orderAction.set_order_host(result);
 
             if(user_info.phone && user_info.email) {
-                this._sameDeliveryInfo(true);
+                // this._sameDeliveryInfo(true);
             }
 
         } else {
@@ -291,6 +291,8 @@ class Order extends Component {
         const bool = bools !== null ? bools : !order_same_info_bool;
 
         $('#same_delivery_info_button').prop("checked", bool)
+
+        console.log(user_info)
 
         if(bool === true) {
             $('#same_delivery_info').addClass('bold black');
@@ -567,12 +569,12 @@ class Order extends Component {
                 // 주문 처리
                 await this._updateOrder(payment);
 
-                let user_point = user_info.point;
+                // let user_point = user_info.point;
                 if(use_point > 0) {
                     // 포인트 사용
                     point_comment = order_info.id + ' 번 주문 구매로 인한 포인트 사용 ( -' + use_point + ' P )';
 
-                    user_point = await _setPoint(use_point, 'remove', point_comment, user_point); 
+                    await _setPoint(use_point, 'remove', point_comment, user_info.id); 
                 }
 
                 if(cart_coupon_price > 0) {
@@ -586,7 +588,7 @@ class Order extends Component {
                     // 포인트 적립하기
                     if(prediction_point > 0) {
                         point_comment = order_info.id + ' 번 주문 구매로 인한 포인트 적립 ( ' + prediction_point + ' P )';
-                        await _setPoint(prediction_point, 'add', point_comment, user_point);
+                        await _setPoint(prediction_point, 'add', point_comment, user_info.id);
                     }
 
                     // 상품 재고 최신화
@@ -1242,7 +1244,7 @@ class Order extends Component {
                         <div id='order_userInfo_agree_div'>
                             <input type='checkbox' id='agree_userInfo_button' name='agree' className='check_custom_1' onClick={_agreeSaveUserInfo} />
                             <span className='check_toggle_1' onClick={() => _agreeSaveUserInfo(true)}> </span>
-                            <label htmlFor='agree_userInfo_button' className='pointer font_14 paybook_bold' id='user_info_agree_input'> 
+                            <label htmlFor='agree_userInfo_button' className='pointer font_14 recipe_korea' id='user_info_agree_input'> 
                                 개인정보 수집에 동의합니다. 
                             </label>
                             <b className='paybook_bold pointer font_14' onClick={() => this.props.configAction.toggle_agree_modal({ 'bool' : true})}> [ 약관 보기 ] </b>

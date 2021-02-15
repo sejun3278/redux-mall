@@ -59,12 +59,9 @@
 
     #signup_agree_div { margin-left: 60px !important; }
 
+    #main_header_div { grid-template-columns: 50% auto !important; }
 
     /* #modify_user_submit_div { margin-left: 10px !important; width: 85%;} */
-}
-
-@media ( max-width: 831px ) {
-    #main_header_div { grid-template-columns: 20% 40% 40% !important; }
 }
 
 @media ( max-width: 780px ) {
@@ -92,7 +89,7 @@
   }
 
   @media ( max-width: 720px ) {
-    #main_header_div { grid-template-columns: 10% 40% 50% !important; }
+    /* #main_header_div { grid-template-columns: 10% 40% 50% !important; } */
 
     #signup_div_grid div ul li input {  width: 75% !important; }
     /* #signup_div_grid #signup_email_li input { width : 35% !important; } */
@@ -138,13 +135,15 @@
 
     #signup_div_grid div ul li input { width: 85% !important; }
   #signup_email_li div { grid-template-columns: 60% auto; }
-
+  
+    #main_header_right_contents { display: block !important; }
+    #main_header_right_contents div { display: block !important; padding: 9px 25px 0px 0px !important; }
     /* #signup_div_grid #signup_email_li input { width : 58% !important; } */
 
   }
 
   @media ( max-width: 570px ) {
-    #main_header_div { grid-template-columns: 5% 40% auto !important; }
+    /* #main_header_div { grid-template-columns: 5% 40% auto !important; } */
     #user_thumbnail_div #user_thumbnail_img { width: 100px; height: 100px }
 
     #modify_user_div_grid { grid-template-columns: 3% auto 0% !important; padding-left: 20px !important; }
@@ -160,7 +159,7 @@
   }
 
   @media ( max-width: 502px ) {
-    #main_header_div { grid-template-columns: 5% 40% auto !important; }
+    /* #main_header_div { grid-template-columns: 5% 40% auto !important; } */
     #signup_argee_checkbox_div label { font-size: 12px !important; }
     #header_other_div { grid-template-columns: 40% 60% 0% !important; }
     .my_page_info_title_div div p { font-size: 15px !important; }
@@ -176,9 +175,9 @@
   }
 
 @media ( max-width: 467px ) {
-    #main_header_div { grid-template-columns: 0% 45% auto !important; }
+    /* #main_header_div { grid-template-columns: 0% 45% auto !important; } */
     #main_login_ul li { float: center !important; margin-left: 30px !important; }
-    #main_header_right #main_login_ul{ margin-top: 28px !important; }
+    /* #main_header_right #main_login_ul{ margin-top: 28px !important; } */
     .my_page_info_title_div div p { font-size: 14px !important; }
 
     /* #user_thumbnail_div #user_thumbnail_img { width: 90px !important; height: 90px !important; margin-top: 8px; } */
@@ -208,7 +207,7 @@
     #signup_complate_div { margin-top: 13% !important; }
 
     #header_other_mobile_div { font-size: 13px !important; }
-    #main_header_div { grid-template-columns: 0% 45% auto !important; margin-left: 10px !important;}
+    /* #main_header_div { grid-template-columns: 0% 45% auto !important; margin-left: 10px !important;} */
 
     #my_page_user_id, #my_page_user_nick { display: none; }
     #my_page_profile_div { grid-template-columns: 0% 28% auto !important; }
@@ -228,6 +227,11 @@
     #signup_complate_select_div div { border: solid 1px #ababab; line-height: 30px; margin: 20px 40px 0px 40px; border-radius: 5px; padding: 5px 0px 5px 0px; }
 
     #login_div div #login_close_icon { margin-left: 345px !important; }
+  }
+
+  @media (max-width : 400px) {
+    #main_header_div { grid-template-columns: 45% auto !important; }
+    #main_header_right_contents div { padding : 9px 15px 0px 0px !important }
   }
 
   @media ( max-width: 386px ) {
@@ -251,8 +255,8 @@
 
   @media ( max-width: 376px ) {
     #header_other_div { grid-template-columns: 50% 50% 0% !important; }
-    #main_header_div { grid-template-columns: 0% 60% auto !important;}
-    #main_header_right #main_login_ul { line-height: 30px !important; margin-top: 10px !important; font-size: 13px; }
+    /* #main_header_div { grid-template-columns: 0% 60% auto !important;} */
+    /* #main_header_right #main_login_ul { line-height: 30px !important; margin-top: 10px !important; font-size: 13px; } */
     #header_other_mobile_div { grid-template-columns: 0% 33% 34% 33% 0% !important; }
 
     #signup_info_div ul { padding-left: 30px ; }
@@ -300,14 +304,14 @@
   }
 
   @media ( max-width: 320px ) {
-    #main_header_div { grid-template-columns: 0% 60% auto !important; height: 80px; }
-    #main_header_center { text-align: left !important; margin: 0px 0px 0px 25px; }
-    #main_header_div #main_header_center #main_title { margin : 27px 0px 20px 0px; }
-    #main_header_Div #main_header_right { padding: 5px 0px 15px 0px !important; }
-    #main_header_div #main_header_right #main_login_ul { margin-top: 10px !important; padding : 0px 0px 0px 0px !important }
+    /* #main_header_div { grid-template-columns: 0% 60% auto !important; height: 80px; } */
+    /* #main_header_center { text-align: left !important; margin: 0px 0px 0px 25px; } */
+    /* #main_header_div #main_header_center #main_title { margin : 27px 0px 20px 0px; } */
+    /* #main_header_Div #main_header_right { padding: 5px 0px 15px 0px !important; } */
+    /* #main_header_div #main_header_right #main_login_ul { margin-top: 10px !important; padding : 0px 0px 0px 0px !important } */
     #header_other_mobile_div { grid-template-columns: 0% 35% 30% 35% 0% !important; }
 
-    #admin_icon { margin: -44px 0px 0px 125px !important; }
+    /* #admin_icon { margin: -44px 0px 0px 125px !important; } */
     #login_div #login_close_icon { margin: -60px 0px 0px 115px; }
 
     body {

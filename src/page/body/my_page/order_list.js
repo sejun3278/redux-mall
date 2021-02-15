@@ -574,15 +574,15 @@ class OrderList extends Component {
             // 포인트 적립하기
             const prediction_point = Math.trunc((order_info.origin_price - order_info.discount_price) * 0.01);
             if(prediction_point > 0) {
-                const user_point = user_info.point + prediction_point;
+                // const user_point = user_info.point + prediction_point;
                 const point_comment = order_id + ' 번 주문 구매로 인한 포인트 적립 ( ' + prediction_point + ' P )';
 
-                await _setPoint(prediction_point, 'add', point_comment, user_point);
+                await _setPoint(prediction_point, 'add', point_comment, user_info.id);
             }
 
             // cart_data 구하기
-            const cart_data = await this._setCartData();
-            await _setGoodsStock(cart_data, order_info, 'remove');
+            // const cart_data = await this._setCartData();
+            await _setGoodsStock(order_info, 'remove');
 
             // order 업데이트
             const obj = { 'type' : 'UPDATE', 'table' : 'order', 'comment' : '입금 완료' }
@@ -692,8 +692,8 @@ class OrderList extends Component {
             alert('이미 취소 처리된 주문입니다.');
             return window.location.reload();
             
-        } else if(order_info.payment_state !== 1 || order_info.order_state !== 1) {
-            alert('주문 상태가 "주문 완료" 또는 "결제 완료" 상태가 아닙니다.');
+        } else if(order_info.order_state !== 1) {
+            alert('주문 상태가 "주문 완료" 상태가 아닙니다.');
             return window.location.reload();
         }
 
@@ -720,84 +720,80 @@ class OrderList extends Component {
 
             const { user_info, _setGoodsStock, _setPoint } = this.props;
 
-            // 적립금 회수하기
-            const prediction_point = Math.trunc((order_info.origin_price - order_info.discount_price) * 0.01);
-            let user_point = user_info.point;
-            let point_comment = "";
+                // 적립금 회수하기
+                const prediction_point = Math.trunc((order_info.origin_price - order_info.discount_price) * 0.01);
+                // let user_point = user_info.point;
+                let point_comment = "";
 
-            const order_id = order_info.id;
+                const order_id = order_info.id;
 
-            // 적립 포인트 회수하기
-            if(order_info.payment_state === 1) {
-                if(prediction_point > 0) {
-                    point_comment = order_id + ' 번 주문 취소로 인한 적립 포인트 회수 ( -' + prediction_point + ' P )';
-                    user_point = user_point - prediction_point;
+                // 적립 포인트 회수하기
+                if(order_info.payment_state === 1) {
+                    if(prediction_point > 0) {
+                        point_comment = order_id + ' 번 주문 취소로 인한 적립 포인트 회수 ( -' + prediction_point + ' P )';
+                        // user_point = user_point - prediction_point;
 
-                    cancel_ment += '적립 포인트 회수 : - ' + prediction_point + ' \n';
-                    await _setPoint(prediction_point, 'remove', point_comment, user_point);
+                        cancel_ment += '적립 포인트 회수 : - ' + prediction_point + ' \n';
+                        await _setPoint(prediction_point, 'remove', point_comment, user_info.id);
+                    }
                 }
-            }
 
-            // 사용 포인트 반환하기
-            if(order_info.point_price > 0) {
-                point_comment = order_id + ' 번 주문 취소로 인한 사용 포인트 반환 ( ' + order_info.point_price + ' P )';
-                user_point = user_point + order_info.point_price;
+                // 사용 포인트 반환하기
+                if(order_info.point_price > 0) {
+                    point_comment = order_id + ' 번 주문 취소로 인한 사용 포인트 반환 ( ' + order_info.point_price + ' P )';
+                    // user_point = user_point + order_info.point_price;
 
-                cancel_ment += '사용 포인트 반환 : + ' + order_info.point_price + ' \n';
-                await _setPoint(order_info.point_price, 'add', point_comment, user_point);
-            }
+                    cancel_ment += '사용 포인트 반환 : + ' + order_info.point_price + ' \n';
+                    await _setPoint(order_info.point_price, 'add', point_comment, user_info.id);
+                }
 
-            // 사용 쿠폰 반환하기
-            if(order_info.coupon_price > 0) {
-                const search_coupon = { 'type' : 'UPDATE', 'table' : 'coupon', 'comment' : '쿠폰 반환하기' };
+                // 사용 쿠폰 반환하기
+                if(order_info.coupon_id && order_info.coupon_price > 0) {
+                    const search_coupon = { 'type' : 'UPDATE', 'table' : 'coupon', 'comment' : '쿠폰 반환하기' };
 
-                search_coupon['columns'] = [];
-                search_coupon['columns'].push({ 'key' : 'state', 'value' : 0 });
-                search_coupon['columns'].push({ 'key' : 'cancel_date', 'value' : null });
-        
-                search_coupon['where'] = [];
-                search_coupon['where'].push({ 'key' : 'user_id', 'value' : user_info.user_id });
-                search_coupon['where'].push({ 'key' : 'use_order_id', 'value' : order_id });
-    
-                search_coupon['where_limit'] = 1;
-    
-                // const use_coupon_info = await axios(URL + '/api/query', {
-                //     method : 'POST',
-                //     headers: new Headers(),
-                //     data : search_coupon
-                // });
-            }
-
-            // 상품 재고 반환하기
-            const cart_data = await this._setCartData();
-            await _setGoodsStock(cart_data, order_info, 'add');
-
-            // 주문 상태 변경하기
-            const order_obj = { 'type' : 'UPDATE', 'table' : 'order', 'comment' : '주문 취소 상태로 업데이트' }
-
-            order_obj['columns'] = [];
-            order_obj['columns'].push({ 'key' : 'order_state', 'value' : 3 });
-            order_obj['columns'].push({ 'key' : 'delivery_state', 'value' : 0 });
-            order_obj['columns'].push({ 'key' : 'cancel_reason', 'value' : select_val });
-            order_obj['columns'].push({ 'key' : 'cancel_date', 'value' : null });
-    
-            order_obj['where'] = [];
-            order_obj['where'].push({ 'key' : 'user_id', 'value' : user_info.id });
-            order_obj['where'].push({ 'key' : 'id', 'value' : order_id });
-
-            order_obj['where_limit'] = 1;
-
-            await axios(URL + '/api/query', {
-                method : 'POST',
-                headers: new Headers(),
-                data : order_obj
-            })
+                    search_coupon['columns'] = [];
+                    search_coupon['columns'].push({ 'key' : 'state', 'value' : 0 });
+                    search_coupon['columns'].push({ 'key' : 'cancel_date', 'value' : null });
             
+                    search_coupon['where'] = [];
+                    search_coupon['where'].push({ 'key' : 'user_id', 'value' : user_info.user_id });
+                    search_coupon['where'].push({ 'key' : 'id', 'value' : order_id.coupon_id });
+        
+                    search_coupon['where_limit'] = 1;
+                    
+                    await axios(URL + '/api/query', {
+                        method : 'POST',
+                        headers: new Headers(),
+                        data : search_coupon
+                    })
+                }
+
+                await _setGoodsStock(order_info, 'add');
+
+                // 주문 상태 변경하기
+                const order_obj = { 'type' : 'UPDATE', 'table' : 'order', 'comment' : '주문 취소 상태로 업데이트' }
+
+                order_obj['columns'] = [];
+                order_obj['columns'].push({ 'key' : 'order_state', 'value' : 3 });
+                order_obj['columns'].push({ 'key' : 'delivery_state', 'value' : 0 });
+                order_obj['columns'].push({ 'key' : 'cancel_reason', 'value' : select_val });
+                order_obj['columns'].push({ 'key' : 'cancel_date', 'value' : null });
+        
+                order_obj['where'] = [];
+                order_obj['where'].push({ 'key' : 'user_id', 'value' : user_info.id });
+                order_obj['where'].push({ 'key' : 'id', 'value' : order_id });
+
+                order_obj['where_limit'] = 1;
+
+                await axios(URL + '/api/query', {
+                    method : 'POST',
+                    headers: new Headers(),
+                    data : order_obj
+                })
+
             alert(cancel_ment);
             return window.location.reload();
         }
-        
-        return;
     }
 
     // 취소 사유 - 직접 기입 선택시

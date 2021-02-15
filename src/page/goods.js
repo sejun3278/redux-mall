@@ -838,7 +838,7 @@ class Goods extends Component {
         } else if(type === 'close') {
             this._changeOtherDivHeight(90)
 
-            this._setScreenWitdhEvent(false, false)
+            // this._setScreenWitdhEvent(false, false)
             return this.props.goodsAction.add_complate_cart({ 'bool' : false });
         }
     }

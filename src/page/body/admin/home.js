@@ -38,7 +38,7 @@ class AdminHome extends Component {
         const { login, _checkLogin, adminAction, _getCookie, _hashString } = this.props;
         const user_info = await _checkLogin();
 
-        $('body').css({ 'minWidth' : '1250px' })
+        $('body').css({ 'minWidth' : '1500px' })
 
         if(!user_info || !login) {
             return window.location.replace('/');
@@ -139,7 +139,8 @@ class AdminHome extends Component {
     render() {
         const { 
             admin_info, user_info, login, _checkLogin, admin_state, _pageMove, _filterURL, _searchStringColor,
-            list_modal, cat_name, _searchCategoryName, price_comma, admin_loading, _getCookie, _hashString
+            list_modal, cat_name, _searchCategoryName, price_comma, admin_loading, _getCookie, _hashString, _setModalStyle,
+            _setGoodsStock, _setPoint, _sendMailer, _addAlert
         } = this.props;
         const { _checkAdmin } = this;
 
@@ -160,6 +161,7 @@ class AdminHome extends Component {
                                                 _getCookie={_getCookie}
                                                 admin_info={admin_info}
                                                 _hashString={_hashString}
+                                                _sendMailer={_sendMailer}
                                             />
                                         </div>
 
@@ -239,6 +241,14 @@ class AdminHome extends Component {
 
                                                         <Route path='/admin/order'
                                                             render={(props) => <AdminOrder
+                                                                        price_comma={price_comma}
+                                                                        _filterURL={_filterURL}
+                                                                        _searchStringColor={_searchStringColor}
+                                                                        _setModalStyle={_setModalStyle}
+                                                                        _setGoodsStock={_setGoodsStock}
+                                                                        _setPoint={_setPoint}
+                                                                        _sendMailer={_sendMailer}
+                                                                        _addAlert={_addAlert}
                                                                         {...props} 
                                                             />}
                                                         />

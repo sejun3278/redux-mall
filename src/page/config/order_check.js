@@ -78,7 +78,7 @@ class OrderCheck extends Component {
         // 2. 주문 처리
         await this._updateOrder(order_check, order_check.payment_info.payment_state);
 
-        let user_point = user_info.point;
+        // let user_point = user_info.point;
         let point_comment = '';
 
         const order_id = order_check.order_info.id;
@@ -90,7 +90,7 @@ class OrderCheck extends Component {
 
             point_comment = order_id + ' 번 주문 구매로 인한 포인트 사용 ( -' + use_point + ' P )';
 
-            user_point = await _setPoint(use_point, 'remove', point_comment, user_point); 
+            await _setPoint(use_point, 'remove', point_comment, user_info.id); 
         }
 
         // 4. 쿠폰 처리 (쿠폰 사용시)
@@ -104,11 +104,11 @@ class OrderCheck extends Component {
             // 5. 포인트 적립하기
             if(prediction_point > 0) {
                 point_comment = order_id + ' 번 주문 구매로 인한 포인트 적립 ( ' + prediction_point + ' P )';
-                await _setPoint(prediction_point, 'add', point_comment, user_point);
+                await _setPoint(prediction_point, 'add', point_comment, user_info.id);
             }
 
             // 6. 상품 재고 최신화
-            await _setGoodsStock(order_check.cart_data, order_check.order_info, 'remove');
+            await _setGoodsStock(order_check.order_info, 'remove');
         }
 
         const complate = {};
@@ -208,6 +208,7 @@ class OrderCheck extends Component {
         const use_point = order_info.payment_info.use_point;
         const cart_coupon_price = order_info.payment_info.coupon_price;
         const cart_final_price = order_info.payment_info.final_price
+        const coupon_id = order_info.payment_info.use_coupon.id;
 
         // order 테이블 state 변경하기
         const update_order = { 'type' : 'UPDATE', 'table' : 'order', 'comment' : '주문 상황 상태 업데이트' };
@@ -231,6 +232,10 @@ class OrderCheck extends Component {
         update_order['columns'].push({ 'key' : 'final_price', 'value' : cart_final_price });
         update_order['columns'].push({ 'key' : 'order_state', 'value' : 1 });
         update_order['columns'].push({ 'key' : 'delivery_state', 'value' : delivery_state });
+
+        if(coupon_id) {
+            update_order['columns'].push({ 'key' : 'coupon_id', 'value' : coupon_id });
+        }
 
         if(order_type !== 1) {
             update_order['columns'].push({ 'key' : 'payment_date', 'value' : null });

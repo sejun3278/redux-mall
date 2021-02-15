@@ -19,6 +19,7 @@ const TOGGLEFIRSTMOVE = 'config/toggle_first_move';
 const TOGGLEREVIEWMODAL = 'config/toggle_review_modal'; 
 const SETSCROLL = 'config/set_scroll';
 const REMOVING = 'config/removing';
+const TOGGLEMODAL = 'config/toggle_modal';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -39,6 +40,7 @@ export const toggle_first_move = createAction(TOGGLEFIRSTMOVE);
 export const toggle_review_modal = createAction(TOGGLEREVIEWMODAL);
 export const set_scroll = createAction(SETSCROLL);
 export const removing = createAction(REMOVING);
+export const toggle_modal = createAction(TOGGLEMODAL);
 
 const initialState = {
     login : false,
@@ -85,7 +87,8 @@ const initialState = {
     review_scrolling : false,
     scroll : 0,
     scrolling : false,
-    removing : false
+    removing : false,
+    modal : false
 }
 
 export default handleActions({
@@ -255,6 +258,13 @@ export default handleActions({
         return {
             ...state,
             removing : data.payload.bool !== undefined ? data.payload.bool : state.removing
+        }
+    },
+
+    [TOGGLEMODAL] : (state, data) => {
+        return {
+            ...state,
+            modal : data.payload.bool !== undefined ? data.payload.bool : state.modal
         }
     }
 

@@ -1,0 +1,93 @@
+{
+    "order_list" : {
+        "filter_order_type" : {
+            "name" : "주문 타입",
+            "type" : "filter_order_type",
+            "list" : {
+                "1" : { "value" : "1", "name" : "무통장 입금" },
+                "2" : { "value" : "2", "name" : "카드 결제" },
+                "3" : { "value" : "3", "name" : "쿠폰 & 포인트 결제" }
+            }
+        },
+
+        "filter_order_state" : {
+            "name" : "주문 상태",
+            "type" : "filter_order_state",
+            "list" : {
+                "0" : { "value" : "0", "name" : "주문 대기" },
+                "1" : { "value" : "1", "name" : "주문 완료" },
+                "2" : { "value" : "2", "name" : "주문 확정" },
+                "3" : { "value" : "3", "name" : "주문 취소" }
+            }  
+        },
+
+        "filter_payment_state" : {
+            "name" : "결제 상태",
+            "type" : "filter_payment_state",
+            "list" : {
+                "0" : { "value" : "0", "name" : "결제 전" },
+                "1" : { "value" : "1", "name" : "결제 완료" }
+            }  
+        },
+
+        "filter_delivery_state" : {
+            "name" : "배송 상태",
+            "type" : "filter_delivery_state",
+            "list" : {
+                "0" : { "value" : "0", "name" : "배송 없음" },
+                "1" : { "value" : "1", "name" : "배송 준비중" },
+                "2" : { "value" : "2", "name" : "배송중" },
+                "3" : { "value" : "3", "name" : "배송 완료" }
+            }  
+        },
+
+        "filter_order_id" : {
+            "name" : "주문 번호",
+            "type" : "filter_order_id"
+        },
+
+        "filter_user_id" : {
+            "name" : "회원 아이디",
+            "type" : "filter_user_id"
+        },
+
+        "filter_order_min_price" : {
+            "name" : "결제 금액",
+            "type" : "filter_order_min_price"
+        },
+
+        "filter_order_max_price" : {
+            "name" : "결제 금액",
+            "type" : "filter_order_max_price"
+        },
+
+        "filter_order_start_date" : {
+            "name" : "주문 일자",
+            "type" : "filter_order_start_date"
+        },
+
+        "filter_order_end_date" : {
+            "name" : "주문 일자",
+            "type" : "filter_order_end_date"
+        },
+
+        "view_option" : {
+            "name" : "(옵션)",
+            "type" : "view_option",
+            "list" : {
+                "lately" : { "value" : "lately", "name" : "최신순" },
+                "past" : { "value" : "past", "name" : "과거순" },
+                "higher" : { "value" : "higher", "name" : "가격 높은 순" },
+                "lower" : { "value" : "lower", "name" : "가격 낮은 순" }
+            },
+            "hide" : true
+        },
+
+        "view_other" : {
+            "name" : "(옵션) 주문 대기건 포함",
+            "type" : "view_other",
+            "hide" : true
+        }
+    }
+
+}

@@ -29,6 +29,7 @@ body { cursor: default; }
 .red { color : #fd3a69 }
 .orange { color : orange !important }
 .select_color, .custom_color_1 { color : #52BFFF !important }
+.custom_color_2 { color : #e05297; }
 
 /* 글씨 굵게 */
 .bold { font-weight: bold; }
@@ -38,6 +39,8 @@ body { cursor: default; }
 .font_14 { font-size: 14px; }
 .font_13 { font-size: 13px; }
 .font_12 { font-size: 12px; }
+.font_11 { font-size: 11px; }
+.font_10 { font-size: 10px; }
 
 /* li 포인트 없애기 */
 .list_none { list-style: none; }
@@ -127,6 +130,7 @@ input[type='checkbox'].check_custom_1 {
 /* border_dotted */
 .border_top_dotted { border-top: dotted 1px #ababab !important; }
 .border_bottom_dotted { border-bottom: dotted 1px #ababab !important; }
+.border_right_dotted { border-right: dotted 1px #ababab !important; }
 
 /* border width */
 .border_width_2 { border-width: 2px !important; }
@@ -139,7 +143,7 @@ input[type='checkbox'].check_custom_1 {
 .border_size_2 { border-width: 2px; }
 
 /* 현재 선택 페이지 */
-#now_page { font-weight: bold; color: #16a596 !important; }
+#now_page { font-weight: bold; color: #16a596 !important; font-family: 'Recipekorea'; }
 
 /* 페이지 이동 u */
 .page_move { text-decoration: none; cursor: pointer; }

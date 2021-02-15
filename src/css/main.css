@@ -1,6 +1,7 @@
 #main_header_div {
     display: grid;
-    grid-template-columns: repeat(3, 33%);
+    grid-template-columns: 50% auto;
+    /* grid-template-columns: repeat(3, 33%); */
     border-bottom: solid 1px #ababab;
 }
 
@@ -28,7 +29,7 @@
  }
 
 #main_header_div #main_header_center {
-    text-align: center;
+    text-align: right;
     font-size: 20px;
 }
 
@@ -42,7 +43,7 @@
 #main_login_ul {
     list-style: none;
     margin-top: 28px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 #main_login_ul li {
@@ -229,7 +230,7 @@
     text-align: center;
 }
 
-#main_header #header_other_mobile_div { display: none; background-color: white; }
+#main_header #header_other_mobile_div { display: none; background-color: white; font-size: 12px; }
 #header_other_mobile_div {
     display: grid;
     grid-template-columns: 5% 30% 30% 30% 5%;
@@ -425,8 +426,10 @@
     position: absolute;
     width: 25px;
     margin-top: -50px;
-    margin-left: 70px;
+    margin-left: 15px;
 }
+
+#main_header_right_contents div { padding : 15px 25px 0px 20px; }
 
 /* #modify_user_date_div { margin-left: 10%; } */
 #modify_user_info_form {

@@ -264,7 +264,9 @@ module.exports = {
 
                         if(el.key.includes('date')) {
                             if(el.value === null) {
-                                value += "'" + now_date + "'"; 
+                                const cover_now_date = moment().format('YYYY-MM-DD HH:mm:ss');
+
+                                value += "'" + cover_now_date + "'"; 
 
                             } else {
                                 const add_date = moment().add(el.value, "d").format('YYYY-MM-DD HH:mm:ss');

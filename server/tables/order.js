@@ -115,6 +115,13 @@ module.exports = (sequelize, DataTypes) => {
             // 결제한 총 가격
         },
 
+        "coupon_id" : {
+            type: DataTypes.INTEGER(10),
+            allowNull : true
+
+            // 사용한 쿠폰 번호
+        },
+
         "cancel_reason" : {
             // 주문 취소 사유
             type: DataTypes.STRING(100),
@@ -141,6 +148,20 @@ module.exports = (sequelize, DataTypes) => {
             allowNull : true
 
             // 주문 확정된 날짜
+        },
+
+        'delivery_start_date' : {
+            type: DataTypes.STRING(20),
+            allowNull : true
+
+            // 배송 출발일
+        },
+
+        'delivery_complate_date' : {
+            type: DataTypes.STRING(20),
+            allowNull : true
+
+            // 수취 완료일
         },
 
         'cancel_date' : {

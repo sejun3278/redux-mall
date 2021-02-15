@@ -257,11 +257,12 @@ class AdminGoodsWrite extends Component {
 
                     return file_target.focus();
 
-                } else if(direct_file.size > 500000) {
-                    alert('용량은 5 MB 이하만 가능합니다.');
+                } 
+                // else if(direct_file.size > 500000) {
+                //     alert('용량은 5 MB 이하만 가능합니다.');
 
-                    return file_target.focus();
-                }
+                //     return file_target.focus();
+                // }
                 
                 formData.append('files', direct_file);
 
@@ -431,8 +432,6 @@ class AdminGoodsWrite extends Component {
             last_category_list = category_list.last_category[write_first_cat];
         }
 
-        console.log(last_category_list)
-        
         const result_price = write_result_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
         let cover_write_img_type = JSON.parse(write_img_type);

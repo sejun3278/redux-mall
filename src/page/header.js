@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import axios from 'axios';
 
 import '../css/main.css';
 import * as configAction from '../Store/modules/config';
@@ -11,10 +12,10 @@ import { Link } from 'react-router-dom';
 import img from '../source/img/icon.json';
 
 // import $ from 'jquery';
-// import URL from '../config/url';
+import URL from '../config/url';
 
 class Header extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         this._urlCheck();
         // this._setScrollSize();
         // window.addEventListener("scroll", this._setScrollSize);
@@ -24,6 +25,21 @@ class Header extends Component {
         //     user = JSON.parse(user);
         //     // 관리자 확인하기
         // }
+
+        // alert 메세지 조회하기
+        await this._getAlertMessage();
+    }
+
+    _getAlertMessage = async () => {
+        const { user_info, _getCookie } = this.props;
+        const user_cookie = await _getCookie('login', 'get');
+
+        if(user_info.id && user_cookie) {
+            console.log(123)
+
+            const obj = { 'type' : 'SELECT', 'table' : 'alert', 'comment' : 'alert 정보 가져오기' };
+
+        }
     }
 
     _urlCheck = async () => {
@@ -148,62 +164,69 @@ class Header extends Component {
     // }
 
     render() {
-        const { _pageMove, _modalToggle, login, admin_info, user_info, _search, search, _loginAfter } = this.props;
+        const { _pageMove, _modalToggle, login, user_info, _search, search, _loginAfter } = this.props;
         const { _closeCategory } = this;
 
         return (
             <div id='main_header'>
                 <div id='main_header_div' onMouseEnter={_closeCategory}>
-                    <div id='main_header_left'> </div>
                     <div id='main_header_center'> 
                         { /* Center */ }
-                        <h4 id='main_title'> <b onClick={() => _pageMove('href', '/')} className='pointer'> Sejun's Mall </b> </h4>
-                        {user_info && user_info.admin === 'Y' ? 
-                            <div> 
-                                <img src={img.icon.admin}
-                                    id='admin_icon'
-                                    title='관리자 페이지'
-                                    className='pointer'
-                                    alt=''
-                                    onClick={() => (window.location.href='/admin')}
-                                />
-                            </div>
-                        : null}
+
+                        <div>
+                            <h4 id='main_title'>
+                                <b onClick={() => _pageMove('href', '/')} className='pointer'> Sejun's Mall </b> 
+                            </h4>
+
+                            {user_info && user_info.admin === 'Y' ? 
+                                <div> 
+                                    <img src={img.icon.admin}
+                                        id='admin_icon'
+                                        title='관리자 페이지'
+                                        className='pointer'
+                                        alt=''
+                                        onClick={() => (window.location.href='/admin')}
+                                    />
+                                </div>
+                            : null}
+                        </div>
                     </div>
 
-                    <div id='main_header_right'>
-                        { /* Right */ }
-                        <ul id='main_login_ul'>
+                    <div className='aRight'>
+                        <div className='inline_block font_13' id='main_header_right_contents'>
+                            { /* Right */ }
                             {!login 
-                            ? 
-                            <div>
-                                <li> 
-                                    <u className='remove_underLine pointer'
-                                    onClick={() => _modalToggle(true)}
-                                    > 
-                                        로그인 
-                                    </u> 
-                                </li>
-                                <li> 
-                                    <Link to='/signup'> 회원가입 </Link> 
-                                </li>
-                            </div>
-                            
-                            :
-                            <div>
-                                <li>
-                                    <u className='remove_underLine pointer'
-                                    onClick={() => this._logout()}
-                                    > 
-                                        로그아웃 
-                                    </u> 
-                                </li>
-                                <li> 
-                                    <Link to='/myPage'> 마이 페이지 </Link> 
-                                </li>
-                            </div>
-                            }
-                        </ul>
+                                ?
+                                <div className='aRight'>
+                                    <div className='inline_block'>
+                                        <u className='remove_underLine pointer'
+                                            onClick={() => _modalToggle(true)}
+                                        > 
+                                            로그인 
+                                        </u>
+                                    </div>
+
+                                    <div className='inline_block'> 
+                                        <Link to='/signup'> 회원가입 </Link> 
+                                    </div>
+                                </div>
+                                
+                                :
+
+                                <div className='aRight'>
+                                    <div className='inline_block'>
+                                        <u className='remove_underLine pointer'
+                                            onClick={() => this._logout()}>
+                                            로그아웃 
+                                        </u>
+                                    </div>
+
+                                    <div className='inline_block'> 
+                                        <Link to='/myPage'> 마이 페이지 </Link> 
+                                    </div>
+                                </div>
+                                }
+                        </div>
                     </div>
                 </div>
 

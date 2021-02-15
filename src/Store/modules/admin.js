@@ -17,6 +17,9 @@ const SETGOODSDATA = 'admin/set_goods_data';
 const SAVEWRITEGOODS = 'admin/save_write_goods';
 const MODIFYCHECK = 'admin/modify_check';
 const CHANGEFILTER = 'admin/change_filter';
+const SAVEADMINORDERDATA = 'admin/save_admin_order_data';
+const DATALOADING = 'admin/data_loading'
+const SETDATE = 'admin/set_date';
 
 export const set_admin_code = createAction(SETADMINCODE);
 export const login_admin = createAction(LOGINADMIN);
@@ -35,6 +38,9 @@ export const set_goods_data = createAction(SETGOODSDATA);
 export const save_write_goods = createAction(SAVEWRITEGOODS);
 export const modify_check = createAction(MODIFYCHECK);
 export const change_filter = createAction(CHANGEFILTER);
+export const save_admin_order_data = createAction(SAVEADMINORDERDATA);
+export const data_loading = createAction(DATALOADING);
+export const set_date = createAction(SETDATE);
 
 const initialState = {
     admin_code : "",
@@ -68,7 +74,17 @@ const initialState = {
     goods_view_filter : null,
     modify_check : false,
     write_goods_data : JSON.stringify({}),
-};
+    admin_order_info : JSON.stringify([]),
+    admin_order_length : 0,
+    data_loading : false,
+    start_date : null,
+    end_date : null,
+    date_change : false,
+    admin_detail_info : JSON.stringify({}),
+    admin_order_detail_info : JSON.stringify({}),
+    admin_order_goods_info : JSON.stringify([]),
+    admin_order_loading : false
+}
 
 export default handleActions({
    [SETADMINCODE] : (state, data) => {
@@ -216,6 +232,34 @@ export default handleActions({
         goods_search_name : data.payload.goods_name !== undefined ? data.payload.goods_name : state.goods_search_name,
         goods_state : data.payload.state !== undefined ? data.payload.state : state.goods_state,
         goods_view_filter : data.payload.view !== undefined ? data.payload.view : state.goods_view_filter
+      }
+    },
+
+    [SAVEADMINORDERDATA]: (state, data) => {
+      return{
+        ...state,
+        admin_order_info : data.payload.info !== undefined ? data.payload.info : state.admin_order_info,
+        admin_order_length : data.payload.length !== undefined ? data.payload.length : state.admin_order_length,
+        admin_detail_info : data.payload.detail_info !== undefined ? data.payload.detail_info : state.admin_detail_info,
+        admin_order_detail_info : data.payload.order_detail_info !== undefined ? data.payload.order_detail_info : state.admin_order_detail_info,
+        admin_order_goods_info : data.payload.order_goods_info !== undefined ? data.payload.order_goods_info : state.admin_order_goods_info,
+        admin_order_loading : data.payload.bool !== undefined ? data.payload.bool : state.admin_order_loading
+      }
+    },
+
+    [DATALOADING] : (state, data) => {
+      return{
+        ...state,
+        data_loading : data.payload.bool
+      }
+    },
+
+    [SETDATE] : (state, data) => {
+      return{
+        ...state,
+        start_date : data.payload.start !== undefined ? data.payload.start : state.start_date,
+        end_date : data.payload.end !== undefined ? data.payload.end : state.end_date,
+        date_change : data.payload.bool !== undefined ? data.payload.bool : state.date_change
       }
     }
 

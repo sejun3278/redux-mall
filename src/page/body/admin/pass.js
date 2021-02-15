@@ -17,7 +17,7 @@ class PassAdmin extends Component {
     }
 
     _setCheckCode = async () => {
-        const { adminAction, _checkAdmin } = this.props; 
+        const { adminAction, _checkAdmin, _sendMailer } = this.props; 
 
         // 인증 코드 생성
         let code_length = Math.trunc(Math.random() * (11 - 6) + 6);
@@ -47,15 +47,20 @@ class PassAdmin extends Component {
             'title' : 'Sejun\'s Mall 관리자 인증 코드입니다.' 
         }
 
-        await axios(URL + '/api/send_mail', {
-            method : 'POST',
-            headers: new Headers(),
-            data : obj
-          })
+        // 메일 전송하기
+        const sand = await _sendMailer(obj);
+        
+        // await axios(URL + '/api/send_mail', {
+        //     method : 'POST',
+        //     headers: new Headers(),
+        //     data : obj
+        //   })
 
         // 메일 전송
 
-        return adminAction.set_admin_code({ 'code' : code })
+        if(sand === true) {
+            return adminAction.set_admin_code({ 'code' : code })
+        }
     }
 
 

@@ -3,13 +3,14 @@
 /* #admin_goods_info_div { padding: 0px 30px 0px 30px; } */
 /* #admin_goods_data_info_div { padding: 15px 0px 15px 0px; } */
 
+.admin_data_empty_div { padding: 30px 0px 30px 0px !important; color: #ababab; text-align: center; }
 .admin_goods_list_div { padding: 15px 10px 15px 10px; }
 .admin_goods_other_div { display: grid; font-size: 12px; grid-template-columns: 10% 25% 25% 30% 10%; border-bottom: dotted 1px #ababab; padding-bottom: 15px; line-height: 25px; }
 .admin_goods_other_button { border: none; background-color: white; font-size: 12px; }
 
 .admin_goods_info { padding-top: 20px; }
-.admin_goods_info_grid_divs { padding: 20px 10px 25px 10px; display: grid; grid-template-columns: 150px auto; }
-.admin_goods_thumbnail { width: 100px; height: 100px; background-size: contain; border: solid 1px #ababab; }
+.admin_goods_info_grid_divs { padding: 20px 10px 25px 10px; display: grid; grid-template-columns: 170px auto; }
+.admin_goods_thumbnail { width: 120px; height: 120px;   background-repeat: no-repeat; background-size: contain; border: solid 1px #ababab; }
 .admin_goods_price_info_div { margin-top: 20px; font-size: 13px; }
 .admin_goods_category_name_div { padding: 0px 0px 10px 0px; font-size: 11px; }
 
@@ -20,6 +21,7 @@
 
 #admin_goods_select_div { padding: 10px 0px 15px 0px; }
 .select_list { background-color: antiquewhite; }
+.admin_data_loading_div { padding-top: 50px; }
 
 #admin_contents_divs { padding: 25px 15px 0px 15px; }
 #admin_goods_filter_div { border-bottom: solid 2px #ababab; padding: 20px 25px 25px 25px; background-color: #ece2e1; }
@@ -57,6 +59,91 @@
 #admin_goods_length_div { padding: 10px 0px 20px 10px; }
 
 .admin_goods_write_category_select { width: 100px; }
+
+.admin_goods_paging_div { padding: 40px 0px 40px 0px; }
+
+/* 주문 관리 */
+
+#admin_order_contents_div { padding: 10px 15px 0px 15px; margin-top: 80px; }
+.admin_order_other_div { padding: 15px 20px 15px 10px; font-size: 12px; border-bottom: dotted 1px #ababab; display: grid; grid-template-columns: 120px 120px 140px 130px 130px 125px 120px auto; line-height: 1.5; }
+.admin_order_goods_info_div { padding: 25px 0px 0px 0px; }
+
+.admin_order_title_div { padding: 0px 10px 0px 10px; }
+
+.admin_order_payment_info {  border : dotted 1px #ababab; display: grid; grid-template-columns: 150px 137px 150px 137px 150px 137px auto; text-align: center; margin: 25px 0px 0px 0px;}
+.admin_order_payment_title_div { font-weight: bold; padding : 10px 0px 10px 0px; font-size: 12px; font-weight: bold; }
+.admin_order_payment_contents_div { padding-top: 10px; font-size: 13px; font-weight: bold; font-family: 'paybooc-Bold'; }
+.admin_order_minus_icon { width: 20px; padding-top: 30px; }
+
+.admin_order_payment_result_div { margin-top: 0px; }
+.admin_order_final_price_div { display: grid; grid-template-columns: 200px auto; padding: 10px; background-color: black; color: white; padding : 15px 0px 15px 20px }
+
+.admin_order_other_button_div div { display: inline-block; margin : 15px 15px 0px 5px; }
+.admin_order_other_button_div div input { background-color: white; font-size: 12px; padding: 3px 10px 3px 10px; cursor: pointer; }
+
+.order_other_disable { background-color: #dddddd !important; color: #ababab; }
+
+#admin_order_filter_div { padding: 15px 50px 15px 50px; background-color: #ece2e1; }
+#admin_order_filter_title_div { border-bottom: solid 2px #ababab; padding-bottom: 15px; }
+#admin_order_filter_div_2 { padding: 15px 0px 10px 0px; }
+
+.admin_order_filter_grid_div { text-align: left; line-height: 2; display: grid; grid-template-columns: 150px auto; padding: 10px 5px 10px 5px; }
+.admin_order_filter_grid_div div { padding-left: 35px; }
+.admin_order_filter_selector, .admin_order_search_input { width: 140px; padding: 5px 5px 5px 5px; cursor: pointer; font-size: 12px; }
+.admin_order_filter_title { text-align: right !important; }
+
+#admin_order_submit_button { width: -webkit-fill-available; padding: 8px 0px 8px 0px; font-size: 12px; }
+#admin_order_use_filter_div { border-bottom: solid 2px #ababab; }
+#admin_order_use_filter_title { font-size: 13px; padding: 12px 15px 12px 15px; border-top: solid 2px #ababab; }
+
+#admin_order_use_filter_list_div { font-size: 12px; border-top: dotted 1px #ababab; margin: 0px; padding: 10px; line-height: 25px; }
+#admin_order_use_filter_list_div li { padding-left: 35px; color: #ababab; list-style: none; }
+#admin_order_filter_reset_button { width: 18px; position: absolute; margin-left: 10px; }
+
+.admin_order_filter_remove_icon { cursor: pointer; margin: 5px 0px 0px 10px; width: 15px; position: absolute; }
+
+.admin_order_filter_grid_div div .react-datepicker-wrapper { padding-left: 0px; }
+.admin_order_filter_grid_div div .react-datepicker__input-container { padding-left: 0px; }
+.admin_order_select_date { width: 100px; }
+
+#admin_order_filter_date_div div .react-datepicker-popper { padding-left: 0px; margin: -12.5%; margin-top: -280px; }
+#admin_order_filter_date_div div .react-datepicker-popper div { padding-left: 0px; }
+
+#admin_order_remove_date_icon { width: 15px; position: absolute; margin: 7px 0px 0px 15px; }
+
+#admin_order_view_filter_div { padding-top: 15px; font-size: 12px; }
+#admin_order_view_filter_div div { display: inline-block; padding: 0px 15px 0px 15px; }
+#admin_order_view_filter_div div u { text-decoration: none; cursor: pointer; }
+
+.admin_order_view_filter_block { border-right: solid 1px #ababab; padding-right: 20px !important; }
+/* //////////////////////////////// */
+
+#admin_order_detail_title_div { border-bottom: solid 2px #ababab; }
+#admin_order_deatil_close_button { width: 20px; position: absolute; margin: -60px 0px 0px 90%; }
+
+#admin_order_detail_contents_div .admin_order_detail_block_div { min-height: 280px; padding-left: 10px; }
+.admin_order_detail_info_div { padding-left: 20px; line-height: 30px; }
+
+.admin_order_detail_info_div { color: #ababab; }
+.admin_order_detail_info_div div u { color: black; text-decoration: none; }
+
+.admin_order_detail_info_grid_div { display: grid; grid-template-columns: 100px auto; }
+/* #admin_order_detail_final_price_div { padding: 10px; width: 90%; font-size: 14px; display: grid; grid-template-columns: 90px auto; background-color: black; color: white; } */
+/* #admin_order_detail_final_price_div div { padding-left: 15px; } */
+#admin_order_detail_final_price_title { border-right: solid 1px white; }
+
+#admin_order_detail_goods_info_div { height: 120px; overflow: auto; border-top: solid 2px #ababab; border-bottom: solid 2px #ababab; margin-right: 40px; }
+.admin_order_datail_goods_list_div { display: grid; grid-template-columns: 115px 300px; padding: 10px 0px 10px 0px; }
+.admin_order_detail_goods_thumbnail_div { width: 100px; height: 100px; background-size: cover; }
+.admin_order_detail_goods_info_div { border-left: solid 1px #ababab; padding-left: 15px; }
+
+.admin_order_detail_goods_name_and_price_div { padding-top: 25px; }
+.admin_order_detail_price_div { padding-top: 20px; }
+.admin_order_detail_goods_name_div { width: 95%; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+ /* width: -webkit-fill-available; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;  */
+
+ #admin_order_detail_final_price_div { padding-top: 5px; margin-right: 40px; }
+.admin_order_datail_final_price_grid_div { padding: 3px 0px 3px 0px; border-bottom: dotted 1px #ababab; display: grid; grid-template-columns: 180px auto; font-size: 13px; line-height: 20px; }
 
 @media (max-width : 500px) {
     #admin_goods_info_div { padding : 0px 5px 0px 5px; };

@@ -24,7 +24,7 @@ export default handleActions({
         ...state,
         search_data : data.payload.arr !== undefined ? data.payload.arr : state.search_data,
         search_length : data.payload.length !== undefined ? data.payload.length : state.search_length,
-        search_ready : true
+        search_ready : data.payload.bool !== undefined ? data.payload.bool : state.search_ready
       };
     },
 
@@ -42,7 +42,7 @@ export default handleActions({
         }
     },
 
-    [TOGGLEVIEWTYPE ] : (state, data) => {
+    [TOGGLEVIEWTYPE] : (state, data) => {
 
         return {
             ...state,

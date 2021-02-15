@@ -46,7 +46,6 @@ class App extends Component {
 
   async componentDidMount() {
     const { loading, configAction } = this.props;
-
     // 로그인 체크하기
     this._checkLogin();
 
@@ -463,62 +462,70 @@ class App extends Component {
 }
 
   // 포인트 적립 & 삭감
-  _setPoint = async (point, type, comment, user_point) => {
-    const { _checkLogin } = this;
-    const user_info = JSON.parse(this.props.user_info);
-    const user_cookie = await this._getCookie('login', 'get');
+  _setPoint = async (point, type, comment, user_id) => {
+    // const { _checkLogin } = this;
+    
+    const get_user_info_qry = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '유저 정보 가져오기' };
 
-    if(!user_info.id || !user_cookie) {
-      alert('로그인이 필요합니다.');
-      return window.location.replace('/');
-    }
+    get_user_info_qry['option'] = { 'id' : '=' };
+    get_user_info_qry['where'] = [ { 'table' : 'userInfo', 'key' : 'id', 'value' : user_id } ];
 
-    const obj = { 'type' : 'UPDATE', 'table' : 'userInfo' };
-
-    obj['columns'] = [];
-
-    obj['where'] = [];
-    obj['where'].push({ 'key' : 'id', 'value' : user_info.id });
-    obj['where'].push({ 'key' : 'user_id', 'value' : user_info.user_id });
-
-    obj['where_limit'] = 1;
-
-    if(type === 'add') {
-      // 적립
-      user_point += point;
-
-      obj['comment'] = '포인트 적립하기';
-
-      const acc_point = user_info.acc_point + point;
-      obj['columns'].push({ 'key' : 'acc_point', 'value' : acc_point });
-
-    } else if(type === 'remove') {
-      // 삭감
-      user_point -= point;
-
-      const get_info = await _checkLogin();
-      if(get_info.point < point) {
-        alert('결제 실패 : 포인트가 부족합니다. \n ( 보유 포인트 : ' + get_info.point + ' )');
-        return false;
-      }
-
-      obj['comment'] = '포인트 삭감하기';
-
-      const use_point = user_info.use_point + point;
-      obj['columns'].push({ 'key' : 'use_point', 'value' : use_point });
-    }
-
-    obj['columns'].push({ 'key' : 'point', 'value' : user_point })
-
-    // obj['where_limit'] = obj['where'].length;
-    await axios(URL + '/api/query', {
+    const get_user_info = await axios(URL + '/api/query', {
       method : 'POST',
       headers: new Headers(),
-      data : obj
+      data : get_user_info_qry
     });
+    const user_info = get_user_info.data[0][0];
 
-    this._addPointLog(type, comment, point);
-    return user_point;
+    if(user_info.id) {
+      let user_point = user_info.point
+
+      const obj = { 'type' : 'UPDATE', 'table' : 'userInfo' };
+
+      obj['columns'] = [];
+
+      obj['where'] = [];
+      obj['where'].push({ 'key' : 'id', 'value' : user_info.id });
+      obj['where'].push({ 'key' : 'user_id', 'value' : user_info.user_id });
+
+      obj['where_limit'] = 1;
+
+      if(type === 'add') {
+        // 적립
+        user_point += point;
+
+        obj['comment'] = '포인트 적립하기';
+
+        const acc_point = user_info.acc_point + point;
+        obj['columns'].push({ 'key' : 'acc_point', 'value' : acc_point });
+
+      } else if(type === 'remove') {
+        // 삭감
+        user_point -= point;
+
+        // const get_info = await _checkLogin();
+        if(user_info.point < point) {
+          alert('결제 실패 : 포인트가 부족합니다. \n ( 보유 포인트 : ' + user_info.point + ' )');
+          return false;
+        }
+
+        obj['comment'] = '포인트 삭감하기';
+
+        const use_point = user_info.use_point + point;
+        obj['columns'].push({ 'key' : 'use_point', 'value' : use_point });
+      }
+
+      obj['columns'].push({ 'key' : 'point', 'value' : user_point })
+
+      await axios(URL + '/api/query', {
+        method : 'POST',
+        headers: new Headers(),
+        data : obj
+      });
+
+      this._addPointLog(type, comment, point);
+      return user_point;
+    }
   }
 
   // 포인트 내역 추가하기
@@ -687,12 +694,80 @@ class App extends Component {
   };
 
   // 상품 재고 최신화하기
-  _setGoodsStock = async (cart_data, order_info, type) => {
+  _setGoodsStock = async (order_info, type) => {
     const obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '상품 재고 최신화' };
 
     obj['columns'] = [];
     obj['where'] = [];
     obj['where_limit'] = 0;
+
+    const _setCartData = async () => {
+      let cart_data = JSON.parse(order_info.cart_list);
+      // const user_info = JSON.parse(this.props.user_info);
+
+      const cart_each_type = typeof cart_data === 'number' ? true : false;
+
+      const get_cart_obj = { 'type' : 'SELECT', 'comment' : 'cart data 구하기' };
+      get_cart_obj['option'] = {};
+      get_cart_obj['where'] = [];
+
+      if(typeof cart_data === 'number') {
+          // goods id 일 경우
+          get_cart_obj['table'] = 'goods';
+
+          get_cart_obj['option']['id'] = '=';
+
+          cart_data = [cart_data];
+
+      } else if(typeof cart_data === 'object') {
+          // cart id 일 경우
+          get_cart_obj['table'] = 'cart';
+          get_cart_obj['join'] = true;
+          get_cart_obj['join_table'] = 'goods';
+
+          get_cart_obj['join_arr'] = [];
+          get_cart_obj['join_arr'][0] = { 'key1' : 'id', 'key2' : 'goods_id' }
+
+          get_cart_obj['join_where'] = [];
+          get_cart_obj['join_where'].push({ 'columns' : 'stock', 'as' : 'stock' });
+          get_cart_obj['join_where'].push({ 'columns' : 'sales', 'as' : 'sales' });
+
+          get_cart_obj['option']['user_id'] = '=';
+          get_cart_obj['option']['id'] = '=';
+
+          get_cart_obj['where'][0] = { 'table' : 'cart', 'key' : 'user_id', 'value' : order_info.user_id };
+      }
+
+      const result_data = [];
+      const get_cart_data = async (length) => {
+          if(result_data.length === cart_data.length) {
+              return result_data;
+          }
+
+          if(cart_each_type === true) {
+              // el 이 goods 테이블의 id
+              get_cart_obj['where'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : cart_data[length] };
+  
+          } else {
+              // el 이 cart 테이블의 id
+              get_cart_obj['where'][1] = { 'table' : 'cart', 'key' : 'id', 'value' : cart_data[length] };
+          }
+  
+          const get_data = await axios(URL + '/api/query', {
+              method : 'POST',
+              headers: new Headers(),
+              data : get_cart_obj
+          });
+  
+          result_data.push(get_data.data[0][0]);
+
+          return get_cart_data(length + 1);
+      }
+
+      const cover_cart_data = await get_cart_data(0);
+      return cover_cart_data;
+  }
+  const cart_data = await _setCartData();
 
     const set_goods_stock = async () => {
         return await cart_data.forEach( async (el) => {
@@ -882,13 +957,50 @@ class App extends Component {
     return goods_name;
   }
 
+  // 메일 전송하기
+  _sendMailer = async (sand_mail) => {
+  
+    const sand_result = await axios(URL + '/api/send_mail', {
+      method : 'POST',
+      headers: new Headers(),
+      data : sand_mail
+    })
+
+    if(sand_result.data === true) {
+      return true;
+
+    } else {
+      return false;
+    }
+  }
+
+  // alert 내역 추가하기
+  _addAlert = async (info) => {
+    const add_qry = { 'type' : 'INSERT', 'table' : 'alert', 'comment' : "내역 추가하기" };
+
+    add_qry['columns'] = [];
+    add_qry['columns'].push({ "key" : "user_id", "value" : info.user_id });
+    add_qry['columns'].push({ "key" : "reason", "value" : info.reason });
+    add_qry['columns'].push({ "key" : "move_url", "value" : info.move_url });
+    add_qry['columns'].push({ "key" : "create_date", "value" : null });
+    add_qry['columns'].push({ "key" : "confirm", "value" : 0 });
+
+    const set_alert = await axios(URL + '/api/query', {
+        method : 'POST',
+        headers: new Headers(),
+        data : add_qry
+    })
+
+    console.log(set_alert);
+
+  }
 
   render() {
     const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading, review_modal } = this.props;
     const { 
           _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint, _loginAfter,
           _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString, _setGoodsStock,
-          _removeReview, _checkScrolling, _searchStringColor
+          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert
     } = this;
     const user_info = JSON.parse(this.props.user_info);
 
@@ -924,7 +1036,7 @@ class App extends Component {
       const { loading } = this.props;
 
         if(loading === false) {
-          return window.location.reload();
+          // return window.location.reload();
         }
     }, 3000);
 
@@ -999,6 +1111,7 @@ class App extends Component {
                 : <SearchIDPW
                     _modalToggle={_modalToggle}
                     _toggleSearchIdAndPw={_toggleSearchIdAndPw}
+                    _sendMailer={_sendMailer}
                 />
                 }
 
@@ -1019,11 +1132,15 @@ class App extends Component {
                           price_comma={price_comma}
                           _addCoupon={_addCoupon}
                           _getCouponList={_getCouponList}
-                          _setPoint={_setPoint}
                           _getCookie={_getCookie}
                           _filterURL={_filterURL}
                           _hashString={_hashString}
                           _searchStringColor={_searchStringColor}
+                          _setModalStyle={_setModalStyle}
+                          _setGoodsStock={_setGoodsStock}
+                          _setPoint={_setPoint}
+                          _sendMailer={_sendMailer}
+                          _addAlert={_addAlert}
                         {...props} 
                   />}
                 />

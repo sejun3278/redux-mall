@@ -5,7 +5,10 @@ import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import Paging from '../../config/paging';
+
 import * as adminAction from '../../../Store/modules/admin';
+import * as configAction from '../../../Store/modules/config';
 import '../../../css/admin/admin_goods.css';
 
 import $ from 'jquery';
@@ -19,7 +22,6 @@ class AdminGoods extends Component {
 
     componentDidMount () {
         // goods 정보 가져오기
-
         this._getGoodsData();
 
         // qry 체크하기
@@ -44,7 +46,7 @@ class AdminGoods extends Component {
         return adminAction.change_filter(save_obj);
     }
 
-    _getGoodsData = async (filter) => {
+    _getGoodsData = async () => {
         const { adminAction, location } = this.props;
         const qry = queryString.parse(location.search);
 
@@ -118,6 +120,12 @@ class AdminGoods extends Component {
             }
         }
 
+        const now_page = qry.goods_page ? qry.goods_page : this.props.now_page
+
+        const cnt_start = now_page === 1 ? 0 : (30 * Number(now_page)) - 30;
+        const cnt_end = now_page * 30;
+
+        obj['order'].push({ 'table' : 'goods', 'key' : 'limit', 'value' : [Number(cnt_start), Number(cnt_end)] });
 
         const get_goods_data = await axios(URL + '/api/query', {
             method : 'POST',
@@ -183,6 +191,8 @@ class AdminGoods extends Component {
 
         goods_search_id > 0 ? qry['goods_id'] = goods_search_id : delete qry['goods_id'];
         goods_search_name.length > 0 ? qry['goods_name'] = goods_search_name : delete qry['goods_name'];
+
+        qry['goods_page'] = 1;
 
         _filterURL(qry, "");
     }
@@ -271,7 +281,7 @@ class AdminGoods extends Component {
     }
 
     _selectGoods = (id, all) => {
-        const { adminAction, goods_length } = this.props;
+        const { adminAction } = this.props;
         let goods_select = JSON.parse(this.props.goods_select);
         const goods_data = JSON.parse(this.props.goods_data);
 
@@ -286,7 +296,7 @@ class AdminGoods extends Component {
             }
 
         } else {
-            if(goods_length !== Object.keys(goods_select).length) {
+            if(goods_data.length !== Object.keys(goods_select).length) {
                 // 올체크 ON
                 goods_data.forEach( (el) => {
                     if(!goods_select[el.id]) {
@@ -312,6 +322,10 @@ class AdminGoods extends Component {
             delete qry['min_price'];
             delete qry['max_price'];
 
+        } else if(type === 'first_cat') { 
+            delete qry['first_cat'];
+            delete qry['last_cat'];
+
         } else {
             delete qry[type];
         }
@@ -319,6 +333,8 @@ class AdminGoods extends Component {
         if(Object.keys(qry).length === 0) {
             return window.location.href = '/admin/goods';
         }
+
+        qry['goods_page'] = 1;
 
         return _filterURL(qry, "");
     }
@@ -337,6 +353,8 @@ class AdminGoods extends Component {
         if(Object.keys(qry).length === 0) {
             return window.location.href = '/admin/goods';
         }
+
+        qry['goods_page'] = 1;
 
         return _filterURL(qry, "");
     }
@@ -428,14 +446,13 @@ class AdminGoods extends Component {
 
                     return alert(complate_ment)
                 }
-
             }
         }
     }
 
     render() {
         const { 
-            goods_loading, goods_length, location, _searchCategoryName, goods_state, goods_search_id, goods_search_name,
+            goods_loading, goods_length, location, _searchCategoryName, goods_state, goods_search_id, goods_search_name, _filterURL,
             write_first_cat, write_last_cat, price_comma, adminAction, goods_min_price, goods_max_price, _searchStringColor, goods_view_filter
         } = this.props;
 
@@ -445,7 +462,7 @@ class AdminGoods extends Component {
         const goods_select = JSON.parse(this.props.goods_select);
 
         const qry = queryString.parse(location.search);
-        const search_name = qry.search;
+        // const search_name = qry.search;
 
         let min_price, max_price;
 
@@ -537,6 +554,8 @@ class AdminGoods extends Component {
                 view_filter_name = '생성 일자 순';
             }
         }
+
+        const now_page = qry.goods_page ? qry.goods_page : this.props.now_page;
 
         return(
             <div id='admin_goods_div'>
@@ -659,6 +678,7 @@ class AdminGoods extends Component {
                                                 {qry.goods_name ? <li> 상품 이름 </li> : null}
 
                                                 {qry.view_filter ? <li className='view_filter_div'> 조회 옵션 </li> : null}
+                                                {qry.goods_page ? <li className='view_filter_div'> 검색 페이지 </li> : null}
                                             </ul>
                                         </div>
 
@@ -671,6 +691,7 @@ class AdminGoods extends Component {
                                             {qry.goods_name ? <div> {qry.goods_name} <img onClick={() => _removeFilter('goods_name')} className='admin_goods_filter_remove_icon' alt='' src={icon.icon.close_circle_gray} /> </div>  : null }
                                         
                                             {view_filter_name !== "" ? <div> {view_filter_name} <img onClick={() => _removeFilter('view_filter')} className='admin_goods_filter_remove_icon' alt='' src={icon.icon.close_circle_gray} /> </div>  : null }
+                                            {qry.goods_page ? <div> {qry.goods_page} P <img onClick={() => _removeFilter('goods_page')} className='admin_goods_filter_remove_icon' alt='' src={icon.icon.close_circle_gray} /> </div>  : null }
                                         </div>
                                     </div>
                                 </div>
@@ -720,17 +741,28 @@ class AdminGoods extends Component {
                             <div className='aRight'> <input className='pointer button_style_1' type='button' value='상품 등록' id='admin_write_goods_button'  onClick={() => window.location.href='/admin/goods/goods_write'} /> </div>
                         </div>
 
+                        <div className='admin_goods_paging_div'>
+                            <Paging
+                                paging_cnt={goods_length}
+                                paging_show={30}
+                                now_page={now_page}
+                                page_name='goods_page' 
+                                _filterURL={_filterURL}
+                                qry={qry}
+                            />
+                        </div>
+
                         <div id='admin_goods_select_div' className='grid_half'>
                             <div className='font_13 gray'>
                                 <input type='checkbox' id='mypage_all_select' className='pointer check_custom_1' 
                                             onChange={() => _selectGoods(null, true)}
-                                            checked={select_length === goods_length}
+                                            checked={select_length === goods_data.length}
                                 />
                                 <span className='check_toggle_1' 
                                         onClick={() => _selectGoods(null, true)}
                                 > </span>
                                 <label className='pointer' htmlFor='mypage_all_select' id='mypage_qna_all_check_label'> 
-                                    전체 선택 ( {select_length} / {goods_length} )
+                                    전체 선택 ( {select_length} / {goods_data.length} )
                                 </label>
                             </div>
 
@@ -755,7 +787,7 @@ class AdminGoods extends Component {
                         <div id='admin_goods_data_info_div'
                             style={border_style}
                         >
-                            {goods_length > 0 
+                            {goods_data && goods_data.length > 0 
                             ? <div id='admin_goods_list_div'>
                                 {goods_data.map( (el, key) => {
                                     const border_style = (key + 1) < goods_data.length
@@ -860,7 +892,7 @@ class AdminGoods extends Component {
 
                                                 <div className='aRight'>
                                                     <div> 
-                                                        <input type='button' value='수정' className='admin_goods_other_button pointer' /> 
+                                                        <input type='button' value='수정' className='admin_goods_other_button pointer' onClick={() => window.location.href='/admin/goods/goods_write?modify_id=' + el.id} /> 
                                                     </div>
 
                                                     <div>
@@ -883,7 +915,7 @@ class AdminGoods extends Component {
                                                     <div className='admin_goods_category_name_div font_12 gray aLeft'>
                                                         [ 
                                                          <div className={qry.first_cat ? 'inline_block bold custom_color_1' : 'inline_block'}> {first_cat} </div>
-                                                        　|　
+                                                         | 
                                                          <div className={qry.last_cat ? 'inline_block bold custom_color_1' : 'inline_block'}> {last_cat} </div>
                                                         ]
                                                     </div>
@@ -914,7 +946,7 @@ class AdminGoods extends Component {
                             </div>
 
 
-                            : <div id='admin_goods_empty_div' className='aCenter'>
+                            : <div className='admin_data_empty_div aCenter'>
                                 <h3> 상품 데이터가 없습니다. </h3>
                               </div>
                             }
@@ -924,10 +956,26 @@ class AdminGoods extends Component {
 
                       </div>
                 
-                    : <div id='admin_goods_loading_div' className='aCenter'>
+                    : <div className='admin_data_loading_div aCenter'>
                         <h4> 데이터를 불러오고 있습니다. </h4>
                       </div>
-                }                
+                }           
+                
+                {goods_data.length && goods_data.length > 9 
+                                ?
+                                    <div className='admin_goods_paging_div'>
+                                        <Paging
+                                            paging_cnt={goods_length}
+                                            paging_show={30}
+                                            now_page={now_page}
+                                            page_name='goods_page' 
+                                            _filterURL={_filterURL}
+                                            qry={qry}
+                                        />
+                                    </div>
+
+                                    : null
+                                }     
             </div>
         )
     }
@@ -950,10 +998,12 @@ AdminGoods.defaultProps = {
         goods_search_id : state.admin.goods_search_id,
         goods_search_name : state.admin.goods_search_name,
         goods_state : state.admin.goods_state,
-        goods_view_filter : state.admin.goods_view_filter
+        goods_view_filter : state.admin.goods_view_filter,
+        now_page : state.config.now_page
     }), 
   
     (dispatch) => ({
-        adminAction : bindActionCreators(adminAction, dispatch)
+        adminAction : bindActionCreators(adminAction, dispatch),
+        configAction : bindActionCreators(configAction, dispatch)
     })
   )(AdminGoods);

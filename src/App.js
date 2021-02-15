@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -45,23 +46,9 @@ Modal.setAppElement('body')
 class App extends Component {
 
   async componentDidMount() {
-    const { loading, configAction } = this.props;
+    const { configAction } = this.props;
     // 로그인 체크하기
     this._checkLogin();
-
-    if(!loading) {
-      // configAction.set_loading();
-    }
-
-    localStorage.setItem('test', '123123');
-    console.log(localStorage, localStorage.getItem('test'))
-
-    // const test_cookie = await this._getCookie('test', 'get');
-
-    // if(!test_cookie) {
-    //   await this._getCookie('test', 'add', { 'test' : '123' }, { 'time' : 60 * 60 } );
-    // }
-    // console.log(test_cookie)
 
     const moment = require('moment');
     const now_date = moment().format("YYYY-MM-DD HH:MM:SS");
@@ -84,30 +71,44 @@ class App extends Component {
   }
 
   // 쿠키 출력하기
-  _getCookie = async (key, type, value, opt) => {
-    const login_cookie = await axios(URL + '/get/cookie_data', {
-      method : 'POST',
-      headers: new Headers(),
-      data : { 'key' : key, 'type' : type, 'value' : value, 'opt' : opt }
-    })
+  // _getCookie = async (key, type, value, opt) => {
+  //   const login_cookie = await axios(URL + '/get/cookie_data', {
+  //     method : 'POST',
+  //     headers: new Headers(),
+  //     data : { 'key' : key, 'type' : type, 'value' : value, 'opt' : opt }
+  //   })
 
-    console.log(login_cookie)
+  //   console.log(login_cookie)
 
-    if(login_cookie.status === 500) {
-      return window.location.reload();
-    }
+  //   if(login_cookie.status === 500) {
+  //     return window.location.reload();
+  //   }
 
-    if(login_cookie.data) {
-      return login_cookie.data;
+  //   if(login_cookie.data) {
+  //     return login_cookie.data;
 
-    } else {
-      return false;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  _getCookie = async (name, type, value) => {
+    const { _hashString } = this;
+    const hash_name = _hashString(name);
+
+    if(type === 'get') {
+      return localStorage.getItem(hash_name);
+
+    } else if(type === 'add') {
+      return localStorage.setItem(hash_name, value);
+
+    } else if(type === 'remove') {
+      return localStorage.removeItem(hash_name);
     }
   }
 
   _checkAdmin = async (info) => {
     const { configAction } = this.props;
-    // const user_info = this._checkLogin();
 
     const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '관리자 정보 가져오기' };
 
@@ -167,20 +168,26 @@ class App extends Component {
   // 로그인 체크
   _checkLogin = async () => {
     const { configAction } = this.props;
-    const login_cookie = await this._getCookie('login', 'get');
+
+    const storage = await this._getCookie('login', 'get');
+
+    let login_info = false;
+    if(storage) {
+      login_info = JSON.parse(this._stringCrypt(storage, 'sejun_mall_login', false));
+    }
 
     let result_data;
-    if(login_cookie) {
+    if(login_info) {
       configAction.login_and_logout({ 'bool' : true });
 
       // 유저 정보 담기
       const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '유저 정보 가져오기' };
       
       obj['option'] = {};
-      obj['option']['user_id'] = '=';
+      obj['option']['id'] = '=';
 
       obj['where'] = [];
-      obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : login_cookie });
+      obj['where'].push({ 'table' : 'userInfo', 'key' : 'id', 'value' : login_info });
 
       const user_info = await axios(URL + '/api/query', {
         method : 'POST',
@@ -192,7 +199,7 @@ class App extends Component {
       result_data = user_info.data[0][0];
 
       // 관리자 확인
-      this._checkAdmin(login_cookie)
+      this._checkAdmin(login_info)
 
     } else {
       configAction.save_user_info({ 'info' : false })
@@ -1007,12 +1014,37 @@ class App extends Component {
 
   }
 
+  // 문자 해시 및 복호화
+  _stringCrypt = (string, salt, bool) => {
+    let result = '';
+
+    if(typeof string !== 'string') {
+      string = JSON.stringify(string);
+    }
+
+    if(typeof salt !== 'string') {
+      salt = JSON.stringify(salt);
+    }
+
+    if(bool === true) {
+      // 문자 해싱하기
+      result = CryptoJS.AES.encrypt(JSON.stringify(string), salt).toString();
+      
+    } else if(bool === false) {
+      // 문자 복호화하기
+      const bytes = CryptoJS.AES.decrypt(string, salt);
+      result = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    }
+
+    return result;
+  }
+
   render() {
     const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading, review_modal } = this.props;
     const { 
           _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint, _loginAfter,
           _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString, _setGoodsStock,
-          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert
+          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert, _stringCrypt
     } = this;
     const user_info = JSON.parse(this.props.user_info);
 
@@ -1118,6 +1150,9 @@ class App extends Component {
                     _pageMove={_pageMove}
                     _modalToggle={_modalToggle}
                     _toggleSearchIdAndPw={_toggleSearchIdAndPw}
+                    _hashString={_hashString}
+                    _stringCrypt={_stringCrypt}
+                    _getCookie={_getCookie}
                   />
 
                 : <SearchIDPW

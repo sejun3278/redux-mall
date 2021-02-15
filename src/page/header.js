@@ -35,8 +35,6 @@ class Header extends Component {
         const user_cookie = await _getCookie('login', 'get');
 
         if(user_info.id && user_cookie) {
-            console.log(123)
-
             const obj = { 'type' : 'SELECT', 'table' : 'alert', 'comment' : 'alert 정보 가져오기' };
 
         }

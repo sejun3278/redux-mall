@@ -377,7 +377,7 @@ module.exports = {
                         // req.session.login = { 'id' : result.dataValues.id };
 
                         var expiryDate = new Date( Date.now() + 60 * 60 * 1000 * 24 * 1 ); // 24 hour 1일
-                        res.cookie('login', result.dataValues.user_id, { expires: expiryDate, httpOnly: true, signed : true });
+                        // res.cookie('login', result.dataValues.user_id, { expires: expiryDate, httpOnly: true, signed : true });
 
                         // const cookie = JSON.stringify({ 
                         //     'id' : result.dataValues.id,

@@ -21,7 +21,7 @@ class Login extends Component {
     }
 
     _logins = async (event) => {
-        const { signupAction, configAction, login_able, login_after } = this.props; 
+        const { signupAction, configAction, login_able, login_after, _getCookie, _stringCrypt } = this.props; 
 
         event.preventDefault();
         const form_data = event.target;
@@ -44,14 +44,18 @@ class Login extends Component {
           headers: new Headers(),
           data : data
         })
+        const login_info = login_api.data;
 
-        if(!login_api.data.bool) {
+        if(!login_info.bool) {
             signupAction.login_toggle({ 'bool' : true })
             return alert('아이디 및 비밀번호를 다시 확인해주세요.');
         
         } else {
             // sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
             configAction.login_and_logout({ 'bool' : true });
+
+            const hash_str = _stringCrypt(JSON.stringify(login_info.data.id), 'sejun_mall_login', true);
+            _getCookie('login', 'add', hash_str);
 
             const url = ['/signup', '/myPage'];
             let url_check = false;

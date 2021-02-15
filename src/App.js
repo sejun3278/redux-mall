@@ -53,7 +53,7 @@ class App extends Component {
       // configAction.set_loading();
     }
 
-    const test_cookie = this._getCookie('test', 'get');
+    const test_cookie = await this._getCookie('test', 'get');
 
     if(!test_cookie) {
       await this._getCookie('test', 'add', { 'test' : '123' }, { 'time' : 60 * 60 } );

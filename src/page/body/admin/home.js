@@ -51,7 +51,7 @@ class AdminHome extends Component {
         }
 
         const cookie_name = _hashString('admin_check');
-        let check_cookie = await _getCookie(cookie_name, 'get');
+        let check_cookie = JSON.parse(await _getCookie(cookie_name, 'get', null, true));
 
         // 이미 인증을 했는지 검색
         if(check_cookie) {
@@ -90,7 +90,7 @@ class AdminHome extends Component {
             if(allow === false) {
                 alert('관리자 인증 내역이 일치하지 않습니다.');
 
-                _getCookie(cookie_name, 'remove');
+                _getCookie(cookie_name, 'remove', null, true);
 
                 return window.location.replace('/');
 

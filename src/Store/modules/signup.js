@@ -39,18 +39,17 @@ const initialState = {
 export default handleActions({
    [INPUTINFO] : (state, data) => {
     const result = data.payload;
-    let agree = data.payload.agree;
 
       return { 
           ...state, 
-          id : result.id,
-          nick : result.nick,
-          name : result.name,
-          email_id : result.email_id,
-          email_host : result.email_host,
-          pw : result.pw,
-          pw_check : result.pw_check,
-          agree : agree
+          id : result.id !== undefined ? result.id : state.id,
+          nick : result.nick !== undefined ? result.nick : state.nick,
+          name : result.name !== undefined ? result.name : state.name,
+          email_id : result.email_id !== undefined ? result.email_id : state.email_id,
+          email_host : result.email_host !== undefined ? result.email_host : state.email_host,
+          pw : result.pw !== undefined ? result.pw : state.pw,
+          pw_check : result.pw_check !== undefined ? result.pw_check : state.pw_check,
+          agree : result.agree !== undefined ? result.agree : state.agree
         };
     },
 

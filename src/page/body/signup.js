@@ -13,6 +13,7 @@ import URL from '../../config/url';
 
 import $ from 'jquery';
 
+let signup = false;
 class Signup extends Component {
 
   componentDidMount() {
@@ -24,63 +25,92 @@ class Signup extends Component {
   }
 
   _signupCheck = async (event) => {
-    const arr = ['id', 'nick', 'name', 'email', 'pw', 'pw_check', 'agree'];
+    const arr = ['id', 'nick', 'name', 'email', 'pw', 'pw_check'];
     const form_data = event.target;
 
     const { signupAction, _getCookie, _addCoupon } = this.props;
-    const { id, nick, name, pw, email_id, email_host } = this.props;
+    const { id, nick, name, pw, email_id, email_host, agree } = this.props;
 
     let signup_allow = true;
-    
-    arr.forEach( async (el, key) => {
-      let agree;
-      if(el === 'agree') {
-        agree = this.props.agree;
-      }
+    if(signup === true) {
+      alert('회원가입 처리중입니다. \n잠시만 기다려주세요.');
 
-      const input_data = form_data[el].value.trim();
-      const cover_signup_allow = await this._eachCheck(String(el), input_data, true, agree);
+      event.preventDefault();
+      return;
+
+    } else if(agree === false) {
+      this._alert('agree', '이용약관에 동의해주세요.');
+      $('#signup_agree_input').css({ 'color' : 'black' })
+
+      signup_allow = false;
+    }
+
+    signup = true;
+
+    $('body').css({ 'cursor' : 'wait' });
+
+    const all_check_fn = async (limit) => {
+      const value = form_data[arr[limit]].value.trim();
+      const cover_signup_allow = await this._eachCheck(String(arr[limit]), value, true);
 
       if(cover_signup_allow === false) {
         signup_allow = false;
       }
 
-      if(arr.length === (key + 1)) {
-        if(signup_allow) {
-          const all_email = email_id + '@' + email_host;
-
-          signupAction.signup_allow({ 'bool' : true });
-          const qry_arr = [];
-          qry_arr[0] = { 'user_id' : id };
-          qry_arr[1] = { 'nickname' : nick };
-          qry_arr[2] = { 'email' : all_email };
-
-          const data = { id : id, nick : nick, name : name, email : all_email, pw : pw, 'qry' : qry_arr };
-
-            const add_user = await axios(URL + '/add/signup', {
-              method : 'POST',
-              headers: new Headers(),
-              data : data
-            })
-
-            if(add_user.data !== true) {
-            signupAction.signup_allow({ 'bool' : false });
-      
-            } else {
-              // 회원가입 쿠폰 제공
-              _addCoupon('welcome', null, null, false, id);
-
-              // 1차 회원가입 완료
-              await _getCookie('signup', 'add', { 'id' : id }, { 'time' : 60 * 60 } );
-              return window.location.replace('/signup/complate/' + id)
-            }
-        }
+      limit += 1;
+      if(limit === arr.length) {
+        return signup_allow;
       }
-    })
-    
-    event.preventDefault();
 
-    return;
+      return all_check_fn(limit);
+    }
+
+    event.preventDefault();
+    const all_check = signup_allow === true ? await all_check_fn(0) : false;
+
+    $('body').css({ 'cursor' : 'default' });
+
+    if(all_check === false) {
+      signup = false;
+      return;
+
+    } else {
+      const all_email = email_id + '@' + email_host;
+
+      signupAction.signup_allow({ 'bool' : true });
+      const qry_arr = [];
+      qry_arr[0] = { 'user_id' : id };
+      qry_arr[1] = { 'nickname' : nick };
+      qry_arr[2] = { 'email' : all_email };
+
+      const data = { id : id, nick : nick, name : name, email : all_email, pw : pw, 'qry' : qry_arr };
+
+      const add_user = await axios(URL + '/add/signup', {
+        method : 'POST',
+        headers: new Headers(),
+        data : data
+      })
+
+      if(add_user.data !== true) {
+        signupAction.signup_allow({ 'bool' : false });
+
+      } else {
+        // 회원가입 쿠폰 제공
+        _addCoupon('welcome', null, null, false, id, true);
+
+        const { _stringCrypt } = this.props;
+
+        // 1차 회원가입 완료
+        await _getCookie('signup', 'add', _stringCrypt(id, 'id', true), true);
+
+        signup = false;
+
+        // const test = await _getCookie('signup', 'get', null, true);
+        // const test2 = _stringCrypt(test, 'id', false);
+
+        return window.location.replace('/signup/complate/' + _stringCrypt(id, 'check_id', true))
+      }
+    }  
   }
 
   _alert = (target, ment) => {
@@ -105,11 +135,9 @@ class Signup extends Component {
       target_li = $(target_el).parent()[0]; 
     }
 
-    // console.log($(target_el), $(target_li))
-
     const target_id = 'alert_' + target;
 
-    if(cover_obj[target] === false) {
+    if(cover_obj[target] === false || cover_obj[target] === undefined) {
       $(target_el).addClass('red_alert');
       $(target_li).append('<p class="alert red_alert" id=' + target_id +'> ' + ment + ' </p>')
     }
@@ -119,7 +147,7 @@ class Signup extends Component {
     return false;
   }
 
-  _eachCheck = async (type, data, mode, agree) => {
+  _eachCheck = async (type, data, mode) => {
     const { email_select } = this.props;
     this._removeAlert(type);
 
@@ -144,23 +172,24 @@ class Signup extends Component {
     const id_check = /^[a-z]+[a-z0-9]{5,14}$/g; // 아이디 체크
     let data_arr = []; // 쿼리 arr;
 
+    const overlap_check = { 'type' : 'SELECT', 'table' : 'userInfo' }
+
+    overlap_check['option'] = {};
+    overlap_check['where'] = [];
+
+    let overlap_ment = '';
     if(type === 'id') {
       if(!id_check.test(data)) {
         this._alert(type, '영문자로 시작하는 6~15 글자 사이의 영문 또는 숫자를 입력해주세요.')
         return false;
       }
 
-      data_arr.push({ "user_id" : data });
-      const id_overlap_check = await axios(URL + '/check/user_data', {
-        method : 'POST',
-        headers: new Headers(),
-        data : data_arr
-      })
+      overlap_check['comment'] = '아이디 중복 체크'
 
-      if(id_overlap_check.data === true) {
-        this._alert(type, '중복되는 아이디입니다.')
-        return false;
-      }
+      overlap_check['option']['user_id'] = '=';
+      overlap_check['where'][0] = { 'table' : 'userInfo', 'key' : 'user_id', value : data };
+
+      overlap_ment = '중복되는 아이디입니다.';
 
     } else if(type === 'nick') {
       if(data.length < 3 || data.length > 15) {
@@ -168,18 +197,12 @@ class Signup extends Component {
         return false;
       }
 
-      data_arr.push({ "nickname" : data });
+      overlap_check['comment'] = '닉네임 중복 체크'
 
-      const nick_overlap_check = await axios(URL + '/check/user_data', {
-        method : 'POST',
-        headers: new Headers(),
-        data : data_arr
-      })
+      overlap_check['option']['nickname'] = '=';
+      overlap_check['where'][0] = { 'table' : 'userInfo', 'key' : 'nickname', value : data };
 
-      if(nick_overlap_check.data === true) {
-        this._alert(type, '중복되는 닉네임입니다.')
-        return false;
-      }
+      overlap_ment = '중복되는 닉네임입니다.';
 
     } else if(type === 'name') {
       const check_name = /([^가-힣a-z\x20])/i; 
@@ -194,6 +217,8 @@ class Signup extends Component {
         }
 
     } else if(type === 'email') {
+      overlap_ment = '중복되는 이메일입니다.';
+
       if(!id_check.test(data)) {
         this._alert(type, '영문자로 시작하는 6~15 글자 사이의 영문 또는 숫자를 입력해주세요.')
         result = false;
@@ -226,17 +251,10 @@ class Signup extends Component {
           return false;
         }
 
-        const email_overlap_check = await axios(URL + '/check/user_data', {
-          method : 'POST',
-          headers: new Headers(),
-          data : data_arr
-        })
-  
-        if(email_overlap_check.data === true) {
-          this._alert(type, '중복되는 이메일 입니다.')
-          $('input[name=email_custom_input]').addClass('red_alert');
-          return false;
-        }
+        overlap_check['comment'] = '이메일 중복 체크'
+
+        overlap_check['option']['email'] = '=';
+        overlap_check['where'][0] = { 'table' : 'userInfo', 'key' : 'email', value : email };
       }
 
     
@@ -269,20 +287,22 @@ class Signup extends Component {
         this._removeAlert('pw_check');
         return true;
       }
+    }
 
-    } else if(type === 'agree') {
-      const agree_check = $('#agree_info_button').is(":checked");
+    if(overlap_check.comment !== undefined) {
+      const overlap_check_result = await axios(URL + '/api/query', {
+        method : 'POST',
+        headers: new Headers(),
+        data : overlap_check
+      })
 
-      if(!agree && !agree_check) {
-        this._alert('agree', '이용약관에 동의해주세요.');
-        $('#signup_agree_input').css({ 'color' : 'black' })
+      if(overlap_check_result.data[0][0] !== undefined) {
+        this._alert(type, overlap_ment);
         return false;
-
-      } else {
-        $('#signup_agree_input').css({ 'color' : '#1785ff' })
-        return true;
       }
     }
+
+    console.log(result)
 
     //this._checkSignup(type)
     return result;
@@ -377,38 +397,31 @@ class Signup extends Component {
       result.pw_check = data;
 
     } else if(type === 'agree') {
-      if(bool !== undefined) {
-        result.agree = bool;
-
-      } else {
-        result.agree = !agree;
-      }
     }
 
     signupAction.input_info(result);
     return this._eachCheck(type, null, result.agree);
   }
 
-  _checkBox = () => {
-    const checkbox = $('#agree_info_button').is(":checked");
-    let bool = true;
+  _checkBox = (agree, bool) => {
+    const { signupAction } = this.props;
 
-    // 활성화
-    if(!checkbox) { 
-      $("#agree_info_button").prop("checked", true);
+    const target = document.getElementById('agree_info_button');
+    if(bool === true) {
+      target.checked = agree;
+    }
 
-    } else if(checkbox) {
-    // 비활성화
-      $("#agree_info_button").prop("checked", false);
-      bool = false;
-    } 
+    const agree_alert = document.getElementById('alert_agree');
+    if(agree_alert !== null) {
+      document.getElementById('alert_agree').style.display = 'none'
+    }
 
-    return this._inputInfo('agree', bool);
+    signupAction.input_info({ 'agree' : agree });
   }
 
   render() {
     const { id, nick, name, email_id, email_host, email_select, pw, pw_check, agree, signup_allow } = this.props;
-    const { _signupCheck } = this;
+    const { _signupCheck, _checkBox } = this;
 
     return(
       <div id='signup_div'>
@@ -490,13 +503,12 @@ class Signup extends Component {
             <textarea readOnly className='no_resize' defaultValue={signup_info} />
 
             <p id='signup_argee_checkbox_div'>
-              <input type='checkbox' id='agree_info_button' name='agree' className='check_custom_1'
-                    defaultChecked={agree}
-              />
+              <input type='checkbox' id='agree_info_button' name='agree' className='check_custom_1' />
 
-              <span className='check_toggle_1' onClick={() => this._checkBox()}> </span>
-              <label htmlFor='agree_info_button' className='pointer' id='signup_agree_input'
-                    onClick={() => this._inputInfo('agree')}
+              <span className='check_toggle_1' onClick={() => _checkBox(!agree, true)}> </span>
+              <label htmlFor='agree_info_button' id='signup_agree_input'
+                    onClick={() => _checkBox(!agree)}
+                    className={agree === false ? 'pointer font_13' : 'pointer font_13 custom_color_1 bold'}
               > 
                 이용약관에 동의합니다.  
               </label>

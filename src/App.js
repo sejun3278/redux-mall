@@ -377,7 +377,7 @@ class App extends Component {
     }
 
   // 쿠폰 등록하기
-  _addCoupon = async (code_str, get, alerts, check, users_id) => {
+  _addCoupon = async (code_str, get, alerts, check, users_id, event) => {
     const code = code_str ? code_str : $('input[name=coupon_add_code]').val().trim(); 
     const { coupon_add_loading, myPageAction } = this.props;
 
@@ -397,7 +397,7 @@ class App extends Component {
           this._loginCookieCheck();
         }
 
-        if(coupon_list.coupon_code[code] === undefined || coupon_list.coupon_code[code].search === false) {
+        if(coupon_list.coupon_code[code] === undefined || (coupon_list.coupon_code[code].search === false && event === null)) {
             return alert('해당 코드의 쿠폰을 찾을 수 없습니다.');
 
         } else {
@@ -1024,11 +1024,11 @@ class App extends Component {
     let result = '';
 
     if(typeof string !== 'string') {
-      string = JSON.stringify(string);
+      string = String(string);
     }
 
     if(typeof salt !== 'string') {
-      salt = JSON.stringify(salt);
+      salt = String(salt)
     }
 
     if(bool === true) {
@@ -1040,6 +1040,7 @@ class App extends Component {
       const bytes = CryptoJS.AES.decrypt(string, salt);
       result = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     }
+
 
     return result;
   }
@@ -1242,6 +1243,8 @@ class App extends Component {
                         user_info={user_info}
                         _getCookie={_getCookie}
                         _addCoupon={_addCoupon}
+                        _stringCrypt={_stringCrypt}
+                        _hashString={_hashString}
                           {...props} 
                   />}
                 />
@@ -1252,6 +1255,8 @@ class App extends Component {
                           login={login}
                           user_info={user_info}
                           _getCookie={_getCookie}
+                          _stringCrypt={_stringCrypt}
+                          _checkLogin={_checkLogin}
                           {...props} 
                   />}
                 />

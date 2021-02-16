@@ -45,7 +45,7 @@ class Header extends Component {
         
         const url = location.pathname;
         if(url.includes('/signup/complate') === false) {
-            await _getCookie('signup', 'remove');
+            await _getCookie('signup', 'remove', null, true);
         }
 
         if(url.includes('/myPage/order') === false) {

@@ -111,7 +111,7 @@ class PassAdmin extends Component {
                 cookie_obj[_hashString('code')] = _hashString(admin_code);
 
                 // 쿠키 추가
-                await _getCookie(cookie_name, 'add', cookie_obj, { 'time' : 60 * 60 } );
+                await _getCookie(cookie_name, 'add', JSON.stringify(cookie_obj), true);
                 
                 return window.location.replace('/admin');
 

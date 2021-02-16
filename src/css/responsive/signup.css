@@ -1,6 +1,6 @@
 /* 회원가입 페이지 */
 
-#signup_complate_select_div { font-size: 14px !important; }
+#signup_complate_select_div { font-size: 13px !important; color: #ababab; }
 
 @media ( max-width: 1550px ) {
     #my_page_select_div { grid-template-columns: 15% auto 15% !important; }

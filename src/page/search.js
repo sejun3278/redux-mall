@@ -68,8 +68,8 @@ class Search extends Component {
         configAction.select_cat_data({ 'type' : first_cat, 'last_cat' : last_cat });
 
         window.setTimeout(() => {
-            return this._lastCatScrollMove(qry_obj)
-        }, 100)
+            // return this._lastCatScrollMove(qry_obj)
+        }, 500)
 
         const screen_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         const type = screen_width <= 600 ? 'board'
@@ -85,6 +85,15 @@ class Search extends Component {
 
         } else if(type === 'board') {
             // 게시판일 때는 페이징
+        }
+    }
+
+    componentDidUpdate() {
+        const { loading } = this.props;
+
+        if(loading === true) {
+            const qry_obj = queryString.parse(this.props.location.search);
+            this._lastCatScrollMove(qry_obj)
         }
     }
 
@@ -111,6 +120,7 @@ class Search extends Component {
                 if(limit_check < 0) {
                     scrolling = true;
 
+                    $('body').css({ 'cursor' : 'wait' })
                     configAction.toggle_review_modal({ 'scroll' : add_scroll });
 
                     return await this._getData();
@@ -124,21 +134,22 @@ class Search extends Component {
 
             const last_cat_list = cat_list.last_category[qry_obj['first_cat']];
             let width = 0;
-            let cat_index = 0;
 
-            for(let key in last_cat_list) {
-                if(last_cat_list[key].value === qry_obj['last_cat']) {
-                    if(key === 0) {
-                        width = $('#last_cat_scroll_0').offset().left;
+            last_cat_list.forEach( (el, key) => {
+                if(el.value === qry_obj['last_cat']) {
+                    let target = $('#last_cat_scroll_' + String(key));
 
-                    } else if(key > 0) {
-                        width = $('#last_cat_scroll_' + cat_index).offset().left;
+                    if(target.length > 0) {
+                        width = target.offset().left;
+
+                        if(key === 0) {
+                            width = 0;
+                        }
+
+                        return this.props._moveScrollbar('#search_show_last_list', 'x', width);
                     }
                 }
-                cat_index += 1;
-            }
-                
-            this.props._moveScrollbar('#search_show_last_list', 'x', width)
+            })
         }
     }
 
@@ -322,6 +333,8 @@ class Search extends Component {
         save_obj['length'] = get_cnt.data[0][0]['count(*)'];
 
         scrolling = false;
+
+        $('body').css({ 'cursor' : 'default' })
 
         searchAction.set_search_data( save_obj )
 
@@ -990,8 +1003,8 @@ Search.defaultProps = {
         search_length : state.search.search_length,
         now_page : state.config.now_page,
         review_scroll : state.config.review_scroll,
-        review_scrolling : state.config.review_scrolling
-        
+        review_scrolling : state.config.review_scrolling,
+        loading : state.config.loading
     }), 
   
     (dispatch) => ({

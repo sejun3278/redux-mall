@@ -173,7 +173,7 @@ class App extends Component {
 
   // 로그인 체크
   _checkLogin = async () => {
-    const { configAction } = this.props;
+    const { configAction, loading } = this.props;
 
     const storage = await this._getCookie('login', 'get');
 
@@ -211,9 +211,69 @@ class App extends Component {
       configAction.save_user_info({ 'info' : false })
     }
 
-    configAction.set_loading();
+    if(loading === false) {
+      if(result_data) {
+        this._getAlertMessage(result_data.id);
+
+      } else {
+        configAction.set_loading();
+      }
+    }
     return result_data;
   }
+
+  _getAlertMessage = async (user_id) => {
+    const { configAction } = this.props;
+    // const user_cookie = await _checkLogin();
+
+    if(user_id) {
+        let get_data = null;
+
+        const obj = { 'type' : 'SELECT', 'table' : 'alert', 'comment' : 'alert 정보 가져오기' };
+
+        obj['option'] = { 'user_id' : '=' };
+        obj['where'] = [{ 'table' : 'alert', 'key' : 'user_id', 'value' : user_id }]
+
+        const save_obj = {};
+        get_data = await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : obj
+        });
+
+        save_obj['info'] = JSON.stringify(get_data.data[0]);
+
+        // 총 갯수 구하기
+        const cover_obj = obj;
+        cover_obj['count'] = true;
+
+        get_data = await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : cover_obj
+        });
+        save_obj['length'] = get_data.data[0][0]['count(*)'];
+
+        // 읽지 않은 알림 구하기
+        const no_show_qry = obj;
+        no_show_qry['count'] = true;
+
+        no_show_qry['option']['confirm'] = '=';
+        no_show_qry['where'][1] = { 'table' : 'alert', 'key' : 'confirm', 'value' : 0 };
+
+        get_data = await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : no_show_qry
+        });
+        save_obj['show'] = get_data.data[0][0]['count(*)'];
+        save_obj['loading'] = true;
+
+        configAction.save_user_alert_info(save_obj);
+    }
+
+    configAction.set_loading();
+}
 
   // category 이름 찾기
   _searchCategoryName = (val, type, first) => {
@@ -1010,14 +1070,11 @@ class App extends Component {
     add_qry['columns'].push({ "key" : "create_date", "value" : null });
     add_qry['columns'].push({ "key" : "confirm", "value" : 0 });
 
-    const set_alert = await axios(URL + '/api/query', {
+    await axios(URL + '/api/query', {
         method : 'POST',
         headers: new Headers(),
         data : add_qry
     })
-
-    console.log(set_alert);
-
   }
 
   // 문자 해시 및 복호화
@@ -1091,9 +1148,10 @@ class App extends Component {
         }
     }, 3000);
 
+
     return(
       <div className='App'>
-          {loading === false && user_info === null
+          {loading === false
           
           ? <Loading />
           
@@ -1235,6 +1293,7 @@ class App extends Component {
                         _setModalStyle={_setModalStyle}
                         _removeReview={_removeReview}
                         _stringCrypt={_stringCrypt}
+                        _addAlert={_addAlert}
                       {...props} 
                   />}
                 />

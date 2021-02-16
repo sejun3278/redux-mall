@@ -1200,7 +1200,9 @@ class Goods extends Component {
 
         // 답변 등록하기
         _addAnswer = async (info, goods_id) => {
+            const { _addAlert } = this.props;
             const user_info = JSON.parse(this.props.user_info);
+            const goods_info = JSON.parse(this.props.goods_data);
 
             if(user_info.admin === 'N') {
                 return alert('관리자 권한이 없습니다.');
@@ -1233,6 +1235,14 @@ class Goods extends Component {
 
             if(set_data.data[0]) {
                 alert('답변 등록이 완료되었습니다.');
+
+                const alert_info = {};
+                alert_info['user_id'] = info.user_id;
+                alert_info['reason'] = '[ ' + goods_info.name + ' ] 의 문의에 답변이 달렸습니다.';
+                alert_info['move_url'] = '/goods/?goods_num=' + goods_id;
+
+                // 알림 메세지 보내기
+                _addAlert(alert_info);
 
                 return await this._saveQandAData(goods_id);
 

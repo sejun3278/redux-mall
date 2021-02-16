@@ -30,73 +30,7 @@ const customStyles = {
 
 class Header extends Component {
     async componentDidMount() {
-        const { user_info } = this.props;
-
         this._urlCheck();
-        // this._setScrollSize();
-        // window.addEventListener("scroll", this._setScrollSize);
-        
-        // let user = sessionStorage.getItem('login');
-        // if(user) {
-        //     user = JSON.parse(user);
-        //     // 관리자 확인하기
-        // }
-
-        // alert 메세지 조회하기
-        if(user_info.id) {
-            await this._getAlertMessage();
-        }
-    }
-
-    _getAlertMessage = async () => {
-        const { user_info, _checkLogin, configAction } = this.props;
-        const user_cookie = await _checkLogin();
-
-        if(user_info.id && user_cookie) {
-            let get_data = null;
-
-            const obj = { 'type' : 'SELECT', 'table' : 'alert', 'comment' : 'alert 정보 가져오기' };
-
-            obj['option'] = { 'user_id' : '=' };
-            obj['where'] = [{ 'table' : 'alert', 'key' : 'user_id', 'value' : user_info.id }]
-
-            const save_obj = {};
-            get_data = await axios(URL + '/api/query', {
-                method : 'POST',
-                headers: new Headers(),
-                data : obj
-            });
-
-            save_obj['info'] = JSON.stringify(get_data.data[0]);
-
-            // 총 갯수 구하기
-            const cover_obj = obj;
-            cover_obj['count'] = true;
-
-            get_data = await axios(URL + '/api/query', {
-                method : 'POST',
-                headers: new Headers(),
-                data : cover_obj
-            });
-            save_obj['length'] = get_data.data[0][0]['count(*)'];
-
-            // 읽지 않은 알림 구하기
-            const no_show_qry = obj;
-            no_show_qry['count'] = true;
-
-            no_show_qry['option']['confirm'] = '=';
-            no_show_qry['where'][1] = { 'table' : 'alert', 'key' : 'confirm', 'value' : 0 };
-
-            get_data = await axios(URL + '/api/query', {
-                method : 'POST',
-                headers: new Headers(),
-                data : no_show_qry
-            });
-            save_obj['show'] = get_data.data[0][0]['count(*)'];
-            save_obj['loading'] = true;
-
-            configAction.save_user_alert_info(save_obj)
-        }
     }
 
     _urlCheck = async () => {
@@ -134,7 +68,7 @@ class Header extends Component {
       }
     
     componentWillUnmount() {
-        window.removeEventListener("scroll", this._setScrollSize);
+        // window.removeEventListener("scroll", this._setScrollSize);
     }
 
     _setScrollSize = () => {
@@ -199,26 +133,6 @@ class Header extends Component {
         }
     }
 
-    // _loginCheckAndMove = async (type) => {
-    //     const { user_info, _getCookie, _modalToggle, signupAction, _hashString } = this.props;
-    //     const login_cookie = await _getCookie('login', 'get');
-
-    //     if(!user_info || !login_cookie) {
-    //         alert('로그인이 필요합니다.');
-
-    //         const after_url = '/myPage/' + type;
-    //         signupAction.set_login_after({ 'url' : after_url })
-
-    //         return _modalToggle(true);
-    //     }
-
-    //     if(type === 'order_list') {
-    //         await _getCookie(_hashString('detail_order_id'), 'remove');
-    //     }
-
-    //     return window.location.href = '/myPage/' + type;
-    // }
-
     _clickAlert = async (info) => {
         const update_obj = { 'type' : 'UPDATE', 'table' : 'alert', 'comment' : '쪽지 확인 완료' };
 
@@ -239,12 +153,26 @@ class Header extends Component {
         return window.location.href = info.move_url
     }
 
+    _openAlert = () => {
+        // 쪽지창 열기
+        const { configAction } = this.props;
+
+        configAction.save_user_alert_info({ 'bool' : true })
+        configAction.select_cat_data({ 'bool' : false });
+    }
+
+    _clickCategory = () => {
+        const { configAction, select_cat_open } = this.props;
+
+        configAction.select_cat_data({ 'bool' : !select_cat_open });
+    }
+
     render() {
         const { 
             _pageMove, _modalToggle, login, user_info, _search, search, _loginAfter, alert_modal, configAction,
-            user_alert_length, user_alert_noShow, alert_loading
+            user_alert_length, user_alert_noShow, alert_loading, select_cat_open
         } = this.props;
-        const { _closeCategory, _clickAlert } = this;
+        const { _closeCategory, _clickAlert, _clickCategory, _openAlert } = this;
         const user_alert_info = JSON.parse(this.props.user_alert_info);
 
         return (
@@ -326,7 +254,7 @@ class Header extends Component {
                         <div className='display_inline'>
                             <img alt='' id='header_user_alert_icon' className='pointer'
                                 src={user_alert_noShow === 0 ? icon.icon.alert_default : icon.icon.alert_have}
-                                onClick={() => configAction.save_user_alert_info({ 'bool' : true })}
+                                onClick={_openAlert}
                                 title={user_alert_noShow > 0 ? user_alert_noShow + ' 개의 안 읽은 쪽지가 있습니다.' : null}
                             />
                         </div>
@@ -396,8 +324,14 @@ class Header extends Component {
 
                 <div id='header_other_div' className='white'>
                     <div id='header_category_div'> 
-                        <img src={icon.icon.category} className='pointer' alt='' />
-                        <b className='pointer'> 카테고리 </b>
+                        <img src={icon.icon.category} className='pointer' alt='' 
+                             onClick={() => _clickCategory()}
+                        />
+                        <b className='pointer' onClick={() => _clickCategory()}
+                            style={select_cat_open === true ? { 'color' : '#52BFFF' } : null}
+                        > 
+                            카테고리 
+                        </b>
                     </div>
                     <div id='header_search_div'> 
                         <form onSubmit={_search}>
@@ -442,7 +376,8 @@ export default connect(
         user_alert_length : state.config.user_alert_length,
         user_alert_noShow : state.config.user_alert_noShow,
         alert_modal : state.config.alert_modal,
-        alert_loading : state.config.alert_loading
+        alert_loading : state.config.alert_loading,
+        select_cat_open : state.config.select_cat_open
     }), 
   
     (dispatch) => ({

@@ -212,6 +212,7 @@
     position: absolute;
     font-size: 16px;
     margin-left: 10px;
+    margin-top: 2.5px;
 }
 
 #header_search_div input {
@@ -472,12 +473,12 @@
 @media (max-width : 345px) {
     #header_alert_div { padding: 0px 50px 0px 50px !important; }
 }
-#header_alert_div { padding: 0px 10px 0px 10px; }
+#header_alert_div { padding: 0px 10px 0px 10px; min-height: 360px; }
 #header_alert_title_div { border-bottom: solid 2px #ababab; padding-bottom: 15px; margin-top: 0px !important; }
 #header_alert_close_icon { width: 15px; margin-left: 420px; }
 #header_alert_icon { width: 17px; padding-right: 7px; }
 
 #alert_length_title_div { padding: 10px 0px 5px 0px; }
 #alert_length_title { font-size: 12px; margin: 0px 0px 0px 0px !important; }
-#alert_contents_div { border-top: solid 2px #ababab; border-bottom: solid 2px #ababab; }
+#alert_contents_div { border-top: solid 2px #ababab; border-bottom: solid 2px #ababab; height: 230px; overflow-y: auto; }
 .alert_contents_list_div { display: grid; grid-template-columns: 350px auto; padding: 5px; }

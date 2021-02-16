@@ -434,21 +434,21 @@ class Signup extends Component {
               <li className='signup_li' id='signup_id_li'>
                 <p> 아이디 </p>
                 <input id='signup_id_input' name='id' type='text' placeholder='15 글자 이내의 영문 입력' maxLength='15'
-                  value={id} onChange={() => this._inputInfo('id')}
+                  onBlur={() => this._inputInfo('id')}
                 />
               </li>
 
               <li className='signup_li' id='signup_nick_li'> 
                 <p> 닉네임 </p>
                 <input id='signup_nick_input' name='nick' type='text' placeholder='15 글자 이내의 영문 및 한글 입력' maxLength='15'
-                  value={nick} onChange={() => this._inputInfo('nick')}
+                  onBlur={() => this._inputInfo('nick')}
                 />
               </li>
 
               <li className='signup_li' id='signup_name_li'> 
                 <p> 이름 </p>
                 <input id='signup_name_input' name='name' type='text' placeholder='15 글자 이내의 영문 및 한글 입력' maxLength='15'
-                  value={name} onChange={() => this._inputInfo('name')}
+                  onBlur={() => this._inputInfo('name')}
                 />
               </li>
 
@@ -457,13 +457,13 @@ class Signup extends Component {
                 <div className='grid_half' name='email_id_alert'>
                   <div>
                     <input className='signup_email_inputs' id='signup_email_input' name='email' type='text' placeholder='15 글자 이내의 영문 입력' maxLength='15'
-                      value={email_id} onChange={() => this._inputInfo('email')}
+                      onBlur={() => this._inputInfo('email')}
                     />
                   </div>
 
                   <div>
                     　@　
-                    <select name='email_select' id='signup_email_host_select' onChange={() => this._inputInfo('email')}>
+                    <select name='email_select' id='signup_email_host_select' onBlur={() => this._inputInfo('email')}>
                       <option value='naver.com'> naver.com </option>
                       <option value='gmail.com'> gamil.com </option>
                       <option value='daum.net'> daum.net </option>
@@ -475,7 +475,7 @@ class Signup extends Component {
               {email_select === 'custom'
                 ? <p id='signup_email_custom_input_div' className='marginTop_10'>
                       ▶　<input type='text' deaultvalue={email_host} name='email_custom_input' maxLength='20' placeholder='이메일 형식을 입력해주세요.'
-                                id='signup_email_custom_input' onChange={() => this._inputInfo('email')}
+                                id='signup_email_custom_input' onBlur={() => this._inputInfo('email')}
                       />
                     </p>
                 : null}
@@ -484,14 +484,14 @@ class Signup extends Component {
               <li className='signup_li' id='signup_pw_li'> 
                 <p> 비밀번호 </p>
                 <input id='signup_pw_input' name='pw' autoComplete="true" type='password' maxLength='20'
-                  value={pw} onChange={() => this._inputInfo('pw')}
+                  onBlur={() => this._inputInfo('pw')}
                 />
               </li>
 
               <li className='signup_li' id='signup_pw_check_li'> 
                 <p> 비밀번호 확인 </p>
                 <input id='signup_pw_check_input' name='pw_check' autoComplete="true" type='password' maxLength='20'
-                  value={pw_check} onChange={() => this._inputInfo('pw_check')}
+                  onBlur={() => this._inputInfo('pw_check')}
                 />
               </li>
             </ul>

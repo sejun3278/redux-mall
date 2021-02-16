@@ -23,7 +23,7 @@ class Signup_complate extends Component {
     const referrer = document.referrer;
     if(!referrer.includes('/signup')) {
       alert('정상적인 접근이 아닙니다.');
-      return window.location.replace('/');
+      // return window.location.replace('/');
     }
 
     const id = match.params.id;
@@ -35,7 +35,7 @@ class Signup_complate extends Component {
     const check_timer = setTimeout(() => {
       if(user_id !== check_id) {
         alert('정상적인 접근이 아닙니다.');
-        return window.location.replace('/');
+        // return window.location.replace('/');
       }
     }, 500);
 
@@ -50,7 +50,7 @@ class Signup_complate extends Component {
 
     if(allow === false) {
       alert('정상적인 접근이 아닙니다.');
-      return window.location.replace('/');
+      // return window.location.replace('/');
     }
 
     check_timer(); 

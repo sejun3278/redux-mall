@@ -87,7 +87,7 @@ ul { padding-left: 0px !important; }
 #category_responsive_grid_div { display: grid !important; grid-template-columns: 20% auto; }
 #category_responsive_first_cat_div div { border-bottom: dotted 1px #ababab; }
 
-#category_responsive_close_button { background-color: #16697a; width: 100%; color: white; margin-top: 8px; position : absolute; padding: 5px 0px 5px 0px; border: solid 3px #16697a;}
+#category_responsive_close_button { background-color: #16697a; width: 100%; color: white; position : absolute; padding: 10px 0px 15px 0px; border: solid 3px #16697a;}
 #category_responsive_last_cat_div { border-bottom: solid 1px #ababab; }
 #category_responsive_last_cat_div div { padding-left: 15px; height: 60.7px !important; }
 #category_responsive_bottom_div { height: 50px; background-color: white; margin-bottom: 0px; }

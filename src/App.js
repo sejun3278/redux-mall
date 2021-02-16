@@ -112,8 +112,9 @@ class App extends Component {
     }
   }
 
-  _checkAdmin = async (info) => {
+  _checkAdmin = async () => {
     const { configAction } = this.props;
+    const user_info = JSON.parse(this.props.user_info);
 
     const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '관리자 정보 가져오기' };
 
@@ -122,21 +123,21 @@ class App extends Component {
     obj['option']['admin'] = '=';
 
     obj['where'] = [];
-    obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : info.id });
+    obj['where'].push({ 'table' : 'userInfo', 'key' : 'user_id', 'value' : user_info.id });
     obj['where'].push({ 'table' : 'userInfo', 'key' : 'admin', 'value' : 'Y' });
 
-    const get_admin_info = await axios(URL + '/get/query', {
-      method : 'POST',
-      headers: new Headers(),
-      data : obj
-    })
+    // const get_admin_info = await axios(URL + '/get/query', {
+    //   method : 'POST',
+    //   headers: new Headers(),
+    //   data : obj
+    // })
 
-    if(get_admin_info.data[0][0]) {
-      configAction.save_admin_info({ 'info' : true })
+    // if(get_admin_info.data[0][0]) {
+    //   configAction.save_admin_info({ 'info' : true })
 
-      return true;
-    }
-    return false;
+    //   return true;
+    // }
+    // return false;
   }
 
   _pageMove = (type, location) => {
@@ -1109,6 +1110,7 @@ class App extends Component {
                   _getCookie={_getCookie}
                   _hashString={_hashString}
                   _loginAfter={_loginAfter}
+                  _checkLogin={_checkLogin}
                   {...props}  />}
               />
 

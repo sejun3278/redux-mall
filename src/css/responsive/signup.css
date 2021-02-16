@@ -140,9 +140,11 @@
   #signup_email_li div { grid-template-columns: 60% auto; }
   
     #main_header_right_contents { display: block !important; }
-    #main_header_right_contents div { display: block !important; padding: 9px 25px 0px 0px !important; }
+    #main_header_right_contents div { display: block !important; padding: 0px 15px 0px 0px !important; }
     /* #signup_div_grid #signup_email_li input { width : 58% !important; } */
 
+    #login_header_div { margin-top: 10px; line-height: 20px !important; }
+    #header_login_user_info_div { text-align: right !important; }
   }
 
   @media ( max-width: 570px ) {
@@ -159,6 +161,9 @@
 
     #user_thumbnail_div { margin-left: 15px; }
     #user_thumbnail_div #user_thumbnail_img { width: 90px; height: 90px; }
+
+    #main_header_center { text-align: left !important; padding-left: 20px; }
+    #admin_icon { margin-left: 120px !important; }
   }
 
   @media ( max-width: 502px ) {
@@ -236,7 +241,7 @@
 
   @media (max-width : 400px) {
     #main_header_div { grid-template-columns: 45% auto !important; }
-    #main_header_right_contents div { padding : 9px 15px 0px 0px !important }
+    /* #main_header_right_contents div { padding : 2px 15px 0px 0px !important } */
   }
 
   @media ( max-width: 386px ) {

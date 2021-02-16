@@ -19,7 +19,9 @@
         "filter_empty" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/filter_empty.png",
         "filter_full" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/filter_full.png",
         "plus" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/plus.png",
-        "minus" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/minus.png"
+        "minus" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/minus.png",
+        "alert_default" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/paper_plane_default.png",
+        "alert_have" : "https://sejun-redux-mall.s3.ap-northeast-2.amazonaws.com/img/paper_plane.png"
     },
 
     "my_page" : {

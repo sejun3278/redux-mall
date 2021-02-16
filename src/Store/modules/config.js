@@ -20,6 +20,7 @@ const TOGGLEREVIEWMODAL = 'config/toggle_review_modal';
 const SETSCROLL = 'config/set_scroll';
 const REMOVING = 'config/removing';
 const TOGGLEMODAL = 'config/toggle_modal';
+const SAVEUSERALERTINFO = 'config/save_user_alert_info';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -41,6 +42,7 @@ export const toggle_review_modal = createAction(TOGGLEREVIEWMODAL);
 export const set_scroll = createAction(SETSCROLL);
 export const removing = createAction(REMOVING);
 export const toggle_modal = createAction(TOGGLEMODAL);
+export const save_user_alert_info = createAction(SAVEUSERALERTINFO);
 
 const initialState = {
     login : false,
@@ -88,7 +90,12 @@ const initialState = {
     scroll : 0,
     scrolling : false,
     removing : false,
-    modal : false
+    modal : false,
+    user_alert_info : JSON.stringify([]),
+    user_alert_length : 0,
+    user_alert_noShow : 0,
+    alert_modal : false,
+    alert_loading : false
 }
 
 export default handleActions({
@@ -265,6 +272,17 @@ export default handleActions({
         return {
             ...state,
             modal : data.payload.bool !== undefined ? data.payload.bool : state.modal
+        }
+    },
+
+    [SAVEUSERALERTINFO] : (state, data) => {
+        return {
+            ...state,
+            user_alert_info : data.payload.info !== undefined ? data.payload.info : state.user_alert_info,
+            user_alert_length : data.payload.length !== undefined ? data.payload.length : state.user_alert_length,
+            user_alert_noShow : data.payload.show !== undefined ? data.payload.show : state.user_alert_noShow,
+            alert_modal : data.payload.bool !== undefined ? data.payload.bool : state.alert_modal,
+            alert_loading : data.payload.loading !== undefined ? data.payload.loading : state.alert_loading
         }
     }
 

@@ -17,26 +17,26 @@ const session = require('express-session');
 //   store: new FileStore()
 // }));
 
-app.all('*', function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", 'http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/');
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-});
+// app.all('*', function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", 'http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/');
+//   res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// });
 
-app.set('trust proxy', 1)
-app.enable('trust proxy')
+// app.set('trust proxy', 1)
+// app.enable('trust proxy')
 
-app.use(session({
-  secret : 'somesecret',
-  store : '',
-  key : 'sid',
-  cookie : {
-      secure : true, // it works without the secure flag (cookie is set)
-      proxy : true,  // tried using this as well, no difference
-      maxAge: 5184000000 // 2 months
-  }
-}));
+// app.use(session({
+//   secret : 'somesecret',
+//   store : '',
+//   key : 'sid',
+//   cookie : {
+//       secure : true, // it works without the secure flag (cookie is set)
+//       proxy : true,  // tried using this as well, no difference
+//       maxAge: 5184000000 // 2 months
+//   }
+// }));
 
 app.use(express.json());
 app.use(cors());

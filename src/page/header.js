@@ -2,20 +2,36 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
+import Modal from 'react-modal';
 
 import '../css/main.css';
 import * as configAction from '../Store/modules/config';
 import * as searchAction from '../Store/modules/search';
 import * as signupAction from '../Store/modules/signup';
 
-import { Link } from 'react-router-dom';
-import img from '../source/img/icon.json';
+import icon from '../source/img/icon.json';
 
 // import $ from 'jquery';
 import URL from '../config/url';
 
+const customStyles = {
+    content : {
+      top                   : '300px',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      marginRight           : '-50%',
+      transform             : 'translate(-50%, -50%)',
+      width                 : '450px',
+    }
+  };
+  
+  Modal.setAppElement('body')
+
 class Header extends Component {
     async componentDidMount() {
+        const { user_info } = this.props;
+
         this._urlCheck();
         // this._setScrollSize();
         // window.addEventListener("scroll", this._setScrollSize);
@@ -27,16 +43,59 @@ class Header extends Component {
         // }
 
         // alert 메세지 조회하기
-        await this._getAlertMessage();
+        if(user_info.id) {
+            await this._getAlertMessage();
+        }
     }
 
     _getAlertMessage = async () => {
-        const { user_info, _getCookie } = this.props;
-        const user_cookie = await _getCookie('login', 'get');
+        const { user_info, _checkLogin, configAction } = this.props;
+        const user_cookie = await _checkLogin();
 
         if(user_info.id && user_cookie) {
+            let get_data = null;
+
             const obj = { 'type' : 'SELECT', 'table' : 'alert', 'comment' : 'alert 정보 가져오기' };
 
+            obj['option'] = { 'user_id' : '=' };
+            obj['where'] = [{ 'table' : 'alert', 'key' : 'user_id', 'value' : user_info.id }]
+
+            const save_obj = {};
+            get_data = await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : obj
+            });
+
+            save_obj['info'] = JSON.stringify(get_data.data[0]);
+
+            // 총 갯수 구하기
+            const cover_obj = obj;
+            cover_obj['count'] = true;
+
+            get_data = await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : cover_obj
+            });
+            save_obj['length'] = get_data.data[0][0]['count(*)'];
+
+            // 읽지 않은 알림 구하기
+            const no_show_qry = obj;
+            no_show_qry['count'] = true;
+
+            no_show_qry['option']['confirm'] = '=';
+            no_show_qry['where'][1] = { 'table' : 'alert', 'key' : 'confirm', 'value' : 0 };
+
+            get_data = await axios(URL + '/api/query', {
+                method : 'POST',
+                headers: new Headers(),
+                data : no_show_qry
+            });
+            save_obj['show'] = get_data.data[0][0]['count(*)'];
+            save_obj['loading'] = true;
+
+            configAction.save_user_alert_info(save_obj)
         }
     }
 
@@ -160,9 +219,33 @@ class Header extends Component {
     //     return window.location.href = '/myPage/' + type;
     // }
 
+    _clickAlert = async (info) => {
+        const update_obj = { 'type' : 'UPDATE', 'table' : 'alert', 'comment' : '쪽지 확인 완료' };
+
+        update_obj['columns'] = [];
+        update_obj['columns'][0] = { 'key' : 'confirm', 'value' : 1 };
+        
+        update_obj['where'] = [];
+        update_obj['where'].push({ 'key' : 'id', 'value' : info.id });
+
+        update_obj['where_limit'] = 0;
+        
+        await axios(URL + '/api/query', {
+            method : 'POST',
+            headers: new Headers(),
+            data : update_obj
+        });
+
+        return window.location.href = info.move_url
+    }
+
     render() {
-        const { _pageMove, _modalToggle, login, user_info, _search, search, _loginAfter } = this.props;
-        const { _closeCategory } = this;
+        const { 
+            _pageMove, _modalToggle, login, user_info, _search, search, _loginAfter, alert_modal, configAction,
+            user_alert_length, user_alert_noShow, alert_loading
+        } = this.props;
+        const { _closeCategory, _clickAlert } = this;
+        const user_alert_info = JSON.parse(this.props.user_alert_info);
 
         return (
             <div id='main_header'>
@@ -177,7 +260,7 @@ class Header extends Component {
 
                             {user_info && user_info.admin === 'Y' ? 
                                 <div> 
-                                    <img src={img.icon.admin}
+                                    <img src={icon.icon.admin}
                                         id='admin_icon'
                                         title='관리자 페이지'
                                         className='pointer'
@@ -194,7 +277,7 @@ class Header extends Component {
                             { /* Right */ }
                             {!login 
                                 ?
-                                <div className='aRight'>
+                                <div className='aRight login_header_div'>
                                     <div className='inline_block'>
                                         <u className='remove_underLine pointer'
                                             onClick={() => _modalToggle(true)}
@@ -213,7 +296,7 @@ class Header extends Component {
                                 
                                 :
 
-                                <div className='aRight'>
+                                <div className='aRight login_header_div'>
                                     <div className='inline_block'>
                                         <u className='remove_underLine pointer'
                                             onClick={() => this._logout()}>
@@ -230,18 +313,96 @@ class Header extends Component {
                                 </div>
                                 }
                         </div>
-                    </div>
+                    </div>    
                 </div>
+
+                {user_info.id 
+                    ?
+                    <div id='header_login_info_div' className='aRight font_12'>
+                        <div className='display_inline gray'>
+                            <u className='black bold'> {user_info.user_id} </u> 님, 안녕하세요!
+                        </div>
+
+                        <div className='display_inline'>
+                            <img alt='' id='header_user_alert_icon' className='pointer'
+                                src={user_alert_noShow === 0 ? icon.icon.alert_default : icon.icon.alert_have}
+                                onClick={() => configAction.save_user_alert_info({ 'bool' : true })}
+                                title={user_alert_noShow > 0 ? user_alert_noShow + ' 개의 안 읽은 쪽지가 있습니다.' : null}
+                            />
+                        </div>
+                    </div>
+
+                    : null
+                }
+
+                <Modal
+                    isOpen={alert_modal}
+                    // onAfterOpen={afterOpenModal}
+                    onRequestClose={() => configAction.save_user_alert_info({ 'bool' : false })}
+                    style={customStyles}
+                    // contentLabel="Example Modal"
+                >
+                    <div id='header_alert_div'>
+                        <img alt='' src={icon.icon.close_black} id='header_alert_close_icon' className='pointer' 
+                             onClick={() => configAction.save_user_alert_info({ 'bool' : false })} title='알림 쪽지창 닫기'
+                        />
+                        <h4 id='header_alert_title_div' className='aCenter'> 
+                            <img alt='' src={icon.icon.alert_default} id='header_alert_icon' /> 알림 쪽지 
+                        </h4>
+
+                        {alert_loading === true 
+                            ?
+                            user_alert_length > 0
+                                ?  <div>
+                                        <div id='alert_length_title_div' className='grid_half'>
+                                            <div id='alert_length_title'> 총 <b> {user_alert_length} </b> 개의 쪽지를 받으셨습니다. </div>
+                                            <div className='aRight font_12'> 읽지 않은 쪽지　|　<b> {user_alert_noShow} </b> </div>
+                                        </div>
+
+                                        <div id='alert_contents_div'>
+                                            {user_alert_info.map( (el, key) => {
+                                                let style_col = {}
+
+                                                if((key + 1) < user_alert_info.length) {
+                                                    style_col['borderBottom'] = 'dotted 1px #ababab';
+                                                }
+
+                                                if(el.confirm === 0) {
+                                                    style_col['backgroundColor'] = '#faf3e0'
+                                                }
+
+                                                return(
+                                                    <div key={key} className='alert_contents_list_div pointer'
+                                                        style={style_col} onClick={() => _clickAlert(el)}
+                                                    >
+                                                        <div className='font_13' dangerouslySetInnerHTML={{ __html : el.reason }} />
+                                                        <div className='font_12 gray aRight'> {el.create_date.slice(0, 16)} </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+
+                                : <h4 className='aCenter'>
+                                    받은 쪽지가 없습니다.
+                                </h4>
+
+                            : <h4 className='aCenter gray'>
+                                데이터를 불러오고 있습니다.
+                              </h4>
+                        }
+                    </div>
+                </Modal>
 
                 <div id='header_other_div' className='white'>
                     <div id='header_category_div'> 
-                        <img src={img.icon.category} className='pointer' alt='' />
+                        <img src={icon.icon.category} className='pointer' alt='' />
                         <b className='pointer'> 카테고리 </b>
                     </div>
                     <div id='header_search_div'> 
                         <form onSubmit={_search}>
                             <input type='text' maxLength='20' name='search' defaultValue={search} />
-                            <input type='image' name='submit' alt='' src={img.icon.search} id='header_search_icon' title='검색하기' className='pointer'/>
+                            <input type='image' name='submit' alt='' src={icon.icon.search} id='header_search_icon' title='검색하기' className='pointer'/>
                         </form>
                     </div>
                     <div id='header_myPage_div'>
@@ -276,7 +437,12 @@ export default connect(
         window_height : state.config.window_height,
         admin_state : state.admin.admin_state,
         search : state.search.search,
-        select_cat_open : state.config.select_cat_open
+        select_cat_open : state.config.select_cat_open,
+        user_alert_info : state.config.user_alert_info,
+        user_alert_length : state.config.user_alert_length,
+        user_alert_noShow : state.config.user_alert_noShow,
+        alert_modal : state.config.alert_modal,
+        alert_loading : state.config.alert_loading
     }), 
   
     (dispatch) => ({

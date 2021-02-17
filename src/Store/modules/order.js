@@ -48,6 +48,7 @@ const initialState = {
     start_select_num : null,
     order_detail_select : null,
     order_detail_bool : false,
+    order_detail_loading : false,
     order_cancel_modal : false,
     order_canceling : false,
     buy_order_info : JSON.stringify({})
@@ -61,7 +62,7 @@ export default handleActions({
         order_list_info : data.payload.order_list_info !== undefined ? data.payload.order_list_info : state.order_list_info,
         cart_data : data.payload.cart_data !== undefined ? data.payload.cart_data : state.cart_data,
         order_loading : data.payload.loading !== undefined ? data.payload.loading : state.order_loading,
-        buy_order_info : data.payload.buy_info !== undefined ? data.payload.buy_info : state.buy_order_info
+        buy_order_info : data.payload.buy_info !== undefined ? data.payload.buy_info : state.buy_order_info,
       };
     },
 
@@ -138,7 +139,8 @@ export default handleActions({
       return {
         ...state,
         order_detail_select : data.payload.id !== undefined ? data.payload.id : state.order_detail_select,
-        order_detail_bool : data.payload.bool !== undefined ? data.payload.bool : state.order_detail_bool
+        order_detail_bool : data.payload.bool !== undefined ? data.payload.bool : state.order_detail_bool,
+        order_detail_loading : data.payload.loading !== undefined ? data.payload.loading : state.order_detail_loading
       }
     },
 

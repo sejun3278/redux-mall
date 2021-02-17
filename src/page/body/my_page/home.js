@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import { 
-    MyPage, ModifyUser, LikeList, Cart, Order, Coupon, Order_complate, OrderList, QnA, Review
+    MyPage, ModifyUser, LikeList, Cart, Order, Coupon, Order_complate, OrderList, QnA, Review, OrderDetail
 } from './index';
 
 import { Route, Switch } from 'react-router-dom';
@@ -170,7 +170,7 @@ class MyPageHome extends Component {
         const { 
             user_info, _getCookie, price_comma, _modalToggle, admin_info, coupon_list_open_modal, _setModalStyle, 
             _loginCookieCheck, _addCoupon, _getCouponList, _setPoint, _checkLogin, _filterURL, _hashString, _moveScrollbar, _setGoodsStock,
-            _removeReview, _checkScrolling, _searchStringColor
+            _removeReview, _checkScrolling, _searchStringColor, _stringCrypt
         } = this.props;
 
         const coupon_list = JSON.parse(this.props.coupon_list);
@@ -286,7 +286,7 @@ class MyPageHome extends Component {
                         {...props}  />}
                     />
 
-                    <Route path='/myPage/order_list'
+                    <Route path='/myPage/order_list' exact
                         render={(props) => <OrderList
                             user_info={user_info}
                             _getCookie={_getCookie}
@@ -298,6 +298,24 @@ class MyPageHome extends Component {
                             _setGoodsStock={_setGoodsStock}
                             _setModalStyle={_setModalStyle}
                             _removeReview={_removeReview}
+                            _stringCrypt={_stringCrypt}
+                        {...props}  />}
+                    />
+
+                    <Route path='/myPage/order_list/order_detail/:id'
+                        render={(props) => <OrderDetail
+                            user_info={user_info}
+                            _getCookie={_getCookie}
+                            price_comma={price_comma}
+                            _filterURL={_filterURL}
+                            _hashString={_hashString}
+                            _moveScrollbar={_moveScrollbar}
+                            _setPoint={_setPoint}
+                            _setGoodsStock={_setGoodsStock}
+                            _setModalStyle={_setModalStyle}
+                            _removeReview={_removeReview}
+                            _stringCrypt={_stringCrypt}
+                            _checkLogin={_checkLogin}
                         {...props}  />}
                     />
 

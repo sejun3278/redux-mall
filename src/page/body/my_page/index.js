@@ -11,3 +11,4 @@ export { default as Order_complate } from './order_complate';
 export { default as OrderList } from './order_list';
 export { default as QnA } from './QnA';
 export { default as Review } from './review';
+export { default as OrderDetail } from './order_detail';

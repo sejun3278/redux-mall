@@ -178,8 +178,6 @@ class App extends Component {
         headers: new Headers(),
         data : obj
       })
-
-      console.log(user_info)
       result_data = user_info.data[0][0];
 
       configAction.save_user_info({ 'info' : JSON.stringify(result_data) })
@@ -1089,9 +1087,8 @@ class App extends Component {
     } else if(bool === false) {
       // 문자 복호화하기
       const bytes = CryptoJS.AES.decrypt(string, salt);
-      result = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      result = JSON.parse(JSON.stringify(bytes.toString(CryptoJS.enc.Utf8)));
     }
-
 
     return result;
   }
@@ -1339,6 +1336,7 @@ class App extends Component {
                       _removeReview={_removeReview}
                       _checkScrolling={_checkScrolling}
                       _searchStringColor={_searchStringColor}
+                      _stringCrypt={_stringCrypt}
                       {...props} 
                   />}
                 />

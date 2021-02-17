@@ -213,6 +213,8 @@
 .goods_main_paybook_info_div { margin-top: 50px; }
 
 .goods_sold_out_div { padding: 10px 0px 10px 0px; }
+.board_sold_out { margin-top: -170px; height: 148px; line-height: 148px; }
+#search_reset_option_icon { width: 15px; position: absolute; margin: 2px 0px 0px 7px; }
 
 @media (max-width : 1150px) {
     #goods_detail_not_responsive { margin-left: 20px; }

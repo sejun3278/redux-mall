@@ -49,11 +49,16 @@ module.exports = {
             let qry = "";
             if(!body.qry) {
                 // 타입 설정 (// SELECT, UPDATE, DELETE, INSERT)
+
                 qry += (body.type + " ");
 
-                let where = "";
                 if(body.type === 'SELECT') {
                     // SELECT 타입
+                    if(body.union === true) {
+                        if(!body.count) {
+                            qry = '(' + qry;
+                        }
+                    }
 
                     // 검색 컬럼 설정 // 없으면 *
                     let columns = ""
@@ -164,7 +169,8 @@ module.exports = {
                     }
 
                     if(body.where && body.where.length > 0) {
-                        qry += ' WHERE ';
+                        // qry += ' WHERE ';
+                        let where = ' WHERE ';
 
                         body.where.forEach( (el, cnt) => {
                             // let result_entries = Object.entries(el);
@@ -173,51 +179,59 @@ module.exports = {
                             if(body.on === true) {
                                 el.table = body.on_arr[0].name;
                             }
+                            let cover_where = '';
+
+                            if(cnt > 0 && body.where.length > (cnt)) {
+                                cover_where += "AND ";
+                            }
 
                                 if(el.key === 'result_price') {
-                                    where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
-                                    where += '`' + el.table + "`.result_price <= " + el.value[1] + ' ';
+                                    cover_where += '`' + el.table + "`.result_price >= " + el.value[0] + " AND ";
+                                    cover_where += '`' + el.table + "`.result_price <= " + el.value[1] + ' ';
         
                                 } else if(el.key === 'final_price') { 
-                                    where += '`' + el.table + "`.final_price >= " + el.value[0] + " AND ";
-                                    where += '`' + el.table + "`.final_price <= " + el.value[1] + ' ';
+                                    cover_where += '`' + el.table + "`.final_price >= " + el.value[0] + " AND ";
+                                    cover_where += '`' + el.table + "`.final_price <= " + el.value[1] + ' ';
 
                                 } else if(el.key.includes('date')) {
                                     if(el.value === null) {
-                                        where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
+                                        cover_where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + now_date + "' ";
 
                                     } else {
                                         if(el.option) {
                                             if(el.option === 'BETWEEN') {
-                                                where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
-                                                where += 'AND "' + el.between_value + '" ';
+                                                cover_where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+                                                cover_where += 'AND "' + el.between_value + '" ';
                                             }
                                         }
                                     }
 
                                 } else {
                                     if(el.value !== null) {
-                                        where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
+                                        cover_where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " '" + el.value + "' ";
 
                                     } else {
-                                        where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " ";
+                                        cover_where += '`' + el.table + "`." + el.key + " " + body.option[el.key] + " ";
                                     }
                                 }
-        
-                                if(body.where.length !== (cnt + 1)) {
-                                    where += "AND ";
-                                }
                             // }
+
+                            if(body.count_remove_where) {
+                                if(!body.count_remove_where.includes(el.key)) {
+                                    where += cover_where;
+                                }
+
+                            } else {
+                                where += cover_where;
+                            }
                         })
 
                         qry += where;
                     }
 
+                    let order = ' ORDER BY ';
                     if(!body['count']) {
                         if(body['order']) {
-                            qry += " ORDER BY ";
-    
-                            let order = '';
                             body['order'].forEach( (el, key) => {
 
                                 if(body.on === true) {
@@ -238,6 +252,8 @@ module.exports = {
                                 }
                                 qry += order
                             })
+                        } else {
+                            order = '';
                         }
                     }
 
@@ -250,6 +266,36 @@ module.exports = {
                             body.re_qry_where.forEach( (el) => {
                                 qry += el.key + " " + el.value;
                             })
+                        }
+                    }
+
+                    if(body.union === true) {
+                        if(!body.count) {
+                            qry += ') UNION SELECT ';
+                            qry += '`' + body.union_table + '`.* FROM `' + body.union_table + '`';
+
+                            if(body.union_where) {
+                                qry += ' WHERE '
+
+                                body.union_where.forEach( (el, cnt) => {
+                                    if(cnt > 0 && body.union_where.length > cnt) {
+                                        qry += ' AND '
+                                    }
+
+                                    qry += '`' + body.union_table + '`.' + el.key;
+                                    if(el.key === 'result_price') {
+                                        qry += ' >= ' + el.value[0] + ' AND ';
+                                        qry += '`' + body.union_table + '`.result_price <= ' + el.value[1];
+
+                                    } else {
+                                        qry += ' ' + el.option + ' "' + el.value + '" '
+                                    }
+                                })
+                            }
+
+                            if(order !== '') {
+                                qry += order;
+                            }
                         }
                     }
 

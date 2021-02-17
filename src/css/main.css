@@ -481,4 +481,7 @@
 #alert_length_title_div { padding: 10px 0px 5px 0px; }
 #alert_length_title { font-size: 12px; margin: 0px 0px 0px 0px !important; }
 #alert_contents_div { border-top: solid 2px #ababab; border-bottom: solid 2px #ababab; height: 230px; overflow-y: auto; }
-.alert_contents_list_div { display: grid; grid-template-columns: 350px auto; padding: 5px; }
+.alert_contents_list_div { display: grid; grid-template-columns: 330px auto; padding: 5px; }
+
+#alert_contents_wait_div { background-color: black; color: white; text-align: center; opacity: 0.8; height: 50px; line-height: 50px;}
+#alert_contents_wait_div h4 { margin-top: 10px; }

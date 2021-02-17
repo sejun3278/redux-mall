@@ -95,7 +95,9 @@ const initialState = {
     user_alert_length : 0,
     user_alert_noShow : 0,
     alert_modal : false,
-    alert_loading : false
+    alert_loading : false,
+    alert_scroll : 0,
+    alert_scrolling : false
 }
 
 export default handleActions({
@@ -282,7 +284,9 @@ export default handleActions({
             user_alert_length : data.payload.length !== undefined ? data.payload.length : state.user_alert_length,
             user_alert_noShow : data.payload.show !== undefined ? data.payload.show : state.user_alert_noShow,
             alert_modal : data.payload.bool !== undefined ? data.payload.bool : state.alert_modal,
-            alert_loading : data.payload.loading !== undefined ? data.payload.loading : state.alert_loading
+            alert_loading : data.payload.loading !== undefined ? data.payload.loading : state.alert_loading,
+            alert_scroll : data.payload.scroll !== undefined ? data.payload.scroll : state.alert_scroll,
+            alert_scrolling : data.payload.scrolling !== undefined ? data.payload.scrolling : state.alert_scrolling
         }
     }
 

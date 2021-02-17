@@ -159,30 +159,17 @@ class Search extends Component {
         const qry = queryString.parse(location.search);
         const obj = { 'type' : "SELECT", 'table' : "goods", 'comment' : "검색 정보 가져오기" };
 
-        // if(user_info) {
-            // obj['join'] = true;
-            // obj['join_table'] = 'like'
-        // }
- 
-        // obj['columns'] = [];
-        // 컬럼 조건 담기
-        // obj['columns'].push('name');
-        // obj['columns'].push('id');
+        obj['union'] = true;
+        obj['union_table'] = 'goods';
+
+        obj['union_where'] = [{ 'key' : 'state', 'option' : '=', 'value' : '1' }];
 
         // WHERE 옵션 적용
         obj['option'] = {};
         obj['option']['name'] = 'LIKE';
         obj['option']['state'] = "=";
         obj['option']['price'] = "";
-
-        // if(obj.join) {
-        //     // join 이 있는 경우
-        //     obj['join_arr'] = [];
-        //     obj['join_arr'][0] = { 'key1' : 'goods_id', 'key2' : 'id' }
-
-        //     obj['join_where'] = [];
-        //     obj['join_where'][0] = { 'columns' : 'state', 'as' : 'like_state' }
-        // }
+        obj['option']['stock'] = ">";
 
         obj['where'] = [];
         // 검색 조건 담기
@@ -201,15 +188,25 @@ class Search extends Component {
         if(qry.first_cat) {
             obj['option']['first_cat'] = '=';
             obj['where'].push({ 'table' : 'goods', 'key' : 'first_cat', 'value' : first_cat });
+
+            obj['union_where'].push({ 'key' : 'first_cat', 'option' : '=', 'value' : first_cat });
         }
 
         if(qry.last_cat) {
             obj['option']['last_cat'] = '=';
             obj['where'].push({ 'table' : 'goods', 'key' : 'last_cat', 'value' : last_cat });
+
+            obj['union_where'].push({ 'key' : 'last_cat', 'option' : '=', 'value' : last_cat });
         }
         
         obj['where'].push({ 'table' : 'goods', 'key' : 'state', 'value' : "1" });
         obj['where'].push({ 'table' : 'goods', 'key' : 'result_price', 'value' : [Number(min_price), Number(max_price)] });
+        obj['where'].push({ 'table' : 'goods', 'key' : 'stock', 'value' : "0" });
+
+        obj['union_where'].push({ 'key' : 'result_price', 'option' : '=', 'value' : [Number(min_price), Number(max_price)] });
+
+        // obj['union'] = true;
+        // obj['union_info'] = { 'table' : 'goods',  }
 
         const view_filter = qry.view_filter;
 
@@ -260,10 +257,6 @@ class Search extends Component {
             end = now_page * 20;
         }
 
-        // const page_list = qry.view_type === 'board' ? 20 : 18;
-
-        // const cnt_start = now_page === 1 ? 0 : (page_list * Number(now_page)) - page_list;
-        // const cnt_end = now_page * page_list;
 
         obj['order'][1] = { 'table' : 'goods', 'key' : 'limit', 'value' : [start, end] }
 
@@ -278,6 +271,8 @@ class Search extends Component {
         // 갯수 가져오기
         const cover_obj = obj;
         cover_obj['count'] = true;
+
+        cover_obj['count_remove_where'] = ['stock'];
 
         const get_cnt = await axios(URL + '/api/query', {
             method : 'POST',
@@ -675,6 +670,10 @@ class Search extends Component {
                         ? <div id='search_option_div' className='font_13 default'>
                             <div id='search_option_title_div'>
                                 - 검색 조건 적용중
+                                <img alt='' src={icon.icon.reload} id='search_reset_option_icon' 
+                                    onClick={() => window.location.href='/search'}
+                                    title='모든 검색 조건 초기화' className='pointer'
+                                />
                             </div>
 
                             <div id='search_option_list_div'>
@@ -926,6 +925,16 @@ class Search extends Component {
                                                         <div className='search_album_thumbnail' style={{ 'backgroundImage' : `url(${el.thumbnail})` }} 
                                                              onClick={() => window.location.href='/goods/?goods_num=' + el.id}
                                                         />
+
+                                                        {el.stock === 0
+                                                            ? <div className='search_goods_sold_out_alert_div board_sold_out aCenter white'
+                                                                    title='매진된 상품입니다.'
+                                                              >
+                                                                    <h4> Sold Out </h4>
+                                                              </div>
+                                                                    
+                                                              : null
+                                                        }
                                                     </div>
 
                                                     <div>
@@ -945,7 +954,6 @@ class Search extends Component {
                                                                     className='cut_multi_line recipe_korea search_album_name_div' /> 
 
                                                                 <div className='search_board_star_div font_12 aRight' dangerouslySetInnerHTML={{ __html : goods_star }} />
-
                                                                 <div className='search_board_price_div font_13'>
                                                                     <div dangerouslySetInnerHTML={{ __html : origin_price }} />
                                                                     <div> <b> {price_comma(el.result_price)} 원 </b> </div>

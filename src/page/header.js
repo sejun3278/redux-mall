@@ -9,10 +9,9 @@ import * as configAction from '../Store/modules/config';
 import * as searchAction from '../Store/modules/search';
 import * as signupAction from '../Store/modules/signup';
 
-import icon from '../source/img/icon.json';
+import Alert from './config/alert';
 
-// import $ from 'jquery';
-import URL from '../config/url';
+import icon from '../source/img/icon.json';
 
 const customStyles = {
     content : {
@@ -66,37 +65,6 @@ class Header extends Component {
         }
 
       }
-    
-    componentWillUnmount() {
-        // window.removeEventListener("scroll", this._setScrollSize);
-    }
-
-    _setScrollSize = () => {
-        // 화면 스크롤 구하기
-        // const width_size = window.scrollX;
-        // const height_size = window.scrollY;
-
-        // if(height_size > 88) {
-        //     $('#header_other_div').css({ 
-        //         // 'position' : 'fixed',
-        //         'width' : '100%',
-        //         'marginTop' : '-81px'
-        //     })
-
-        //     $('#header_other_mobile_div').css({
-        //         'position' : 'fixed',
-        //         'width' : '100%',
-        //         'marginTop' : '-20px'
-        //     })
-
-        // } else if(height_size <= 23) {
-        //     $('#header_other_div, #header_other_mobile_div').css({ 
-        //         'position' : 'relative',
-        //         'marginTop' : '0px',
-        //         'width' : 'auto',
-        //     })
-        // }
-    }  
 
     _logout = async () => {
         const { _getCookie } = this.props;
@@ -133,26 +101,6 @@ class Header extends Component {
         }
     }
 
-    _clickAlert = async (info) => {
-        const update_obj = { 'type' : 'UPDATE', 'table' : 'alert', 'comment' : '쪽지 확인 완료' };
-
-        update_obj['columns'] = [];
-        update_obj['columns'][0] = { 'key' : 'confirm', 'value' : 1 };
-        
-        update_obj['where'] = [];
-        update_obj['where'].push({ 'key' : 'id', 'value' : info.id });
-
-        update_obj['where_limit'] = 0;
-        
-        await axios(URL + '/api/query', {
-            method : 'POST',
-            headers: new Headers(),
-            data : update_obj
-        });
-
-        return window.location.href = info.move_url
-    }
-
     _openAlert = () => {
         // 쪽지창 열기
         const { configAction } = this.props;
@@ -170,10 +118,9 @@ class Header extends Component {
     render() {
         const { 
             _pageMove, _modalToggle, login, user_info, _search, search, _loginAfter, alert_modal, configAction,
-            user_alert_length, user_alert_noShow, alert_loading, select_cat_open
+            user_alert_noShow, select_cat_open, _checkScrolling, _getAlertMessage
         } = this.props;
-        const { _closeCategory, _clickAlert, _clickCategory, _openAlert } = this;
-        const user_alert_info = JSON.parse(this.props.user_alert_info);
+        const { _closeCategory, _clickCategory, _openAlert } = this;
 
         return (
             <div id='main_header'>
@@ -270,56 +217,10 @@ class Header extends Component {
                     style={customStyles}
                     // contentLabel="Example Modal"
                 >
-                    <div id='header_alert_div'>
-                        <img alt='' src={icon.icon.close_black} id='header_alert_close_icon' className='pointer' 
-                             onClick={() => configAction.save_user_alert_info({ 'bool' : false })} title='알림 쪽지창 닫기'
-                        />
-                        <h4 id='header_alert_title_div' className='aCenter'> 
-                            <img alt='' src={icon.icon.alert_default} id='header_alert_icon' /> 알림 쪽지 
-                        </h4>
-
-                        {alert_loading === true 
-                            ?
-                            user_alert_length > 0
-                                ?  <div>
-                                        <div id='alert_length_title_div' className='grid_half'>
-                                            <div id='alert_length_title'> 총 <b> {user_alert_length} </b> 개의 쪽지를 받으셨습니다. </div>
-                                            <div className='aRight font_12'> 읽지 않은 쪽지　|　<b> {user_alert_noShow} </b> </div>
-                                        </div>
-
-                                        <div id='alert_contents_div'>
-                                            {user_alert_info.map( (el, key) => {
-                                                let style_col = {}
-
-                                                if((key + 1) < user_alert_info.length) {
-                                                    style_col['borderBottom'] = 'dotted 1px #ababab';
-                                                }
-
-                                                if(el.confirm === 0) {
-                                                    style_col['backgroundColor'] = '#faf3e0'
-                                                }
-
-                                                return(
-                                                    <div key={key} className='alert_contents_list_div pointer'
-                                                        style={style_col} onClick={() => _clickAlert(el)}
-                                                    >
-                                                        <div className='font_13' dangerouslySetInnerHTML={{ __html : el.reason }} />
-                                                        <div className='font_12 gray aRight'> {el.create_date.slice(0, 16)} </div>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-
-                                : <h4 className='aCenter'>
-                                    받은 쪽지가 없습니다.
-                                </h4>
-
-                            : <h4 className='aCenter gray'>
-                                데이터를 불러오고 있습니다.
-                              </h4>
-                        }
-                    </div>
+                    <Alert 
+                        _checkScrolling={_checkScrolling}
+                        _getAlertMessage={_getAlertMessage}
+                    />
                 </Modal>
 
                 <div id='header_other_div' className='white'>
@@ -377,7 +278,9 @@ export default connect(
         user_alert_noShow : state.config.user_alert_noShow,
         alert_modal : state.config.alert_modal,
         alert_loading : state.config.alert_loading,
-        select_cat_open : state.config.select_cat_open
+        select_cat_open : state.config.select_cat_open,
+        alert_scroll : state.config.alert_scroll,
+        alert_scrolling : state.config.alert_scrolling
     }), 
   
     (dispatch) => ({

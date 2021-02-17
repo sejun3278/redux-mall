@@ -70,28 +70,6 @@ class App extends Component {
     }
   }
 
-  // 쿠키 출력하기
-  // _getCookie = async (key, type, value, opt) => {
-  //   const login_cookie = await axios(URL + '/get/cookie_data', {
-  //     method : 'POST',
-  //     headers: new Headers(),
-  //     data : { 'key' : key, 'type' : type, 'value' : value, 'opt' : opt }
-  //   })
-
-  //   console.log(login_cookie)
-
-  //   if(login_cookie.status === 500) {
-  //     return window.location.reload();
-  //   }
-
-  //   if(login_cookie.data) {
-  //     return login_cookie.data;
-
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   _getCookie = async (name, type, value, session) => {
     const { _hashString } = this;
     const hash_name = _hashString(name);
@@ -113,7 +91,7 @@ class App extends Component {
   }
 
   _checkAdmin = async () => {
-    const { configAction } = this.props;
+    // const { configAction } = this.props;
     const user_info = JSON.parse(this.props.user_info);
 
     const obj = { 'type' : 'SELECT', 'table' : 'userInfo', 'comment' : '관리자 정보 가져오기' };
@@ -201,8 +179,10 @@ class App extends Component {
         data : obj
       })
 
-      configAction.save_user_info({ 'info' : JSON.stringify(user_info.data[0][0]) })
+      console.log(user_info)
       result_data = user_info.data[0][0];
+
+      configAction.save_user_info({ 'info' : JSON.stringify(result_data) })
 
       // 관리자 확인
       this._checkAdmin(login_info)
@@ -222,8 +202,9 @@ class App extends Component {
     return result_data;
   }
 
-  _getAlertMessage = async (user_id) => {
+  _getAlertMessage = async (user_id, cover_scroll) => {
     const { configAction } = this.props;
+    const scroll = cover_scroll ? cover_scroll : this.props.alert_scroll;
     // const user_cookie = await _checkLogin();
 
     if(user_id) {
@@ -233,6 +214,13 @@ class App extends Component {
 
         obj['option'] = { 'user_id' : '=' };
         obj['where'] = [{ 'table' : 'alert', 'key' : 'user_id', 'value' : user_id }]
+
+        obj['order'] = [];
+        obj['order'].push({ 'table' : 'alert', 'key' : 'id', 'value' : 'DESC' });
+
+        const end = scroll === 0 ? 10 : (scroll * 10) + 10;
+
+        obj['order'].push({ 'table' : 'alert', 'key' : 'limit', 'value' : [0, end] });
 
         const save_obj = {};
         get_data = await axios(URL + '/api/query', {
@@ -272,6 +260,9 @@ class App extends Component {
         configAction.save_user_alert_info(save_obj);
     }
 
+    configAction.save_user_alert_info({ 'scrolling' : false });
+
+    $('body').css({ 'cursor' : 'default' });
     configAction.set_loading();
 }
 
@@ -1017,7 +1008,7 @@ class App extends Component {
   // Infinite 스크롤링에서 최하단에 도달했는지를 감지
   _checkScrolling = (event) => {
 
-    const scroll_top = $(event).scrollTop();
+    const scroll_top = Math.ceil($(event).scrollTop());
     // 현재 스크롤바의 위치
 
     const inner_height = $(event).innerHeight();
@@ -1075,6 +1066,8 @@ class App extends Component {
         headers: new Headers(),
         data : add_qry
     })
+
+    this._getAlertMessage(info.user_id);
   }
 
   // 문자 해시 및 복호화
@@ -1108,7 +1101,7 @@ class App extends Component {
     const { 
           _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint, _loginAfter,
           _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString, _setGoodsStock,
-          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert, _stringCrypt
+          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert, _stringCrypt, _getAlertMessage
     } = this;
     const user_info = JSON.parse(this.props.user_info);
 
@@ -1169,6 +1162,8 @@ class App extends Component {
                   _hashString={_hashString}
                   _loginAfter={_loginAfter}
                   _checkLogin={_checkLogin}
+                  _checkScrolling={_checkScrolling}
+                  _getAlertMessage={_getAlertMessage}
                   {...props}  />}
               />
 
@@ -1406,7 +1401,9 @@ export default connect(
     search_id_pw_type : state.config.search_id_pw_type,
     select_cat_open : state.config.select_cat_open,
     loading : state.config.loading,
-    review_modal : state.config.review_modal
+    review_modal : state.config.review_modal,
+    alert_scroll : state.config.alert_scroll,
+    alert_scrolling : state.config.alert_scrolling
   }), 
   (dispatch) => ({
     signupAction : bindActionCreators(signupAction, dispatch),

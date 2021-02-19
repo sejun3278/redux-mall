@@ -184,6 +184,7 @@ class Search extends Component {
         }
 
         obj['where'].push({ 'table' : 'goods', 'key' : 'name', 'value' : "%" + search + "%" });
+        obj['union_where'].push({ 'key' : 'name', 'option' : 'LIKE', 'value' : "%" + search + "%" });
 
         if(qry.first_cat) {
             obj['option']['first_cat'] = '=';

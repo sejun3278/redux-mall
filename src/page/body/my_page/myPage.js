@@ -30,7 +30,7 @@ class MyPage extends Component {
             img_el = target + '_gray';
 
         } else if(type === 'move') {
-            const url = '/myPage/' + target;
+            const url = target !== 'se_bot' ? '/myPage/' + target : '/' + target;
 
             return window.location.href = url;
         }
@@ -108,7 +108,7 @@ class MyPage extends Component {
                                          className='my_page_select_divs'
                                          onMouseEnter={_el.path !== null ? () => _iconToggle(_el.path, 'mouseOver') : null}
                                          onMouseLeave={_el.path !== null ? () => _iconToggle(_el.path, 'mouseLeave') : null}
-                                         onClick={_el.path !== null && _el.path !== 'se_bot' ? () => _iconToggle(_el.path, 'move') : null}
+                                         onClick={_el.path !== null ? () => _iconToggle(_el.path, 'move') : null}
                                     >   
                                         {_el.path !== null 
                                         ?

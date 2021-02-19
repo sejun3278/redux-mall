@@ -8,3 +8,4 @@ export { default as SearchIDPW } from './body/search_id_pw';
 export { default as Search } from './search';
 export { default as Loading } from './config/loading';
 export { default as Goods } from './goods';
+export { default as HomeContents } from './home_contents';

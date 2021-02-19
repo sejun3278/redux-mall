@@ -447,7 +447,7 @@ class ReviewList extends Component {
         obj['option']['state'] = '=';
 
         obj['where'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : info.id };
-        obj['where'][0] = { 'table' : 'review', 'key' : 'state', 'value' : 0 };
+        obj['where'][1] = { 'table' : 'review', 'key' : 'state', 'value' : 0 };
 
         const get_data = await axios(URL + '/api/query', {
             method : 'POST',
@@ -457,11 +457,21 @@ class ReviewList extends Component {
 
         const result_data = get_data.data[0][0];
 
-        let star = result_data.star === null ? 0 : result_data.star;
+        let star = result_data.star === null ? 0 : Number(result_data.star);
         let count = Number(result_data.count);
 
-        const acc_star = result_data.acc_star + review_star;
-        star = (acc_star) / count;
+        const acc_star = Number(result_data.acc_star) + review_star;
+
+        if(count === 0) {
+            star = String(review_star);
+
+        } else {
+            star = String((acc_star) / count);
+        }
+
+        if(star.length > 3) {
+            star = star.slice(0, 3);
+        }
 
         // 상품 평점 업데이트하기
         const update_obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '상품 평점 업데이트' };

@@ -72,6 +72,7 @@ class Header extends Component {
         if(window.confirm('로그아웃 하시겠습니까?')) {
             // sessionStorage.removeItem('login');
             await _getCookie('login', 'remove');
+            await _getCookie('login_date', 'remove');
 
             const url = ['/myPage', '/admin'];
             let url_check = false;

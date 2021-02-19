@@ -342,7 +342,6 @@ class MyPageHome extends Component {
                             _removeReview={_removeReview}
                         {...props}  />}
                     />
-
                 </Switch>
 
                 </div> : null}

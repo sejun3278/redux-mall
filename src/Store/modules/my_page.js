@@ -18,6 +18,7 @@ const SETCOUPONPRICE = 'my_page/set_coupon_price';
 const SELECTCOUPON = 'my_page/select_coupon';
 const SAVEQANDADATA = 'my_page/save_QandA_data'; 
 const SAVEMYPAGEREVIEWDATA = 'my_page/save_mypage_reivew_data';
+const SETCHATINFO = 'my_page/set_chat_info';
 
 export const custom_email_toggle = createAction(CUSTOMEMAILTOGGLE);
 export const toggle_host = createAction(TOGGLEHOST);
@@ -37,6 +38,7 @@ export const set_coupon_price = createAction(SETCOUPONPRICE);
 export const select_coupon = createAction(SELECTCOUPON);
 export const save_QandA_data = createAction(SAVEQANDADATA);
 export const save_mypage_reivew_data = createAction(SAVEMYPAGEREVIEWDATA);
+export const set_chat_info = createAction(SETCHATINFO);
 
 const initialState = {
     email_custom : false,
@@ -78,7 +80,16 @@ const initialState = {
     mypage_review_scroll : 0,
     mypage_review_select : JSON.stringify({}),
     mypage_review_all_select : false,
-    mypage_review_removing : false
+    mypage_review_removing : false,
+    chat_loading : false,
+    chat_waiting : false,
+    chat_info : JSON.stringify([]),
+    save_ip : null,
+    chat_scroll : 0,
+    chat_scrolling : false,
+    chat_move_bottom : false,
+    chat_length : 0,
+    chat_start_scroll : false
 };
 
 export default handleActions({
@@ -233,6 +244,21 @@ export default handleActions({
         mypage_review_select : data.payload.select !== undefined ? data.payload.select : state.mypage_review_select,
         mypage_review_all_select : data.payload.all_select !== undefined ? data.payload.all_select : state.mypage_review_all_select,
         mypage_review_removing : data.payload.remove !== undefined ? data.payload.remove : state.mypage_review_removing
+      }
+    },
+
+    [SETCHATINFO] : (state, data) => {
+      return {
+        ...state,
+        chat_loading : data.payload.loading !== undefined ? data.payload.loading : state.chat_loading,
+        chat_waiting : data.payload.wait !== undefined ? data.payload.wait : state.chat_waiting,
+        chat_info : data.payload.info !== undefined ? data.payload.info : state.chat_info,
+        save_ip : data.payload.ip !== undefined ? data.payload.ip : state.save_ip,
+        chat_scroll : data.payload.scroll !== undefined ? data.payload.scroll : state.chat_scroll,
+        chat_scrolling : data.payload.scrolling !== undefined ? data.payload.scrolling : state.scrolling,
+        chat_move_bottom : data.payload.move !== undefined ? data.payload.move : state.chat_move_bottom,
+        chat_length : data.payload.length !== undefined ? data.payload.length : state.chat_length,
+        chat_start_scroll : data.payload.start_scroll !== undefined ? data.payload.start_scroll : state.chat_start_scroll
       }
     }
  

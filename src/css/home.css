@@ -161,6 +161,9 @@ ul { padding-left: 0px !important; }
 #goods_review_filter_selector { padding: 5px; margin-top: -10px; margin-right: 15px; }
 .search_sales_div { padding: 5px 0px 10px 0px; }
 
+#home_contents_slick_div { padding: 20px; border-bottom: solid 2px #ababab; }
+#hot_item_show_div { height: 100px; font-size: 30px !important; }
+
 @media (max-width : 1200px) {
     #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
 

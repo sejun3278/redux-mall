@@ -34,6 +34,7 @@ const MyError = createError({
     message: '/////// 에러 발생　:　'
 });
 
+const IP = require("ip");
 
 module.exports = {
     needs: () => upload,
@@ -358,9 +359,10 @@ module.exports = {
 
                     let columns = "";
                     body.columns.forEach( (el, key) => {
+                        const cover_now_date = moment().format('YYYY-MM-DD HH:mm:ss');
 
                         if(el.key.includes('date')) {
-                            columns += "`" + el.key + "` = '" + now_date + "'";
+                            columns += "`" + el.key + "` = '" + cover_now_date + "'";
 
                         } else {
                             columns += "`" + el.key + "` = " 
@@ -684,6 +686,44 @@ module.exports = {
                     return res.send(result);
                 }
                 return res.send(false);
+            })
+        },
+
+        chat : (req, res) => {
+            const body = req.body;
+            let ip = null;
+
+            let qry = 'SELECT ' 
+            
+            if(!body.count) {
+                qry += '`em1`.*, `em2`.contents as answer '
+
+            } else {
+                qry += 'count(*) ';
+            }
+            qry += 'FROM `chat` em1 LEFT JOIN `chat` em2 ON `em1`.id = `em2`.chat_id WHERE `em1`.';
+
+            if(body.where[0].value !== null) {
+                qry += 'user_id = ' + body.where[0].value;
+
+            } else {
+                ip = IP.address();
+                qry += 'ip = "' + ip + '"';
+            }
+            qry += ' AND `em1`.state = 0';
+
+            if(!body.count) {
+                qry += ' ORDER BY `em1`.id DESC LIMIT ' + body.end;
+            }
+
+            model.api.query(qry, body.type, data => {
+                const result = {};
+                result['ip'] = ip;
+                result['data'] = data[0];
+
+                return res.send(result);
+                
+                // throw new createError.BadRequest();
             })
         }
     },

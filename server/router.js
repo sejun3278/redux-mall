@@ -17,6 +17,7 @@ router.post('/get/write_goods_data', controller.get.write_goods_data);
 router.post('/get/user_data', controller.get.user_data);
 router.post('/get/cookie_data', controller.get.cookie_data);
 router.post('/get/like', controller.add.like);
+router.post('/get/chat', controller.get.chat);
 
 router.post('/check/user_data', controller.check.user_data);
 router.post('/check/nickname', controller.check.nickname);

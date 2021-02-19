@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
        },
 
        star: { 
-        type: DataTypes.INTEGER(5), 
+        type: DataTypes.STRING(5), 
         allowNull : false
 
         // 평점

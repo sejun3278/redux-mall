@@ -54,8 +54,14 @@ class Login extends Component {
             // sessionStorage.setItem('login', JSON.stringify(login_api.data.data));
             // configAction.login_and_logout({ 'bool' : true });
 
+            const moment = require('moment');
+            const limit_date = Date.parse(moment().add(1, 'days').format("YYYY-MM-DD"));
+
             const hash_str = _stringCrypt(JSON.stringify(login_info.data.id), 'sejun_mall_login', true);
+            const date_str = _stringCrypt(JSON.stringify(limit_date), '_sejun_mall_login_limit_date', true);
+
             _getCookie('login', 'add', hash_str);
+            _getCookie('login_date', 'add', date_str);
 
             const url = ['/signup', '/myPage'];
             let url_check = false;

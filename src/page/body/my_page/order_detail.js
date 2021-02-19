@@ -79,13 +79,27 @@ class OrderDetail extends Component {
             data : obj
         })
         const detail_info = get_data.data[0][0];
-        const data = JSON.parse(detail_info.cart_list);
 
-        await this._getCartData(data, cover_order_id);
+        let data = null;
+        if(detail_info && detail_info.cart_list !== undefined) {
+            data = JSON.parse(detail_info.cart_list);
 
-        orderAction.save_order_info({ 'order_list_info' : JSON.stringify(detail_info), 'loading' : true });
+        } else {
+            alert('상품 데이터를 조회할 수 없습니다.');
+            return window.location.replace('/myPage/order_list');
+        }
 
-        return detail_info;
+        if(data) {
+            await this._getCartData(data, cover_order_id);
+
+            orderAction.save_order_info({ 'order_list_info' : JSON.stringify(detail_info), 'loading' : true });
+            return detail_info;
+
+        } else {
+            alert('상품 데이터 조회에 오류가 발생했습니다.');
+            return window.location.replace('/myPage/order_list');
+        }
+
     }
 
     // 상품 데이터 조회하기
@@ -227,7 +241,6 @@ class OrderDetail extends Component {
             obj['columns'].push({ 'key' : 'delivery_state', 'value' : 1 });
             obj['columns'].push({ 'key' : 'payment_date', 'value' : null });
     
-            console.log(user_info)
             obj['where'] = [];
             obj['where'].push({ 'key' : 'user_id', 'value' : user_info.id });
             obj['where'].push({ 'key' : 'id', 'value' : order_id });

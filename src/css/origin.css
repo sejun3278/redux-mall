@@ -241,3 +241,8 @@ input[type='checkbox'].check_custom_1 {
 .star_color { color : rgb(253, 184, 39) }
 
 .inline_block { display: inline-block !important; }
+
+
+/* Slick Style */
+/* .slick-slider { width: -webkit-fill-available !important; }
+.slick-dots { padding-bottom: 0px; } */

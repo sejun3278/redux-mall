@@ -15,7 +15,7 @@ import * as myPageAction from './Store/modules/my_page';
 
 import { MyPageHome } from './page/body/my_page/index';
 import { AdminHome, AdminCategory } from './page/body/admin/index';
-import { Header, Login, Signup, SignupComplate, TopCategory, SearchIDPW, Search } from './page/index';
+import { Header, Login, Signup, SignupComplate, TopCategory, SearchIDPW, Search, HomeContents } from './page/index';
 
 import ReviewList from './page/config/review_list';
 import OrderCheck from './page/config/order_check';
@@ -23,6 +23,7 @@ import Bottom from './page/config/bottom';
 
 import category_list from './source/admin_page.json';
 import { Loading, Goods } from './page/index';
+import SeBot from './page/config/se_bot';
 
 import URL from './config/url.js';
 import $ from 'jquery';
@@ -152,12 +153,29 @@ class App extends Component {
   // 로그인 체크
   _checkLogin = async () => {
     const { configAction, loading } = this.props;
+    const moment = require('moment');
 
     const storage = await this._getCookie('login', 'get');
+    const login_date = await this._getCookie('login_date', 'get');
 
     let login_info = false;
     if(storage) {
-      login_info = JSON.parse(this._stringCrypt(storage, 'sejun_mall_login', false));
+      const date_check = Number(JSON.parse(this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false)));
+      const now_date = Date.parse(moment().format("YYYY-MM-DD"));
+
+      if(now_date < date_check) {      
+        // 로그인 잔여 시간이 남아 있는 경우
+        login_info = JSON.parse(this._stringCrypt(storage, 'sejun_mall_login', false));
+
+      } else {
+        alert('로그인 시간이 만료되었습니다. \n다시 로그인 해주세요.');
+
+        // 로그인 후 2일이 지난 경우
+        await this._getCookie('login', 'remove');
+        await this._getCookie('login_date', 'remove');
+
+        return window.location.replace('/');
+      }
     }
 
     let result_data;
@@ -945,7 +963,7 @@ class App extends Component {
     obj['option']['state'] = '=';
 
     obj['where'][0] = { 'table' : 'goods', 'key' : 'id', 'value' : goods_id };
-    obj['where'][0] = { 'table' : 'review', 'key' : 'state', 'value' : 0 };
+    obj['where'][1] = { 'table' : 'review', 'key' : 'state', 'value' : 0 };
 
     const get_data = await axios(URL + '/api/query', {
         method : 'POST',
@@ -956,7 +974,18 @@ class App extends Component {
     const count = get_data.data[0][0].count - 1;
     const acc_star = get_data.data[0][0].acc_star - score;
 
-    const star = Math.floor(acc_star / count);
+    let star = null;
+    if(count === 0) {
+        star = String(score);
+
+    } else {
+        star = String((acc_star) / count);
+    }
+
+    if(star.length > 3) {
+        star = star.slice(0, 3);
+    }
+
     // // 별점 업데이트
     const update_obj = { 'type' : 'UPDATE', 'table' : 'goods', 'comment' : '별점 취소하기' };
     
@@ -1250,6 +1279,21 @@ class App extends Component {
                   />}
                 />
               : null}
+
+                <Route path='/' exact
+                      render={(props) => <HomeContents
+
+                      {...props} 
+                  />}                    
+                />
+
+                <Route path='/se_bot'
+                      render={(props) => <SeBot
+                        _checkLogin={_checkLogin}
+                        user_info={user_info}
+                      {...props}
+                  />}                    
+                />
 
                 <Route path='/search' 
                       render={(props) => <Search

@@ -510,6 +510,54 @@ input[name=search_contents] { width: 60%; background-color: #ece2e1 }
 #mypage_review_search_filter_div { display: grid; grid-template-columns: 45% auto; margin-top: 20px; border-top: dotted 1px #ababab; padding : 30px 20px 0px 20px }
 #mypage_review_search_filter_div div input { background-color: #ece2e1; border: none; border-bottom: solid 1px #ababab; }
 
+#sebot_title_div { padding: 30px 0px 10px 0px; border-bottom: solid 2px #ababab; }
+#sebot_title_div img { width: 50px; }
+#sebot_title_div h3 { display: inline-block; padding-left: 10px; }
+#sebot_title_div p { margin-top: -5px; }
+
+#sebot_chat_div { margin: 15px; }
+#sebot_chat_contents_div { background-color: #a1cae2; height: 500px; overflow: auto; border: solid 3px #ababab; border-radius: 5px; }
+
+#sebot_chating_grid_div { display: grid; grid-template-columns: 92% auto; }
+#sebot_chating_grid_div div input { width: -webkit-fill-available; border: solid 2px #ababab; }
+
+input[name=chat] { padding: 5px; }
+input[name=chat_submit] { padding: 5px; background-color: white; font-size: 12px; }
+
+#disable_chating { background-color: #e7e6e1; color: #ababab }
+
+.sebot_chat_div, .chating_result_div { padding: 15px; }
+.sebot_chat_grid_div { padding-top: 5px; font-size: 13px; }
+.sebot_chat_grid_div .sebot_chat_icon_div { display: inline-block; background-size: cover; width: 30px; height: 30px; }
+.sebot_chat_grid_div .sebot_chat_contents_div { display: inline-block; padding: 5px; margin: 0px 0px 0px 15px; }
+
+.my_chat_name_div { padding-bottom: 10px; }
+.chat_contents_div { 
+    font-size: 13px; border: solid white 1px; background-color: #fff76a; border-radius: 5px; padding: 5px 10px 5px 10px;
+}
+.chat_date_div { margin-top: 5px; }
+#chat_move_bottom_div { margin-top: -65px; opacity : 0.8; border : solid 1px #ababab; text-align: center; background-color: black; color: white; }
+
+#sebot_keyword_div { padding: 20px 10px 0px 10px; margin-top: 50px; }
+#sebot_keyword_list_div { border-top: solid 2px #ababab; }
+.sebot_keyword_top_div { padding: 10px 0px 0px 0px; font-size: 13px; }
+.sebot_keyword_grid_div { display: grid; grid-template-columns: 80px auto; border-bottom: dotted 1px #ababab; padding: 5px 0px 5px 0px; }
+.sebot_keyword_contents_div div { display: inline-block; padding: 0px 10px 0px 10px; }
+.sebot_keyword_contents_div div u { cursor: pointer; text-decoration: none; color: #ababab; }
+
+#sebot_other_div { line-height: 35px; }
+#sebot_keyword_line_div { padding: 20px 0px 10px 0px; }
+.chat_goods_select_title_div { padding-bottom: 10px; }
+.chat_goods_select_result_div { font-size: 13px; color: #ababab; padding-top: 5px; border-top: solid 1px #ababab; }
+
+.chat_goods_select_info_div { margin-top: 20px; display: grid; grid-template-columns: 60px auto; }
+.chat_goods_select_thumbnail { width: 50px; height: 50px; }
+.chat_goods_select_thumbnail img { width: 50px; }
+.chat_goods_select_name { font-family: 'paybooc-Bold'; display: inline-block; width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;  }
+.chat_goods_select_price_div { padding-top: 10px; color: #ababab; }
+
+.chat_goods_select_search_div { height: 25px; line-height: 25px; background-color: black; color : white; cursor: pointer; font-size: 10px; text-align: center; margin-top : 10px; border-top: solid 2px #ababab; }
+
 @media (max-width : 1200px) {
     #order_list_filter_grid_div { display: grid; grid-template-columns: 50% 50%; }
     .order_list_filter_list_div { display: block; line-height: 40px; }
@@ -637,6 +685,8 @@ input[name=search_contents] { width: 60%; background-color: #ece2e1 }
     input[name=search_contents] { width: 65%; }
 
     #mypage_review_info_div { padding : 20px 20px 0px 20px }
+    #sebot_chating_grid_div { grid-template-columns: 85% auto; }
+
 }
 
 @media (max-width : 570px) {
@@ -737,6 +787,7 @@ input[name=search_contents] { width: 60%; background-color: #ece2e1 }
     .order_list_star_and_date_div { grid-template-columns: 40% auto !important; }
 }
 
+
 @media (max-width : 424px) {
     .my_like_list_thumbnail { width: 150px; }
     .my_like_list_detail_contents_div { grid-template-columns: 170px auto; }
@@ -764,6 +815,7 @@ input[name=search_contents] { width: 60%; background-color: #ece2e1 }
     .order_list_star_and_date_div { display: block; line-height: 18px; }
     .order_list_review_date_div { display: inline-block; width: -webkit-fill-available; text-align: left !important; }
 
+    #sebot_chat_div { margin: 15px 5px 0px 5px; }
     /* .mypage_review_other_list_div { display: block; } */
 }
 

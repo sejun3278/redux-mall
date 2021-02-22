@@ -159,8 +159,12 @@ class App extends Component {
     const login_date = await this._getCookie('login_date', 'get');
 
     let login_info = false;
-    if(storage) {
+
+    console.log(storage)
+    if(storage !== null) {
+      console.log(this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false))
       const date_check = Number(JSON.parse(this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false)));
+      console.log(date_check)
       const now_date = Date.parse(moment().format("YYYY-MM-DD"));
 
       if(now_date < date_check) {      

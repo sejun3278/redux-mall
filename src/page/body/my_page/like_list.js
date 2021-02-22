@@ -271,7 +271,7 @@ class LikeList extends Component {
                         <h3 className='t_money_font'> 찜 리스트가 비어있습니다. </h3>    
 
                         <div className='empty_select_div'> 
-                            <u className='pointer remove_underLine'
+                            <u className='pointer remove_underLine paybook_bold gray'
                             onClick={() => window.location.href='/search'}> 
                                 ◁　상품 보러 가기 
                             </u>

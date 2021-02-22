@@ -415,7 +415,7 @@ class SeBot extends Component {
             <div id='sebot_div'>
                 <div id='sebot_title_div' className='aCenter'>
                     <img src={icon.my_page.se_bot_black} className='pointer' onClick={() => window.location.href='/se_bot'} />
-                    <h3> SeJun-Bot </h3>
+                    <h3 className='recipe_korea'> SeJun-Bot </h3>
                     <p className='gray font_12'> 궁금한 게 있다면 SeJun-Bot 에게 물어보세요! </p>
                 </div>
 
@@ -495,12 +495,12 @@ class SeBot extends Component {
                         <div className='inline_block gray pointer' title='채팅 내역들을 모두 삭제합니다.'
                             onClick={() => chat_waiting === false ? _allRemoveChatList(true) : null}
                         > 
-                            <u> 채팅창 초기화 </u> 
+                            <u className='paybook_bold'> 채팅창 초기화 </u> 
                         </div>
                     </div>
 
                     <div id='sebot_keyword_div'>
-                        <h4 className='gray'> 채팅 키워드 목록 </h4>
+                        <h4 className='gray paybook_bold'> 채팅 키워드 목록 </h4>
 
                         <div id='sebot_keyword_list_div'>
                             <div id='sebot_keyword_showping_type_div' className='sebot_keyword_top_div'>
@@ -523,7 +523,7 @@ class SeBot extends Component {
                                     )
                                 })}
 
-                                <div id='sebot_keyword_line_div' className='custom_color_1 bold'> ▼ 상품 관련 </div>
+                                <div id='sebot_keyword_line_div' className='custom_color_1 bold paybook_bold'> ▼ 상품 관련 </div>
 
                                 {keywrod_list.main.map( (el, key) => {
                                     return(

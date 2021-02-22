@@ -553,8 +553,9 @@ class Goods extends Component {
             goods_num = $('input[name=' + target + ']').val();
         }
 
-        if(goods_num > goods_data.stock) {
-            goods_num = goods_data.stock;
+        const max_length = goods_data.stock > 5 ? 5 : goods_data.stock;
+        if(goods_num > max_length) {
+            goods_num = max_length;
             
         } else if(goods_num < 0) {
             goods_num = 0;
@@ -676,10 +677,12 @@ class Goods extends Component {
 
         } else if(!stock_check) {
             const stock = Number(query_result.data[0][0].stock);
+            const max_length = stock > 5 ? 5 : stock;
+
             const disable = query_result.data[0][0].state;
 
             let stop_result = false;
-            if(stock > 0 && disable === 1) {
+            if(max_length > 0 && disable === 1) {
                 // 재고가 있거나 구매 가능한 상품
                 if(stop) {
                     return stop_result
@@ -688,11 +691,11 @@ class Goods extends Component {
                 return this._addCartGoods(true, null);
 
             } else {
-                if(Number(goods_num) > stock) {
-                    alert(stock + ' 개 까지 구매할 수 있습니다.');
+                if(Number(goods_num) > max_length) {
+                    alert(max_length + ' 개 까지 구매할 수 있습니다.');
                     stop_result = true;
 
-                } else if(Number(stock) <= 0) {
+                } else if(Number(max_length) <= 0) {
                     alert('현재 품절된 상품입니다.');
                     stop_result = true;
 
@@ -875,8 +878,9 @@ class Goods extends Component {
 
         const goods_info = await _getGoodsData(goods_data.id);
 
-        if(goods_num > goods_info.stock) {
-            alert('재고가 부족합니다. \n'+ goods_info.stock + ' 개 까지 구매할 수 있습니다.');
+        const max_length = goods_data.stock > 5 ? 5 : goods_data.stock;
+        if(goods_num > max_length) {
+            alert('재고가 부족합니다. \n'+ max_length + ' 개 까지 구매할 수 있습니다.');
 
             return window.location.reload();
         }
@@ -1394,14 +1398,14 @@ class Goods extends Component {
         const review_filter = qry.filter_4 ? '4' 
                                            : qry.filter_5 ? '5' : null 
 
-
+        const max_length = goods_data.stock > 5 ? 5 : goods_data.stock;
         return(
             <div id='goods_div'>
                 {!goods_loading
                     ? <Loading />
 
                     : <div id='goods_home_div'>
-                        <div id='goods_category_info_div' className='border_bottom'> 
+                        <div id='goods_category_info_div' className='border_bottom paybook_bold gray'> 
                             <u title='검색 홈으로 이동' onClick={() => _pageMove('href', '/search')}> 홈 </u>　＞　
                             <u title={'[' + first_cat + '] 탭으로 이동'} onClick={() => _pageMove('href', '/search?first_cat=' + goods_data.first_cat)}> 
                                 {first_cat} 
@@ -1413,7 +1417,7 @@ class Goods extends Component {
                         </div>
 
                         <div id='goods_contents_div'>
-                            <h4 id='goods_title_div'> {goods_data.name} </h4>
+                            <h4 id='goods_title_div' className='recipe_korea'> {goods_data.name} </h4>
 
                             <div id='goods_contents_grid_div'>
                                 <div />
@@ -1471,22 +1475,23 @@ class Goods extends Component {
 
                                                 <div id='goods_price_and_num_grid_div' className='gray'>
                                                     <div id='goods_stock_div'>
-                                                        최대 구매 가능　|　{price_comma(goods_data.stock)} 개 
-                                                        {goods_data.stock === 0 ? <b style={{ 'color' : '#ec5858' }}>　( 품절 ) </b> : null}    
+                                                        {/* 최대 구매 가능　|　{price_comma(goods_data.stock)} 개  */}
+                                                        최대 구매 가능　|　{price_comma(max_length)} 개 
+                                                        {max_length === 0 ? <b style={{ 'color' : '#ec5858' }}>　( 품절 ) </b> : null}    
                                                     </div>
                                                 </div>
 
                                                 <div id='goods_num_div'>
-                                                    <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('minus', 'goods_num') : null}
+                                                    <div className='pointer goods_plus_minus_buttons' onClick={max_length > 0 ? () => _setGoodsNumber('minus', 'goods_num') : null}
                                                         style={{ 'backgroundImage' : `url(${icon.icon.minus})` }} />
                                                     <div> 
                                                         <input defaultValue={goods_num} type='number' max={99999} min={0} name='goods_num'
                                                                className='goods_change_goods_num_input'
-                                                               onChange={goods_data.stock > 0 ? () => _setGoodsNumber('change', 'goods_num') : null}
-                                                               readOnly={goods_data.stock === 0 ? true : false}
+                                                               onChange={max_length > 0 ? () => _setGoodsNumber('change', 'goods_num') : null}
+                                                               readOnly={max_length === 0 ? true : false}
                                                         /> 
                                                     </div>
-                                                    <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('plus', 'goods_num') : null}
+                                                    <div className='pointer goods_plus_minus_buttons' onClick={max_length > 0 ? () => _setGoodsNumber('plus', 'goods_num') : null}
                                                         style={{ 'backgroundImage' : `url(${icon.icon.plus})` }} />
                                                 </div>
 
@@ -1496,12 +1501,12 @@ class Goods extends Component {
                                             </div>
 
                                             <div id='goods_other_div' className='aCenter border'>
-                                                {goods_data.stock !== 0 
+                                                {max_length !== 0 
                                                 ?
                                                 add_complate === false ?
                                                     overlap_cart === false 
                                                     ?
-                                                    <div id='default_add_cart_grid_div' className='add_cart_complate_grid_divs'>
+                                                    <div id='default_add_cart_grid_div' className='add_cart_complate_grid_divs paybook_bold'>
                                                         <div className='border_right' onClick={_directBuyGoods}> 바로 구매 </div>
                                                         <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}> <img src={icon.my_page.cart_plus} /> 장바구니 </div>
                                                     </div>
@@ -1580,22 +1585,22 @@ class Goods extends Component {
                                                 </div>
 
                                                 <p id='goods_stock_div' className='gray'> 
-                                                    최대 구매 가능　|　{price_comma(goods_data.stock)} 개 
-                                                    {goods_data.stock === 0 ? <b style={{ 'color' : '#ec5858' }}>　( 품절 ) </b> : null}    
+                                                    최대 구매 가능　|　{price_comma(max_length)} 개 
+                                                    {max_length === 0 ? <b style={{ 'color' : '#ec5858' }}>　( 품절 ) </b> : null}    
                                                 </p>
 
                                                 <div id='goods_num_div'>
-                                                    <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('minus', 'goods_num') : null}
+                                                    <div className='pointer goods_plus_minus_buttons' onClick={max_length > 0 ? () => _setGoodsNumber('minus', 'goods_num') : null}
                                                         style={{ 'backgroundImage' : `url(${icon.icon.minus})` }} />
 
                                                     <div> 
                                                         <input value={goods_num} type='number' max={99999} min={0} name='goods_nums'
                                                                className='goods_change_goods_num_input'
-                                                               onChange={goods_data.stock > 0 ? () => _setGoodsNumber('change', 'goods_nums') : null}
-                                                               readOnly={goods_data.stock === 0 ? true : false}
+                                                               onChange={max_length > 0 ? () => _setGoodsNumber('change', 'goods_nums') : null}
+                                                               readOnly={max_length === 0 ? true : false}
                                                         /> 
                                                     </div>
-                                                    <div className='pointer goods_plus_minus_buttons' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('plus', 'goods_num') : null}
+                                                    <div className='pointer goods_plus_minus_buttons' onClick={max_length > 0 ? () => _setGoodsNumber('plus', 'goods_num') : null}
                                                         style={{ 'backgroundImage' : `url(${icon.icon.plus})` }} />
                                                 </div>
 
@@ -1604,7 +1609,7 @@ class Goods extends Component {
                                                 </div>
 
                                                 <div id='goods_responsive_other_div' className='aCenter border'>
-                                                {goods_data.stock !== 0 
+                                                {max_length !== 0 
                                                 ?
                                                 add_complate === false ?
                                                     overlap_cart === false 
@@ -1686,7 +1691,7 @@ class Goods extends Component {
                                     <div id='goods_fixed_name_and_price_grid_div'>
                                         <div id='goods_fixed_thumbnail' style={{ 'backgroundImage' : `url(${goods_data.thumbnail})` }} />
                                         <div id='goods_fixed_name_and_price'>
-                                            <div id='goods_fixed_name'> <h3> {goods_data.name} </h3> </div>
+                                            <div id='goods_fixed_name' className='paybook_bold'> <h3> {goods_data.name} </h3> </div>
                                             <div id='goods_fixed_price' className='marginTop_10'> <b> {price_comma(goods_data.result_price)} </b> 원 </div>
                                         </div>
                                     </div>
@@ -1694,21 +1699,21 @@ class Goods extends Component {
                                     <div id='goods_fixed_num_grid_div'>
                                         <div id='goods_fixed_num_divs'>
                                             <div id='goods_fixed_num_div'>
-                                                <div className='goods_fixed_div pointer bold' id='fixed_minus_div' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('minus', 'goods_fixed_num') : null}> － </div>
+                                                <div className='goods_fixed_div pointer bold' id='fixed_minus_div' onClick={max_length > 0 ? () => _setGoodsNumber('minus', 'goods_fixed_num') : null}> － </div>
                                                 <div id='goods_fixed_num_input_div'> 
                                                     <input defaultValue={goods_num} type='number' max={99999} min={0} name='goods_fixed_num'
                                                         className='goods_change_goods_num_input aCenter'
-                                                        onChange={goods_data.stock > 0 ? () => _setGoodsNumber('change', 'goods_fixed_num') : null}
-                                                        readOnly={goods_data.stock === 0 ? true : false}
+                                                        onChange={max_length > 0 ? () => _setGoodsNumber('change', 'goods_fixed_num') : null}
+                                                        readOnly={max_length === 0 ? true : false}
                                                     /> 
                                                 </div>
-                                                <div className='goods_fixed_div pointer bold' onClick={goods_data.stock > 0 ? () => _setGoodsNumber('plus', 'goods_fixed_num') : null}> ＋ </div>
+                                                <div className='goods_fixed_div pointer bold' onClick={max_length > 0 ? () => _setGoodsNumber('plus', 'goods_fixed_num') : null}> ＋ </div>
                                             </div>
 
                                             <div id='goods_fixed_result_price_div' className='aRight'> 
                                                 <p> 
-                                                    최대 구매 가능　|　{price_comma(goods_data.stock)} 개 
-                                                    {goods_data.stock === 0 ? <b style={{ 'color' : '#ec5858' }}>　( 품절 ) </b> : null}     
+                                                    최대 구매 가능　|　{price_comma(max_length)} 개 
+                                                    {max_length === 0 ? <b style={{ 'color' : '#ec5858' }}>　( 품절 ) </b> : null}     
                                                 </p> 
                                                 <h3> {price_comma(goods_result_price)}　원 </h3> 
                                             </div>
@@ -1717,8 +1722,8 @@ class Goods extends Component {
                                     </div>
                                 </div>
 
-                                <div id='goods_fixed_other_div'>
-                                            {goods_data.stock > 0 
+                                <div id='goods_fixed_other_div' className='paybook_bold'>
+                                            {max_length > 0 
                                                 ? add_complate === false 
                                                     ? overlap_cart === false
 
@@ -2248,6 +2253,7 @@ class Goods extends Component {
                                                 <li> 세준몰에서 결제를 통한 모든 과정에서는 실제로 결제되지 않습니다.  </li>
                                                 <li> 상품의 재고에 따라서 매진이 될 수 있습니다. </li>
                                                 <li> 구매한 상품의 주문건을 확정하면 상품에 대한 리뷰를 작성할 수 있습니다. </li>
+                                                <li> 대량 구매 방지를 위해 상품 별로 구매 1회 당 최대 구매 갯수가 <b className='orange'> 5 개로 제한</b>됩니다. </li>
                                             </ul>
                                         </div>
 

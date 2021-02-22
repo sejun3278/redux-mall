@@ -243,6 +243,16 @@ input[type='checkbox'].check_custom_1 {
 .inline_block { display: inline-block !important; }
 
 
+/* .previousButton { top : 50px !important; } */
+
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
 /* Slick Style */
-/* .slick-slider { width: -webkit-fill-available !important; }
-.slick-dots { padding-bottom: 0px; } */
+.dhTOCp { margin-top: 30px !important; }
+.TqLrp { width: auto !important; }
+/* .sc-bZQynM li { width: 20px; } */
+/* .slider .disabled { display: none !important; opacity: 0; }
+.slider .previousButton { left: -10px !important; }
+.slider .nextButton { right: -10px !important; }
+.slider .disabled svg { width: 10px !important;} */

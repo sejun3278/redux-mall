@@ -106,7 +106,7 @@ class Top_category extends Component {
                     <div id='top_category_left'> </div>
                     <div id='top_category_center'>
                         <div id='top_category_list_grid_div'
-                            className='aCenter top_category_list'
+                            className='aCenter top_category_list gray'
                             style={{ 'gridTemplateColumns' : repeat_str }}
                             // style={{ 'gridTemplateColumns' : '20% auto'}}
                         >

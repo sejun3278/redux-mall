@@ -415,6 +415,10 @@ class OrderList extends Component {
             qry['order_page'] = 1;
         }
 
+        if(qry['month']) {
+            delete qry['month'];
+        }
+
         return _filterURL(qry, "");
     }
 

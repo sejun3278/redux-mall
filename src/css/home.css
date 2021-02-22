@@ -59,7 +59,7 @@ ul { padding-left: 0px !important; }
 #search_view_filter_div div img { width: 20px !important; position: absolute; }
 #search_view_filter_div div p { margin-left: 25px; margin-top: 0px; }
 
-#search_view_select { color : #52BFFF; font-weight: bold; }
+#search_view_select { color : #52BFFF; font-weight: bold; font-family: 'Recipekorea'; }
 /* .search_album_each_div { display : grid; grid-template-columns: 10% 80% 10%; } */
 .search_album_each_div { padding: 0px 15px 0px 15px; }
 .search_album_grid_div { display: grid; grid-template-columns: 150px auto !important; max-height: 160px; min-height: 150px; }
@@ -112,7 +112,7 @@ ul { padding-left: 0px !important; }
 #search_view_filter_grid_div { display: grid; grid-template-columns: 270px auto; }
 #search_view_value_filter_div { text-align: right; }
 #search_view_value_filter_div div { float: right; margin: 5px 10px 0px 15px; cursor: pointer; }
-#select_view_filter { font-weight: bold; color: #52BFFF; }
+#select_view_filter { font-weight: bold; color: #52BFFF; font-family: 'Recipekorea'; }
 
 .search_goods_sold_out_alert_div { height: 170px; line-height: 170px; margin-top: -15px; opacity: 0.8; background-color: black; position: relative; }
 /* .search_goods_sold_out_alert_div h4 { margin: 0px 0px 0px 0px; } */
@@ -161,8 +161,24 @@ ul { padding-left: 0px !important; }
 #goods_review_filter_selector { padding: 5px; margin-top: -10px; margin-right: 15px; }
 .search_sales_div { padding: 5px 0px 10px 0px; }
 
-#home_contents_slick_div { padding: 20px; border-bottom: solid 2px #ababab; }
+#home_contents_slick_div { max-height: 400px; padding-bottom: 10px; padding-top: 30px; border-bottom: solid 2px #ababab; }
 #hot_item_show_div { height: 100px; font-size: 30px !important; }
+
+.home_contents_slick_divs { padding: 10px 20px 0px 20px; }
+
+#home_category_show_div h3 { font-size: 16px; padding-left: 15px; }
+#home_category_list_div { display: grid; text-align: center; padding: 15px 0px 0px 0px; }
+.home_category_list_thumn_div { display: inline-block; background-size: contain; background-repeat: no-repeat; width: 25px; height: 25px; }
+
+#home_hot_item_div { border-left: solid 2px #ababab; padding-left: 20px; margin-top: -8px; }
+
+/* #home_contents_hot_item_list_div { display: grid; } */
+.home_contents_hot_item_divs { height: 180px; margin: 0px 5px 0px 3px; border: solid 1px #ababab; padding: 5px; }
+.home_contents_hot_item_thumb_div { margin-top: 10px; height: 100px; background-size: 70%; background-repeat: no-repeat; background-position-x: center; background-position-y: center; }
+.home_contents_hot_item_name_div { font-size: 12px; text-align: center; padding-top: 15px; white-space : none }
+
+.home_contents_slick_divs { text-align: center; }
+.home_contents_slick_divs img { width: 60%; max-height: 300px; }
 
 @media (max-width : 1200px) {
     #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
@@ -195,6 +211,8 @@ ul { padding-left: 0px !important; }
     #search_bar_div form { width: 95% !important; }
     #search_input { width: 50% !important; }
 
+    .home_contents_slick_divs { padding: 0px !important; }
+
 }
 
 @media (max-width : 800px) {
@@ -223,6 +241,7 @@ ul { padding-left: 0px !important; }
 
 @media (max-width : 650px) {
     #search_view_filter_grid_div { margin-top: 30px; }
+    #home_category_list_div { grid-template-columns: repeat(7, 25%) !important; overflow: auto; }
 }
 
 @media (max-width : 600px) {
@@ -259,6 +278,7 @@ ul { padding-left: 0px !important; }
 
     #search_view_value_filter_div { line-height: 30px; }
     /* #search_price_title_div { display: none; } */
+    .home_contents_slick_divs img { width: 70%; }
 }
 
 @media (max-width : 550px) {
@@ -271,6 +291,7 @@ ul { padding-left: 0px !important; }
 }
 
 @media (max-width : 500px) {
+    .home_contents_slick_divs img { width: 80%; }
     .top_category_grid_div div { width: 75% !important; }
 }
 
@@ -285,6 +306,8 @@ ul { padding-left: 0px !important; }
 
     .review_goods_name_and_price_div { max-width: 280px; }
     #review_write_loading { width: 79.8%; }
+    .home_contents_slick_divs img { width: 95%; }
+
 }
 
 @media(max-width : 424px) {
@@ -338,5 +361,10 @@ ul { padding-left: 0px !important; }
     #review_write_loading { width: 59.3%; }
 
     #search_view_value_filter_div div { font-size: 12px; margin : 5px 10px 0px 10px !important }
+
+    #home_category_list_div { grid-template-columns: repeat(7, 33%) !important; }
+
+    .home_contents_slick_divs img { width: 100%; }
+
     /* #top_category_contents_div { width: 65% !important; } */
 }

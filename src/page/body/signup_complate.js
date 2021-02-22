@@ -18,12 +18,11 @@ class Signup_complate extends Component {
   _checkSignupId = async () => {
     const { match, _getCookie, signupAction, _stringCrypt } = this.props;
 
-    let allow = false;
 
     const referrer = document.referrer;
     if(!referrer.includes('/signup')) {
       alert('정상적인 접근이 아닙니다.');
-      // return window.location.replace('/');
+      return window.location.replace('/');
     }
 
     const id = match.params.id;
@@ -35,7 +34,7 @@ class Signup_complate extends Component {
     const check_timer = setTimeout(() => {
       if(user_id !== check_id) {
         alert('정상적인 접근이 아닙니다.');
-        // return window.location.replace('/');
+        return window.location.replace('/');
       }
     }, 500);
 
@@ -48,11 +47,6 @@ class Signup_complate extends Component {
       }
     }
 
-    if(allow === false) {
-      alert('정상적인 접근이 아닙니다.');
-      // return window.location.replace('/');
-    }
-
     check_timer(); 
   }
 
@@ -61,7 +55,8 @@ class Signup_complate extends Component {
     const { user_info, _modalToggle, signupAction, _checkLogin } = this.props;
     const login_check = await _checkLogin();
 
-    if(user_info) {
+
+    if(login_check || user_info.id) {
       // 이미 로그인된 상태라면
       alert('정상적인 접근이 아닙니다.');
 
@@ -82,13 +77,13 @@ class Signup_complate extends Component {
             <div id='signup_complate_div'>
               {signup_id ? 
               <div>
-                <h3> 회원가입 완료 </h3>
+                <h3 className='recipe_korea'> 회원가입 완료 </h3>
 
-                <p> 
-                  <b> {signup_id} </b> 님 회원가입을 환영합니다 ! 
+                <p className='kotra_bold_font'> 
+                  <b className='custom_color_1'> {signup_id} </b> 님 회원가입을 환영합니다 ! 
                 </p>
 
-                <div id='signup_complate_select_div' className='aCenter'>
+                <div id='signup_complate_select_div' className='aCenter paybook_bold'>
                   <div onClick={() => _pageMove('replace', '/')}> <u className='remove_underLine pointer'> 홈으로 </u></div>
                   <div>
                     <u className='remove_underLine pointer'

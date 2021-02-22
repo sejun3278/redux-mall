@@ -138,7 +138,7 @@ class Cart extends Component {
         const { myPageAction } = this.props;
         const cart_num_obj = JSON.parse(this.props.cart_num_obj);
 
-        const stock_limit = data.goods_stock;
+        const stock_limit = data.goods_stock > 5 ? 5 : data.goods_stock;
 
         let cover_num = Number(cart_num_obj[data.id]);
         if(bool === 'plus') {
@@ -370,7 +370,7 @@ class Cart extends Component {
             cart_num = 1;
 
         } else if(cart_num > data.goods_stock) {
-            cart_num = data.goods_stock;
+            cart_num = data.goods_stock > 5 ? 5 : data.goods_stock;
         }
 
         const obj = { 'type' : "UPDATE", 'table' : "cart", 'comment' : "장바구니 갯수 변경" };
@@ -514,7 +514,7 @@ class Cart extends Component {
                     <div id='cart_contents_div'>
                         <div id='cart_select_div'>
                             <input type='checkbox' id='cart_all_select' className='pointer' defaultChecked={all_select_check} onChange={() => _allSelect(cart_data, cart_select_list, cart_num_obj)} />
-                            <label htmlFor='cart_all_select' className='pointer bold font_14'> 전체 선택 <b className='gray'>　( {cart_select_list.length} / {cart_able_goods_length} ) </b> </label>
+                            <label htmlFor='cart_all_select' className='pointer bold font_14 paybook_bold'> 전체 선택 <b className='gray'>　( {cart_select_list.length} / {cart_able_goods_length} ) </b> </label>
                         </div>
 
                         {cart_data.map( (el, key) => {
@@ -547,6 +547,8 @@ class Cart extends Component {
                                 close_type = 'close'
                             }
 
+                            const max_length = el.goods_stock > 5 ? 5 : el.goods_stock
+                            
                             return(
                                 <div className='cart_contents_divs border_bottom border_top' key={key}>
                                     {open_bool
@@ -574,7 +576,7 @@ class Cart extends Component {
                                         </div>
 
                                         <div className='cart_remove_divs'>
-                                            <input type='button' value='삭제' className='pointer' onClick={() => _removeEachCartList(el.id, true)} />
+                                            <input type='button' value='삭제' className='pointer gray' onClick={() => _removeEachCartList(el.id, true)} />
                                         </div>
                                     </div>
 
@@ -611,7 +613,7 @@ class Cart extends Component {
                                                 <div className='cart_num_div bold aRight'>
                                                     <div className='font_13'> 
                                                         <b> 수량　|　</b>
-                                                        <input type='number' min={1} max={1000000000} 
+                                                        <input type='number' min={1} max={max_length} 
                                                                value={cart_num_obj[el.id]} name={'cart_num_input_' + el.id} 
                                                                onChange={() => _modifyGoodsNumber('change', el)}
                                                                onBlur={() => _saveChangeCartNumber(el)}
@@ -621,10 +623,10 @@ class Cart extends Component {
                                                 </div>
 
                                                 <div className='cart_able_num_div font_12 gray aRight'>
-                                                    <p> 구매 가능 갯수　|　{price_comma(el.goods_stock)} 개 </p>
+                                                    <p> 구매 가능 갯수　|　<b> ({max_length}) </b> 개</p>
                                                 </div>
 
-                                                <div className='cart_result_price_div'>
+                                                <div className='cart_result_price_div recipe_korea'>
                                                     <div className='aRight'> <h3> {price_comma(el.goods_result_price * cart_num_obj[el.id])} 원 </h3> </div>
                                                 </div>
                                             </div>
@@ -634,7 +636,7 @@ class Cart extends Component {
                             )
                         })}
                         <div id='cart_select_list_remove_button_div'>
-                            <input className='bold pointer font_15 gray' type='butotn' defaultValue='선택 항목 삭제'/>
+                            <input className='bold pointer font_15 gray paybook_bold' type='butotn' defaultValue='선택 항목 삭제'/>
                         </div>
 
                         </div>
@@ -792,7 +794,7 @@ class Cart extends Component {
                             <h3 className='t_money_font'> 장바구니가 비어있습니다. </h3>    
 
                             <div className='empty_select_div'> 
-                                <u className='pointer remove_underLine'
+                                <u className='pointer remove_underLine gray paybook_bold'
                                    onClick={() => window.location.href='/search'}> 
                                     ◁　상품 보러 가기 
                                 </u>

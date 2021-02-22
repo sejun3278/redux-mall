@@ -24,10 +24,17 @@ let scrolling = false;
 class Search extends Component {
 
     async componentDidMount() {
-        const { searchAction, location, configAction, _checkLogin, screen } = this.props;
+        const { searchAction, location, configAction, _checkLogin, screen, _getCookie, _stringCrypt, review_scroll } = this.props;
+
+        let scroll = review_scroll;
+        const get_scroll_cookie = await _getCookie('search_now_scroll', 'get', null, true);
+        if(get_scroll_cookie !== null) {
+            scroll = Number(JSON.parse(_stringCrypt(get_scroll_cookie, '_search_now_scroll', false)));
+            configAction.toggle_review_modal({ 'scroll' : scroll });
+        }
 
         // 검색 정보 가져오기
-        this._getData();
+        this._getData(scroll);
 
         // 현재 search 정보 저장하기
         const qry_obj = queryString.parse(location.search);
@@ -88,18 +95,33 @@ class Search extends Component {
         }
     }
 
-    componentDidUpdate() {
-        const { loading } = this.props;
+    async componentDidUpdate() {
+        const { loading, _getCookie, _stringCrypt } = this.props;
 
         if(loading === true) {
             const qry_obj = queryString.parse(this.props.location.search);
             this._lastCatScrollMove(qry_obj)
+
+            const check_last_goods = await _getCookie('last_goods_id', 'get', null, true);
+            if(check_last_goods !== null) {
+                const goods_id = Number(JSON.parse(_stringCrypt(check_last_goods, '_last_goods_id', false)));
+                const $target = $('#search_each_div_' + goods_id)
+
+                if($target !== null) {
+                    if($target.offset() !== undefined) {
+                        const offTop = $target.offset().top - 200;
+                        $('html').prop({ 'scrollTop' : offTop })
+
+                        await _getCookie('last_goods_id', 'remove', null, true);
+                    }
+                }
+            }
         }
     }
 
     // 스크롤링
     _setScrollSize = async () => {
-        const { review_scroll, configAction, search_length } = this.props;
+        const { review_scroll, configAction, search_length, _getCookie, _stringCrypt } = this.props;
         
         const event = 'html'
         // const check = _checkScrolling('#body_div');
@@ -118,6 +140,8 @@ class Search extends Component {
                 const limit_check = (add_scroll * 18) - search_length;
 
                 if(limit_check < 0) {
+                    await _getCookie('search_now_scroll', 'add', _stringCrypt(add_scroll, '_search_now_scroll', true), true);
+
                     scrolling = true;
 
                     $('body').css({ 'cursor' : 'wait' })
@@ -153,7 +177,7 @@ class Search extends Component {
         }
     }
 
-    _getData = async () => {
+    _getData = async (scrolls) => {
         const { location, searchAction, user_info, review_scroll } = this.props;
 
         const qry = queryString.parse(location.search);
@@ -249,7 +273,8 @@ class Search extends Component {
         let end = 0;
 
         if(type === 'album') {
-            end = review_scroll === 0 ? 18 : (review_scroll * 18) + 18;
+            const scroll = scrolls ? scrolls : review_scroll
+            end = scroll === 0 ? 18 : (scroll * 18) + 18;
 
         } else if(type === 'board') {
             const now_page = qry.search_page ? qry.search_page : this.props.now_page;
@@ -281,49 +306,6 @@ class Search extends Component {
             data : cover_obj
         })
 
-        // if(user_info && data_info.length > 0) {
-        // const add_like_info = async (limit) => {
-        // // 로그인 시 상품에 대한 라이크 정보 가져오기
-        //     const info = data_info[limit];
-        //             const like_obj = { 'type' : 'SELECT', 'table' : 'like', 'comment' : '라이크 정보 저장하기' }
-
-        //             like_obj['option'] = {};
-        //             like_obj['option']['user_id'] = '=';
-        //             like_obj['option']['goods_id'] = '=';
-        //             like_obj['option']['state'] = '=';
-
-        //             like_obj['where'] = [];
-        //             like_obj['where'].push({ 'table' : 'like', 'key' : 'user_id', 'value' : user_info.id });
-        //             like_obj['where'].push({ 'table' : 'like', 'key' : 'goods_id', 'value' : info.id});
-        //             like_obj['where'].push({ 'table' : 'like', 'key' : 'state', 'value' : 1 });
-
-        //             const get_like_info = await axios(URL + '/api/query', {
-        //                 method : 'POST',
-        //                 headers: new Headers(),
-        //                 data : like_obj
-        //             })
-
-        //             const like_info = get_like_info.data[0][0];
-        //             if(like_info) {
-        //                 info['like_state'] = like_info.state;
-
-        //             } else {
-        //                 info['like_state'] = 0;
-        //             }
-
-        //         limit += 1;
-
-        //         if(data_info.length <= limit) {
-        //             return data_info;
-
-        //         } else {
-        //             return await add_like_info(limit);
-        //         }
-        //     }
-
-        //     data_info = await add_like_info(0);
-        // }
-
         const save_obj = {};
         save_obj['arr'] = JSON.stringify(data_info);
         save_obj['length'] = get_cnt.data[0][0]['count(*)'];
@@ -340,19 +322,21 @@ class Search extends Component {
     }
 
     // 검색
-    _search = (event) => {
-        const { _filter } = this;
+    _search = async (event) => {
+        const { _filter, _getCookie } = this;
 
         event.preventDefault();
         const form_data = event.target;
         const search_str = form_data.search.value.trim();
+
+        await _getCookie('search_now_scroll', 'remove', null, true);
 
         return _filter('search', search_str);
     }
 
     // 필터
     _filter = async (filter_type, type) => {
-        const { location, _filterURL, _checkLogin, _modalToggle } = this.props;
+        const { location, _filterURL, _checkLogin, _modalToggle, _getCookie } = this.props;
         const qry = queryString.parse(location.search);
 
         const login_check = await _checkLogin();
@@ -385,14 +369,18 @@ class Search extends Component {
             return window.location.href ='/search'
         }
 
+        await _getCookie('search_now_scroll', 'remove', null, true);
+
         return _filterURL(qry, 'search');
     }
 
     // 가격 필터
-    _priceFilter = (event) => {
+    _priceFilter = async (event) => {
         event.preventDefault();
         const form_data = event.target;
         const qry = queryString.parse(this.props.location.search);
+
+        const { _getCookie } = this.props;
 
         const min_price = Number(form_data.min_price.value);
         const max_price = Number(form_data.max_price.value);
@@ -415,12 +403,15 @@ class Search extends Component {
             delete qry['search_page'];
         }
 
+        await _getCookie('search_now_scroll', 'remove', null, true);
+
         return this.props._filterURL(qry, 'search');
     }
     
     // 검색 옵션 삭제
-    _removeSearchOption = (opt_name, opt_value) => {
-        const qry = queryString.parse(this.props.location.search);
+    _removeSearchOption = async (opt_name, opt_value) => {
+        const { location, _getCookie, _filterURL } = this.props;
+        const qry = queryString.parse(location.search);
 
         if(window.confirm(opt_name + ' 옵션을 삭제하시겠습니까?')) {
             delete qry[opt_value];
@@ -443,7 +434,9 @@ class Search extends Component {
                 return window.location.href = '/search';
             }
 
-            return this.props._filterURL(qry, 'search');
+            await _getCookie('search_now_scroll', 'remove', null, true);
+
+            return _filterURL(qry, 'search');
         }
     }
 
@@ -499,12 +492,20 @@ class Search extends Component {
         return
     }
 
+    _setLastGoods = async (id) => {
+        const { _getCookie, _stringCrypt } = this.props;
+        const str_name = _stringCrypt(String(id), "_last_goods_id", true);
+        await _getCookie("last_goods_id", "add" , str_name, true)
+
+        return window.location.href='/goods/?goods_num=' + id
+    }
+
     render() {
         const { 
             search, _searchCategoryName, search_view_type, price_comma, _clickCategory, search_ready, 
             user_info, search_length, _filterURL
         } = this.props;
-        const { _filter, _search, _removeSearchOption, _priceFilter, _likeToggle } = this;
+        const { _filter, _search, _removeSearchOption, _priceFilter, _setLastGoods } = this;
 
         const search_data = JSON.parse(this.props.search_data);
         const qry = queryString.parse(this.props.location.search);
@@ -571,18 +572,18 @@ class Search extends Component {
                 
                 <div id='search_bar_div' className='aCenter'>
                     <form onSubmit={_search}>
-                        <b> Search ... </b>
+                        <b className='paybook_bold'> Search ... </b>
                         <input id='search_input' type='text' maxLength='20' name='search' defaultValue={search} />
                         <input id='search_img' type='image' alt='' src={icon.icon.search_black} />
                     </form>
                 </div>
 
-                <div id='search_filter_div' className='border_bottom font_13'>
+                <div id='search_filter_div' className='border_bottom font_13 paybook_bold'>
                     <div id='search_price_filter_div' className='aRight'>
                         <form onSubmit={_priceFilter}>
                             <div id='search_price_filter_grid_div'>
-                                <b id='search_price_title_div' className='gray'> 가격 설정　| </b>　
-                                <b id='search_price_input_div'>
+                                <b id='search_price_title_div' className='gray paybook_bold'> 가격 설정　| </b>　
+                                <b id='search_price_input_div paybook_bold'>
                                     최소　<input type='number' min={0} max={1000000000} name='min_price' defaultValue={min_price}/>
                                     <b id='search_price_input_max_div'>　~
                                     　최대　<input type='number' min={0} max={1000000000} name='max_price' defaultValue={max_price}/> </b>
@@ -653,7 +654,7 @@ class Search extends Component {
                 <div id='search_data_result_div' className='border_bottom'>
                     <div id='search_result_div'>
                         <img alt='' src={icon.search_icon.search_result} />
-                        <b> {search === "" ? "전체 검색" : "검색 결과"} </b>
+                        <b className='paybook_bold'> {search === "" ? "전체 검색" : "검색 결과"} </b>
 
                         <div id='search_result_cnt_div' className='font_14 marginTop_30'>
                             총 { search_length } 개의 상품이 조회되었습니다.
@@ -751,7 +752,7 @@ class Search extends Component {
                     {!search_data.length
                     
                     ? <div id='search_result_null_div' className='aCenter red'> 
-                        <h4> 조회된 데이터가 없습니다. </h4>
+                        <h4 className='recipe_korea'> 조회된 데이터가 없습니다. </h4>
                         <div style={{ 'backgroundImage' : `url(${img.img.result_null})` }}> </div>
                         {/* <img src={img.img.result_null} /> */}
                       </div>
@@ -814,14 +815,16 @@ class Search extends Component {
                                     >
                                         <p className='font_13'> No. {el.id} </p>
                                         <div className='search_contents_thumb_list border' key={key} 
+                                            id={'search_each_div_' + el.id}
                                             style={{ 'backgroundImage' : `url(${el.thumbnail})` }}
-                                            onClick={() => window.location.href='/goods/?goods_num=' + el.id}
+                                            onClick={() => _setLastGoods(el.id)}
+                                            // onClick={() => window.location.href='/goods/?goods_num=' + el.id}
                                         >
                                         {el.stock === 0
                                             ? <div className='search_goods_sold_out_alert_div aCenter white'
                                                     title='매진된 상품입니다.'
                                             >
-                                                <h4> Sold Out </h4>
+                                                <h4 className='recipe_korea'> Sold Out </h4>
                                               </div>
                                             
                                             : null
@@ -916,7 +919,9 @@ class Search extends Component {
                                 origin_price += '</div>'
 
                                 return(
-                                    <div key={key} className='serach_each_div marginBottom_60'>                                        
+                                    <div key={key} className='serach_each_div marginBottom_60'
+                                        id={"search_each_div_" + el.id}
+                                    >                                        
                                         <div className='search_album_each_div'>
                                             <div />
                                             <div className='pointer'>
@@ -924,7 +929,8 @@ class Search extends Component {
                                                 <div className='search_album_grid_div border'>
                                                     <div className='border_right'>
                                                         <div className='search_album_thumbnail' style={{ 'backgroundImage' : `url(${el.thumbnail})` }} 
-                                                             onClick={() => window.location.href='/goods/?goods_num=' + el.id}
+                                                            onClick={() => _setLastGoods(el.id)}
+                                                            //  onClick={() => window.location.href='/goods/?goods_num=' + el.id}
                                                         />
 
                                                         {el.stock === 0
@@ -946,7 +952,8 @@ class Search extends Component {
                                                         </div>
 
                                                         <div
-                                                             onClick={() => window.location.href='/goods/?goods_num=' + el.id}
+                                                            onClick={() => _setLastGoods(el.id)}
+                                                            //  onClick={() => window.location.href='/goods/?goods_num=' + el.id}
                                                         >
                                                             <div className='search_album_name_and_price'
                                                                 style={{ 'marginTop' : '10px' }}

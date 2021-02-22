@@ -535,7 +535,7 @@ input[name=chat_submit] { padding: 5px; background-color: white; font-size: 12px
 .chat_contents_div { 
     font-size: 13px; border: solid white 1px; background-color: #fff76a; border-radius: 5px; padding: 5px 10px 5px 10px;
 }
-.chat_date_div { margin-top: 5px; }
+.chat_date_div { margin-top: 10px; }
 #chat_move_bottom_div { margin-top: -65px; opacity : 0.8; border : solid 1px #ababab; text-align: center; background-color: black; color: white; }
 
 #sebot_keyword_div { padding: 20px 10px 0px 10px; margin-top: 50px; }
@@ -546,7 +546,7 @@ input[name=chat_submit] { padding: 5px; background-color: white; font-size: 12px
 .sebot_keyword_contents_div div u { cursor: pointer; text-decoration: none; color: #ababab; }
 
 #sebot_other_div { line-height: 35px; }
-#sebot_keyword_line_div { padding: 20px 0px 10px 0px; }
+#sebot_keyword_line_div { padding: 50px 0px 10px 0px; font-size: 15px !important; }
 .chat_goods_select_title_div { padding-bottom: 10px; }
 .chat_goods_select_result_div { font-size: 13px; color: #ababab; padding-top: 5px; border-top: solid 1px #ababab; }
 

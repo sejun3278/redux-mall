@@ -1,6 +1,9 @@
 /* 회원가입 페이지 */
 
-#signup_complate_select_div { font-size: 13px !important; color: #ababab; }
+/* #signup_complate_select_div { font-size: 13px !important; color: #ababab; } */
+.signup_li p { font-family: 'Recipekorea'; }
+
+#signup_title_div { border-bottom: solid 2px #ababab; padding-bottom: 20px; }
 
 @media ( max-width: 1550px ) {
     #my_page_select_div { grid-template-columns: 15% auto 15% !important; }
@@ -109,7 +112,7 @@
     #signup_info_div { margin-right: 0px !important; margin-left: 0px !important; }
     /* #signup_agree_div { margin-left: 40px !important; margin-right: 0px !important; } */
 
-    #body_div { grid-template-columns: 0% 100% 0% !important; }
+    #body_div { grid-template-columns: 0% 100% 0% !important; display: block !important; }
     #header_other_div { grid-template-columns: 45% 55% 0% !important; }
     #header_myPage_div { display: none !important; }
     #main_header #header_other_mobile_div { display: grid !important; }
@@ -134,12 +137,12 @@
     #signup_agree_div h4 { margin-top: 50px; }
     #signup_agree_div textarea { min-height: 250px; }
 
-    #signup_title_div { border-bottom: solid 1px #ababab; padding-bottom: 30px; }
+    /* #signup_title_div { border-bottom: solid 1px #ababab; padding-bottom: 30px; } */
 
     /* #signup_div_grid div ul li input { width: 85% !important; } */
   #signup_email_li div { grid-template-columns: 60% auto; }
   
-    #main_header_right_contents { display: block !important; }
+    #main_header_right_contents { display: block !important; margin-top: 5px; }
     #main_header_right_contents div { display: block !important; padding: 0px 15px 0px 0px !important; }
     /* #signup_div_grid #signup_email_li input { width : 58% !important; } */
 
@@ -203,8 +206,12 @@
     #signup_email_li div { grid-template-columns: 55% auto; }
 
     /* #signup_div_grid #signup_email_li input { width : 50% !important; } */
-
 }
+
+  @media ( max-width : 450px ) {
+    #header_category_div img { width: 25px !important; margin-top: 12px !important; }
+    #header_category_div b { font-size: 14px !important; }
+  }
 
   @media ( max-width: 435px ) {
     #my_page_profile_div { grid-template-columns: 0% 28% auto !important; }
@@ -217,7 +224,7 @@
 
     #signup_complate_div { margin-top: 13% !important; }
 
-    #header_other_mobile_div { font-size: 13px !important; }
+    /* #header_other_mobile_div { font-size: 13px !important; } */
     /* #main_header_div { grid-template-columns: 0% 45% auto !important; margin-left: 10px !important;} */
 
     #my_page_user_id, #my_page_user_nick { display: none; }
@@ -240,13 +247,14 @@
   }
 
   @media (max-width : 400px) {
-    #main_header_div { grid-template-columns: 45% auto !important; }
+    #main_header_div { grid-template-columns: 60% auto !important; }
+    #main_header_right_contents { font-size: 11px !important; }
     /* #main_header_right_contents div { padding : 2px 15px 0px 0px !important } */
   }
 
   @media ( max-width: 386px ) {
-    #header_category_div img { width : 30px !important; margin-top: 10px !important;}
-    #header_category_div b { font-size: 14px !important; margin-top: 1px; }
+    /* #header_category_div img { width : 30px !important; margin-top: 10px !important;} */
+    /* #header_category_div b { font-size: 14px !important; margin-top: 1px; } */
 
     #my_page_select_div { display: block !important; font-size: 14px; }
     .my_page_icon_img { background-size: 60% !important; background-position-y: 70% !important; }
@@ -264,7 +272,7 @@
   }
 
   @media ( max-width: 376px ) {
-    #header_other_div { grid-template-columns: 50% 50% 0% !important; }
+    #header_other_div { grid-template-columns: 46% auto !important; }
     /* #main_header_div { grid-template-columns: 0% 60% auto !important;} */
     /* #main_header_right #main_login_ul { line-height: 30px !important; margin-top: 10px !important; font-size: 13px; } */
     #header_other_mobile_div { grid-template-columns: 0% 33% 34% 33% 0% !important; }

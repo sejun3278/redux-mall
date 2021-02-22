@@ -545,7 +545,8 @@ class App extends Component {
               get();
             }
 
-            if(alerts === null || alerts === true) {
+            console.log(alerts)
+            if(alerts !== false) {
               alert('쿠폰이 등록되었습니다.');
               this._getCouponList();
             }
@@ -1282,7 +1283,7 @@ class App extends Component {
 
                 <Route path='/' exact
                       render={(props) => <HomeContents
-
+                        price_comma={price_comma}
                       {...props} 
                   />}                    
                 />
@@ -1306,6 +1307,9 @@ class App extends Component {
                         _modalToggle={_modalToggle}
                         user_info={user_info}
                         _checkLogin={_checkLogin}
+                        _getCookie={_getCookie}
+                        _stringCrypt={_stringCrypt}
+                        _hashString={_hashString}
                         // cat_name={cat_name}
                         // _pageMove={_pageMove}
                       {...props} 

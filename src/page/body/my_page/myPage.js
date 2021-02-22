@@ -64,17 +64,17 @@ class MyPage extends Component {
                     <div>
                         <div className='my_page_info_title_div'> 
                             <div id='my_page_user_id'> 
-                                아이디
+                                <u className='remove_underLine paybook_bold'> 아이디 </u>
                                 <p className='bold'> {user_info.user_id} </p>
                             </div>
 
                             <div> 
-                                포인트 
+                                <u className='remove_underLine paybook_bold'> 포인트 </u>
                                 <p> {price_comma(user_info.point)} P </p>    
                             </div>
 
                             <div> 
-                                가입일
+                                <u className='remove_underLine paybook_bold'> 가입일 </u>
                                 <p> {signup_date} </p> 
                             </div>
                         </div>
@@ -83,12 +83,12 @@ class MyPage extends Component {
                             style={{ 'marginTop' : '15px' }}
                         > 
                             <div id='my_page_user_nick'> 
-                                닉네임 
+                                <u className='remove_underLine paybook_bold'> 닉네임 </u> 
                                 <p> {user_info.nickname} </p>
                             </div>
 
                             <div> 
-                                보유 쿠폰 
+                                <u className='remove_underLine paybook_bold'> 내 쿠폰 </u>
                                 <p  className='pointer' onClick={() => window.location.href='/myPage/coupon'}> {coupon_list.length} 개 </p>
                             </div>
                         </div>
@@ -98,6 +98,7 @@ class MyPage extends Component {
                 <div id='my_page_select_div'>
                     <div> </div>
                     <div>
+                        <h4 className='aCenter gray recipe_korea'> 마이 페이지 목록 </h4>
                         <div className='my_page_select_grid_div'>
                             {page_list.myPage.arr.map( (el, key) => {
                                 const _el = el[0];
@@ -105,7 +106,7 @@ class MyPage extends Component {
 
                                 return(
                                     <div key={key} id={_el.path !== null ? 'my_page_' + _el.path + '_div' : null}
-                                         className='my_page_select_divs'
+                                         className='my_page_select_divs kotra_bold_font'
                                          onMouseEnter={_el.path !== null ? () => _iconToggle(_el.path, 'mouseOver') : null}
                                          onMouseLeave={_el.path !== null ? () => _iconToggle(_el.path, 'mouseLeave') : null}
                                          onClick={_el.path !== null ? () => _iconToggle(_el.path, 'move') : null}

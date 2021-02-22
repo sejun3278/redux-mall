@@ -190,7 +190,7 @@ class MyPageHome extends Component {
         return(
             <div id='my_page_div'>
                 {user_info ? <div>
-                <div id='my_page_title_div' className='my_page_title border_bottom'>
+                <div id='my_page_title_div' className='my_page_title border_bottom recipe_korea'>
                     <img src={page_icon} alt='' className='pointer' onClick={() => window.location.href = move_url }/>
                     <b className='aCenter pointer' onClick={() => window.location.href = move_url }> {page_name} </b>
                 </div>

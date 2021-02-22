@@ -96,7 +96,7 @@ class Signup extends Component {
 
       } else {
         // 회원가입 쿠폰 제공
-        _addCoupon('welcome', null, null, false, id, true);
+        await _addCoupon('welcome', null, false, false, id, true);
 
         const { _stringCrypt } = this.props;
 
@@ -302,8 +302,6 @@ class Signup extends Component {
       }
     }
 
-    console.log(result)
-
     //this._checkSignup(type)
     return result;
   }
@@ -346,7 +344,7 @@ class Signup extends Component {
     }
   }
 
-  _inputInfo = (type, bool) => {
+  _inputInfo = (type) => {
     const { signupAction, id, nick, name, email_id, email_host, pw, pw_check } = this.props;
     const data = $('#signup_' + type + '_input').val().trim();
     const agree = $('#agree_info_button').is(":checked");
@@ -420,12 +418,12 @@ class Signup extends Component {
   }
 
   render() {
-    const { id, nick, name, email_id, email_host, email_select, pw, pw_check, agree, signup_allow } = this.props;
+    const { email_host, email_select, agree, signup_allow } = this.props;
     const { _signupCheck, _checkBox } = this;
 
     return(
       <div id='signup_div'>
-        <h3 className='aCenter marginTop_30' id='signup_title_div'> 회원가입 </h3>
+        <h3 className='aCenter marginTop_30 recipe_korea' id='signup_title_div'> 회원가입 </h3>
 
         <form id='signup_form' onSubmit={_signupCheck}>
         <div id='signup_div_grid'>
@@ -498,7 +496,7 @@ class Signup extends Component {
           </div>
 
           <div id='signup_agree_div'> 
-            <h4> 이용약관 동의 </h4>
+            <h4 className='recipe_korea'> 이용약관 동의 </h4>
 
             <textarea readOnly className='no_resize' defaultValue={signup_info} />
 

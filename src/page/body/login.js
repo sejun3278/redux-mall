@@ -102,8 +102,8 @@ class Login extends Component {
                     />
 
                     <form id='login_form' name='login_form' onSubmit={_logins} >
-                        <div>
-                            <div className='login_form_grid font_14'>
+                        <div id='login_form_div'>
+                            <div className='login_form_grid'>
                                 <div className='login_other_title_div'> 아이디 </div>
                                 <div> <input type='text' maxLength='15' id='login_id_input' name='id'/> </div>
                             </div>
@@ -115,7 +115,7 @@ class Login extends Component {
                         </div>
 
                         <div id='login_button_div'>
-                            <div className='aRight font_14'> 
+                            <div className='aRight font_12'> 
                                 <u className='remove_underLine pointer'
                                    onClick={() => _toggleSearchIdAndPw(true, 'id')}
                                 > 

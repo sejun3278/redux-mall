@@ -64,6 +64,13 @@ class Header extends Component {
             await _getCookie(_hashString('page_move'), 'remove', null, true);
         }
 
+        if(url.includes('/search') === false) {
+            if(url.includes('/goods') === false) {
+                await _getCookie('search_now_scroll', 'remove', null, true);
+                await _getCookie('last_goods_id', 'remove', null, true);
+            }
+        }
+
       }
 
     _logout = async () => {

@@ -31,6 +31,7 @@
 #main_header_div #main_header_center {
     text-align: right;
     font-size: 20px;
+    font-family: 'Recipekorea';
 }
 
 #main_title a {
@@ -56,7 +57,7 @@
     text-decoration: none;
 }
 
-.login_header_div { line-height: 35px; }
+.login_header_div { line-height: 35px;  }
 #header_login_user_info_div { text-align: left; color: #ababab; font-size: 11px; }
 #header_login_info_div { border-top: solid 0px #ababab; padding: 10px 20px 10px 20px; }
 #header_login_info_div div { padding: 0px 45px 0px 0px; }
@@ -143,15 +144,18 @@
     padding-top: 30px;
     padding-bottom: 30px;
     margin-top: 120px;
-    font-size: 17px;
+    font-size: 12px;
+    color: #ababab;
 }
 
 
 #login_div h3 {
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
     margin: 10px 0px 0px 0px;
-    font-size: 26px;
+    font-size: 24px;
+    font-family: 'Recipekorea';
 }
+.login_form_grid { font-size: 12px !important; line-height: 30px; }
 
 .login_form_grid { display: grid; grid-template-columns: 20% auto; margin-top: 10px; font-size: 14px; }
 .login_form_grid input { margin-left: 20px; width: 80%; }
@@ -159,12 +163,12 @@
 
 #login_div #login_form { margin-top: 30px; padding-bottom: 30px; border-bottom: solid 1px white; }
 /* #login_div #login_form div { line-height: 10px; } */
-#login_div #login_form div input { padding : 4px }
+#login_div #login_form div input { padding : 4px; }
 
 #login_div #login_close_icon {
     position: absolute;
     width: 20px;
-    margin: -60px 0px 0px 350px !important;
+    margin: -45px 0px 0px 350px !important;
 }
 
 #login_button_div div { font-size: 12px; color: #ababab; margin: 8px 0px 0px 225px !important; position: absolute; }
@@ -195,11 +199,11 @@
     border-top: none;
     background-color: #535E53;
     padding: 5px;
-    padding-left: 10px;
     height: 50px;
     line-height: 45px;
     display: grid;
     grid-template-columns: 20% 45% 35%;
+    font-family: 'paybooc-Bold';
 }
 
 #header_category_div img {
@@ -217,17 +221,18 @@
 
 #header_search_div input {
     width: 45%;
-    padding: 4px 0px 4px 7px;
+    padding: 3px 0px 6px 7px;
     height: 17px;
     font-weight: bold;
     font-size: 14px;
 }
+
 #header_search_div #header_search_icon {
     position: absolute;
     margin-top: 10px;
     width: 18px !important;
     height: 20.5px !important;
-    margin-left: 10px;
+    margin-left: 6px;
     /* border: solid 1px black; */
     background-color: white;
     padding: 4.5px 7px 3px 7px;
@@ -248,6 +253,7 @@
     padding : 10px 0px 10px 0px;
     border-bottom: solid 1px black;
     font-size: 14px;
+    font-family: 'paybooc-Bold';
 }
 
 #my_page_profile_div {
@@ -291,7 +297,7 @@
 }
 
 #my_page_select_div {
-    margin-top: 60px;
+    margin-top: 90px;
     margin-bottom: 70px;
     padding: 10px;
     display: grid;

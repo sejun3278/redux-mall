@@ -687,9 +687,9 @@ class Review extends Component {
                         
                         : <div id='mypage_review_empty_div' className='aCenter'>
                             <h3> 리뷰 내역이 없습니다. </h3>
-                              <p className='font_13 gray'> 
+                              <p className='font_13 gray paybook_bold'> 
                                 <u className='pointer' onClick={() => window.location.href='/search'}> 
-                                  ◀　상품 리뷰하러 가기
+                                  ◀ 상품 구매하기
                                 </u> 
                               </p>
                           </div>

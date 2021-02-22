@@ -510,9 +510,9 @@ class QnA extends Component {
                         {length_check
                             ? <div id='mypage_qna_main_empty_div' className='aCenter'>
                                 <h3> 문의한 내역이 없습니다. </h3>
-                                <p className='font_13 gray'> 
+                                <p className='font_13 gray paybook_bold'> 
                                     <u className='pointer' onClick={() => window.location.href='/search'}> 
-                                        ◀　상품 문의하러 가기 
+                                        ◀　상품 구매하기 
                                     </u> 
                                 </p>
                               </div>

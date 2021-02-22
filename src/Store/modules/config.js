@@ -21,6 +21,7 @@ const SETSCROLL = 'config/set_scroll';
 const REMOVING = 'config/removing';
 const TOGGLEMODAL = 'config/toggle_modal';
 const SAVEUSERALERTINFO = 'config/save_user_alert_info';
+const SAVEHOTITEMINFO = 'config/save_hot_item_info';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -43,6 +44,7 @@ export const set_scroll = createAction(SETSCROLL);
 export const removing = createAction(REMOVING);
 export const toggle_modal = createAction(TOGGLEMODAL);
 export const save_user_alert_info = createAction(SAVEUSERALERTINFO);
+export const save_hot_item_info = createAction(SAVEHOTITEMINFO);
 
 const initialState = {
     login : false,
@@ -97,7 +99,8 @@ const initialState = {
     alert_modal : false,
     alert_loading : false,
     alert_scroll : 0,
-    alert_scrolling : false
+    alert_scrolling : false,
+    hot_item_info : JSON.stringify([])
 }
 
 export default handleActions({
@@ -287,6 +290,13 @@ export default handleActions({
             alert_loading : data.payload.loading !== undefined ? data.payload.loading : state.alert_loading,
             alert_scroll : data.payload.scroll !== undefined ? data.payload.scroll : state.alert_scroll,
             alert_scrolling : data.payload.scrolling !== undefined ? data.payload.scrolling : state.alert_scrolling
+        }
+    },
+
+    [SAVEHOTITEMINFO] : (state, data) => {
+        return {
+            ...state,
+            hot_item_info : data.payload.info !== undefined ? data.payload.info : state.hot_item_info
         }
     }
 

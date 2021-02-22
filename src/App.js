@@ -163,7 +163,12 @@ class App extends Component {
     console.log(storage)
     if(storage !== null) {
       console.log(this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false))
-      const date_check = Number(JSON.parse(this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false)));
+      let date_check = this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false);
+
+      if(date_check !== "") {
+        date_check = Number(JSON.parse(date_check));
+      }
+      
       console.log(date_check)
       const now_date = Date.parse(moment().format("YYYY-MM-DD"));
 

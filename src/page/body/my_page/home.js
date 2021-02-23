@@ -240,6 +240,7 @@ class MyPageHome extends Component {
                             _loginCookieCheck={_loginCookieCheck}
                             _addCoupon={_addCoupon}
                             _getCouponList={_getCouponList}
+                            _stringCrypt={_stringCrypt}
                         {...props}  />}
                     />
 
@@ -274,6 +275,7 @@ class MyPageHome extends Component {
                             _setPoint={_setPoint}
                             _checkLogin={_checkLogin}
                              _hashString={_hashString}
+                             _stringCrypt={_stringCrypt}
                         {...props}  />}
                     />
 

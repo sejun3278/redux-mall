@@ -234,7 +234,7 @@ class Review extends Component {
         if(Object.keys(mypage_review_select).length !== review_info.length) {
           
           save_obj['all_select'] = true;
-          review_info.map( (el) => {
+          review_info.forEach( (el) => {
             cover_obj[el.id] = { 'id' : el };
           })
         }

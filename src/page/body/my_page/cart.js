@@ -394,7 +394,10 @@ class Cart extends Component {
 
     // 구매하기 버튼 클릭
     _moveOrder = async () => {
-        const { user_info, _getCookie, cart_result_price, cart_delivery_price, cart_discount_price, cart_coupon_price, cart_origin_price, use_point, _loginCookieCheck } = this.props;
+        const { 
+            user_info, _getCookie, cart_result_price, cart_delivery_price, cart_discount_price, 
+            cart_coupon_price, cart_origin_price, use_point, _loginCookieCheck, _stringCrypt 
+        } = this.props;
         const cart_select_list = JSON.parse(this.props.cart_select_list);
         const cart_data = JSON.parse(this.props.cart_data);
         const cart_num_obj = JSON.parse(this.props.cart_num_obj);
@@ -446,7 +449,7 @@ class Cart extends Component {
         }
         save_cookie['code'] = code;
 
-        await _getCookie('order', 'add', JSON.stringify(save_cookie), true);
+        await _getCookie('order', 'add', _stringCrypt(JSON.stringify(save_cookie), "_order_cookie_data", true), true);
 
         const obj = { "type" : "INSERT", "table" : "order", "comment" : "임시 주문 내역 추가하기" };
 

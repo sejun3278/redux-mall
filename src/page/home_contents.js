@@ -13,7 +13,7 @@ import '../css/home.css';
 import category_list from '../source/admin_page.json';
 
 import img from '../source/img/img.json';
-import $ from 'jquery';
+// import $ from 'jquery';
 import URL from '../config/url';
 
 const style = {
@@ -21,30 +21,10 @@ const style = {
     'autoSlide' : 4000,
     'autoplay' : true,
     'infinite' : true,
-    // 'showDots' : false
-    // 'duration' : 8000,
-    // 'arrow' : false
-}
-
-const hot_itme_style = {
-    'showArrows' : false,
-    'autoSlide' : 0,
-    // 'autoPlay' : true
 }
 
 const responsive = [
     { breakPoint: 319, cardsToShow: 1 }
-];
-
-const hot_item_responsive = [
-    // { breakPoint: 2000, cardsToShow: 10 },
-    // { breakPoint: 1280, cardsToShow: 5 },
-    // { breakPoint: 1050, cardsToShow: 4 },
-    // { breakPoint: 881, cardsToShow: 3 },
-    // { breakPoint: 700, cardsToShow: 4 },
-    // { breakPoint: 550, cardsToShow: 3 },
-    // { breakPoint: 499, cardsToShow: 2 },
-    // { breakPoint: 320, cardsToShow: 1 },
 ];
 
 class HomeContents extends Component {
@@ -75,15 +55,9 @@ class HomeContents extends Component {
     }
 
     render() {
-        const { price_comma } = this.props;
-        const hot_item_info = JSON.parse(this.props.hot_item_info)
+        // const { price_comma } = this.props;
+        // const hot_item_info = JSON.parse(this.props.hot_item_info)
         const first_cat_list = category_list.first_category.category;
-
-        // const hot_item_slick = {};
-        // hot_item_slick['responsive'] = [];
-        // hot_item_slick['responsive'].push({ 'breakPoint' : 1240, 'cardsToShow' :  })
-
-        // hot_item_slick['style'] = {};
 
         return(
             <div id='home_contents_div'>

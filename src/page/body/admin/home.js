@@ -187,7 +187,7 @@ class AdminHome extends Component {
                                                     <div id='admin_list_modal_div'>
                                                         <h4 className='aCenter border_bottom'> 관리자 목록 </h4>
                                                         <img src={img.icon.close_black} id='admin_list_close_button' className='pointer'
-                                                             onClick={() => this._listModalToggle(false)}
+                                                             onClick={() => this._listModalToggle(false)} alt=''
                                                         />
                                                         <AdminCategory                                                             
                                                             cat_name={cat_name}
@@ -212,16 +212,31 @@ class AdminHome extends Component {
                                                             />}
                                                         />
 
-                                                        <Route  path='/admin/goods/goods_write/?modify_id'
-                                                                path='/admin/goods/goods_write'
+                                                        <Route  path='/admin/goods/goods_write'
                                                             render={(props) => <AdminGoodsWrite
                                                                         _pageMove={_pageMove}
                                                                         {...props} 
                                                             />}
                                                         />
 
+                                                        <Route  path='/admin/goods/goods_write/?modify_id'
+                                                            render={(props) => <AdminGoodsWrite
+                                                                        _pageMove={_pageMove}
+                                                                        {...props} 
+                                                            />}
+                                                        />
+
+                                                        <Route path='/admin/goods'
+                                                            render={(props) => <AdminGoods
+                                                                        _searchCategoryName={_searchCategoryName}
+                                                                        price_comma={price_comma}
+                                                                        _filterURL={_filterURL}
+                                                                        _searchStringColor={_searchStringColor}
+                                                                        {...props} 
+                                                            />}
+                                                        />
+
                                                         <Route path='/admin/goods/?search'
-                                                               path='/admin/goods'
                                                             render={(props) => <AdminGoods
                                                                         _searchCategoryName={_searchCategoryName}
                                                                         price_comma={price_comma}
@@ -253,8 +268,15 @@ class AdminHome extends Component {
                                                             />}
                                                         />
 
+
+                                                        <Route  path='/admin/user'
+                                                            render={(props) => <AdminUser
+                                                                        user_info={user_info}
+                                                                        {...props} 
+                                                            />}
+                                                        />
+
                                                         <Route  path='/admin/user/?search'
-                                                                path='/admin/user'
                                                             render={(props) => <AdminUser
                                                                         user_info={user_info}
                                                                         {...props} 

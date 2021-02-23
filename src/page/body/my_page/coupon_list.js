@@ -109,7 +109,7 @@ class Coupon_list extends Component {
         return(
             <div id='coupon_list_each_div'>
                 <img src={img.icon.close_black} id='coupon_list_each_close_button' className='pointer'
-                     title='닫기' onClick={() => _toggleCouponListModal(false)}
+                     title='닫기' onClick={() => _toggleCouponListModal(false)} alt=''
                 />
                 <h3 className='kotra_bold_font aCenter border_bottom'> MY 쿠폰함 </h3>
 

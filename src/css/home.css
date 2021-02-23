@@ -180,6 +180,20 @@ ul { padding-left: 0px !important; }
 .home_contents_slick_divs { text-align: center; }
 .home_contents_slick_divs img { width: 60%; max-height: 300px; }
 
+#feedback_title_div { border-bottom: solid 2px #ababab; padding: 10px; }
+#feedback_title_div h3 { font-size: 20px; font-family: 'Recipekorea'; }
+#feedback_title_div p { margin-top: -5px; color: #ababab; font-family: 'paybooc-Bold'; }
+#feedback_add_div { background-color: black; color: white; height: 40px; line-height: 40px; }
+#feedback_add_div h3 { margin: 0px !important; }
+
+#feedback_write_div { padding: 0px 15px 0px 15px; }
+#feedback_write_title_div { border-bottom: solid 3px #ababab; }
+#feedback_write_close_icon { width: 18px; position: absolute; margin: -60px 0px 0px 350px; }
+
+#feedback_write_contents_div { margin-top: 15px; padding: 0px 10px 0px 10px; }
+.feedback_grid_div { display: grid; grid-template-columns: 120px auto; font-size: 13px; line-height: 25px; }
+.feedback_grid_div div input { width: -webkit-fill-available; padding: 2px 5px 2px 5px; font-size: 13px; color: #ababab; }
+
 @media (max-width : 1200px) {
     #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
 
@@ -338,6 +352,8 @@ ul { padding-left: 0px !important; }
     #review_write_loading { width: 69.8%; }
     .search_album_each_div { padding: 0px !important; }
 
+    #feedback_write_div { padding: 0px 25px 0px 25px; }
+    #feedback_write_close_icon { margin-left: 320px; }
     /* .search_album_thumbnail { margin: 5px; } */
 }
 
@@ -366,5 +382,7 @@ ul { padding-left: 0px !important; }
 
     .home_contents_slick_divs img { width: 100%; }
 
+    #feedback_write_div { padding: 0px 40px 0px 40px; }
+    #feedback_write_close_icon { margin-left: 290px; }
     /* #top_category_contents_div { width: 65% !important; } */
 }

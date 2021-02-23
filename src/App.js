@@ -20,6 +20,7 @@ import { Header, Login, Signup, SignupComplate, TopCategory, SearchIDPW, Search,
 import ReviewList from './page/config/review_list';
 import OrderCheck from './page/config/order_check';
 import Bottom from './page/config/bottom';
+import Feedback from './page/config/feedback';
 
 import category_list from './source/admin_page.json';
 import { Loading, Goods } from './page/index';
@@ -160,16 +161,13 @@ class App extends Component {
 
     let login_info = false;
 
-    console.log(storage)
     if(storage !== null) {
-      console.log(this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false))
       let date_check = this._stringCrypt(login_date, '_sejun_mall_login_limit_date', false);
 
       if(date_check !== "") {
         date_check = Number(JSON.parse(date_check));
       }
-      
-      console.log(date_check)
+    
       const now_date = Date.parse(moment().format("YYYY-MM-DD"));
 
       if(now_date < date_check) {      
@@ -177,7 +175,7 @@ class App extends Component {
         login_info = JSON.parse(this._stringCrypt(storage, 'sejun_mall_login', false));
 
       } else {
-        alert('로그인 시간이 만료되었습니다. \n다시 로그인 해주세요.');
+        // alert('로그인 시간이 만료되었습니다. \n다시 로그인 해주세요.');
 
         // 로그인 후 2일이 지난 경우
         await this._getCookie('login', 'remove');
@@ -1297,6 +1295,14 @@ class App extends Component {
                   />}                    
                 />
 
+                <Route path='/feedback'
+                      render={(props) => <Feedback
+                        _setModalStyle={_setModalStyle}
+                        price_comma={price_comma}
+                      {...props} 
+                  />}                    
+                />
+
                 <Route path='/se_bot'
                       render={(props) => <SeBot
                         _checkLogin={_checkLogin}
@@ -1408,6 +1414,7 @@ class App extends Component {
                           _setPoint={_setPoint}
                           _filterURL={_filterURL}
                           _setGoodsStock={_setGoodsStock}
+                          _stringCrypt={_stringCrypt}
                         {...props} 
                   />}
                 />

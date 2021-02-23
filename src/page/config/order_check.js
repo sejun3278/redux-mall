@@ -15,11 +15,12 @@ import $ from 'jquery';
 class OrderCheck extends Component {
 
     async componentDidMount() {
-        const { _getCookie, _checkLogin } = this.props;
+        const { _getCookie, _checkLogin, _stringCrypt } = this.props;
 
         $('.App').hide();
 
-        const order_check = JSON.parse(await _getCookie('order_check', 'get', null, true));
+        const order_info = await _getCookie('order_check', 'get', null, true);
+        const order_check = JSON.parse(JSON.parse(_stringCrypt(order_info, "_order_check", false)));
         const user_cookie = await _checkLogin();
 
         const check = await this._acessCheck(order_check, user_cookie);

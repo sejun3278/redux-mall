@@ -856,7 +856,7 @@ class Goods extends Component {
 
     // 바로 구매
     _directBuyGoods = async () => {
-        const { _loginCookieCheck, _getCookie } = this.props;
+        const { _loginCookieCheck, _getCookie, _stringCrypt } = this.props;
         const { _getGoodsData } = this;
 
         const goods_num = $('input[name=goods_num]').val();
@@ -908,7 +908,7 @@ class Goods extends Component {
             code += String(number);
         }
         save_cookie['code'] = code;
-        await _getCookie('order', 'add', JSON.stringify(save_cookie), true);
+        await _getCookie('order', 'add', _stringCrypt(JSON.stringify(save_cookie), "_order_cookie_data", true), true);
 
         insert_obj['columns'] = [];
 
@@ -1508,7 +1508,7 @@ class Goods extends Component {
                                                     ?
                                                     <div id='default_add_cart_grid_div' className='add_cart_complate_grid_divs paybook_bold'>
                                                         <div className='border_right' onClick={_directBuyGoods}> 바로 구매 </div>
-                                                        <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}> <img src={icon.my_page.cart_plus} /> 장바구니 </div>
+                                                        <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}> <img src={icon.my_page.cart_plus} alt='' /> 장바구니 </div>
                                                     </div>
 
                                                     : 
@@ -1525,7 +1525,7 @@ class Goods extends Component {
                                                     </div>
 
                                                 : <div id='default_add_cart_complate_div' className='add_cart_complate_div'>
-                                                    <img className='add_cart_complate_icon' src={icon.my_page.cart_complate} /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
+                                                    <img className='add_cart_complate_icon' src={icon.my_page.cart_complate} alt='' /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
                                                     <div className='add_cart_complate_grid_divs'>
                                                         <div className='border_right' onClick={() => _clickComplateButton('move')} > 장바구니 이동 </div>
                                                         <div onClick={() => _clickComplateButton('close')}> 계속 쇼핑하기 </div>
@@ -1616,7 +1616,7 @@ class Goods extends Component {
                                                     ?
                                                     <div className='add_cart_complate_grid_divs'>
                                                         <div className='border_right' onClick={_directBuyGoods}> 바로 구매 </div>
-                                                        <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}>  <img src={icon.my_page.cart_plus} /> 장바구니 </div>
+                                                        <div className='goods_add_cart_div' onClick={() => _addCartGoods(null, null)}>  <img src={icon.my_page.cart_plus} alt='' /> 장바구니 </div>
                                                     </div>
 
                                                     : 
@@ -1633,7 +1633,7 @@ class Goods extends Component {
                                                     </div>
 
                                                 : <div id='add_cart_responsive_complate_div'>
-                                                    <img className='add_cart_complate_icon' id='add_cart_responsive_complate_icon' src={icon.my_page.cart_complate} /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
+                                                    <img className='add_cart_complate_icon' id='add_cart_responsive_complate_icon' src={icon.my_page.cart_complate} alt='' /> <h3 className='select_color'> 장바구니에 추가 되었습니다. </h3>
                                                     <div className='add_cart_complate_grid_divs'>
                                                         <div className='border_right' onClick={() => window.location.href='/myPage/cart'} > 장바구니 이동 </div>
                                                         <div onClick={() => this.props.goodsAction.add_complate_cart({ 'bool' : false })}> 계속 쇼핑하기 </div>
@@ -1779,8 +1779,13 @@ class Goods extends Component {
                                                 if(el !== "") {
                                                     return(
                                                         <div key={key}>
-                                                            <img src={el} />
+                                                            <img src={el} alt='' />
                                                         </div>
+                                                    )
+
+                                                } else {
+                                                    return(
+                                                        null
                                                     )
                                                 }
                                             })}
@@ -1796,13 +1801,14 @@ class Goods extends Component {
                                         <div className='goods_bonus_img_div'>
                                             {img_arr.map( (el, key) => {
 
-                                                if(el !== "") {
-                                                    return(
-                                                        <div key={key}>
-                                                            <img src={el} />
-                                                        </div>
-                                                    )
-                                                }
+                                                return(
+                                                    el !== ""
+                                                    ?  <div key={key}>
+                                                        <img src={el} alt='' />
+                                                      </div>
+
+                                                    : null
+                                                )
                                             })}
                                         </div>
                                     </div>
@@ -1853,7 +1859,7 @@ class Goods extends Component {
                                         ?
                                         <div className='goods_qna_and_review_filter_info_div'>
                                             <p> ▼ 적용중인 필터 옵션 
-                                                <img src={icon.icon.reload} className='pointer goods_qna_filter_reload_icon' title='적용중인 모든 필터를 삭제합니다.'
+                                                <img src={icon.icon.reload} className='pointer goods_qna_filter_reload_icon' title='적용중인 모든 필터를 삭제합니다.' alt=''
                                                      onClick={() => window.confirm('모든 필터 옵션을 삭제하시겠습니까?') ? _qnaFilter('1', qry, false, 'qna', true) : null}
                                                 />  
                                             </p>
@@ -1918,7 +1924,7 @@ class Goods extends Component {
                                                             >
                                                                 <div className='qna_data_list_grid_title_div'> 
                                                                     {el.secret_state === 1 
-                                                                        ? <img src={icon.icon.lock} className='qna_data_list_secret_icon' title='비밀글입니다. (작성자와 관리자만 볼 수 있습니다.)'/> 
+                                                                        ? <img src={icon.icon.lock} className='qna_data_list_secret_icon' title='비밀글입니다. (작성자와 관리자만 볼 수 있습니다.)' alt=''/> 
                                                                         : null}
                                                                     {el.title}
                                                                 </div>
@@ -2118,7 +2124,7 @@ class Goods extends Component {
                                             ?
                                             <div className='goods_qna_and_review_filter_info_div font_14'>
                                                 <p> ▼ 적용중인 필터 옵션 
-                                                    <img src={icon.icon.reload} className='goods_qna_filter_reload_icon pointer' title='적용중인 모든 필터를 삭제합니다.'
+                                                    <img src={icon.icon.reload} className='goods_qna_filter_reload_icon pointer' title='적용중인 모든 필터를 삭제합니다.' alt=''
                                                         onClick={() => window.confirm('모든 필터 옵션을 삭제하시겠습니까?') ? _qnaFilter('3', qry, false, 'review', true) : null}
                                                     />  
                                                 </p>

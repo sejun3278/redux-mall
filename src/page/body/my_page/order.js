@@ -12,7 +12,7 @@ import * as orderAction from '../../../Store/modules/order';
 
 import '../../../css/responsive/signup.css';
 import '../../../css/myPage.css';
-import Coupon_list from '../my_page/coupon_list';
+import CouponList from '../my_page/coupon_list';
 
 import img from '../../../source/img/icon.json';
 import URL from '../../../config/url';
@@ -56,8 +56,9 @@ class Order extends Component {
     }
 
     _checkAcess = async () => {
-        const { user_info, _getCookie, myPageAction, orderAction } = this.props;
-        const cookie_check = JSON.parse(await _getCookie("order", "get", null, true));
+        const { user_info, _getCookie, myPageAction, orderAction, _stringCrypt } = this.props;
+        const cookie_info = await _getCookie("order", "get", null, true);
+        const cookie_check = JSON.parse(JSON.parse(_stringCrypt(cookie_info, "_order_cookie_data", false)));
 
         const check_result = { "bool" : true, "alert" : null };
         // 장바구니 접근 여부 체크하기
@@ -166,7 +167,7 @@ class Order extends Component {
     }
 
     _saveCartList = async (list) => {
-        const { user_info, _getCookie } = this.props;
+        const { user_info } = this.props;
         // const order_info = JSON.parse(this.props.order_info);
         // const order_cookie = JSON.stringify(await _getCookie('order', 'get', null, true));
         const order_cookie = JSON.parse(this.props.buy_order_info);
@@ -265,18 +266,19 @@ class Order extends Component {
     _handleComplete = (data) => {
         const { orderAction } = this.props;
 
-        let fullAddress = data.address;
-        let extraAddress = ''; 
+        // let fullAddress = data.address;
+        // let extraAddress = ''; 
         
-        if (data.addressType === 'R') {
-          if (data.bname !== '') {
-            extraAddress += data.bname;
-          }
-          if (data.buildingName !== '') {
-            extraAddress += (extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName);
-          }
-          fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
-        }
+        // if (data.addressType === 'R') {
+        //   if (data.bname !== '') {
+        //     extraAddress += data.bname;
+        //   }
+        //   if (data.buildingName !== '') {
+        //     extraAddress += (extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName);
+        //   }
+        //   fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
+        // }
+
         const result = {
           "order_host_code" : data.zonecode,
           "order_host" : data.address
@@ -462,7 +464,7 @@ class Order extends Component {
                     // return this._complateOrder(payment_select, false, form_data);
 
                 } else {
-                    const { _hashString, _getCookie } = this.props;
+                    const { _hashString, _getCookie, _stringCrypt } = this.props;
 
                     // 카드 결제인 경우
                     const host = form_obj['order_host'] + ' ' + form_obj['order_host_detail'];
@@ -473,7 +475,7 @@ class Order extends Component {
                     cookie_obj[_hashString('user_id')] = _hashString(user_info.user_id);
                     cookie_obj[_hashString('order_id')] = _hashString(String(cookie_obj.order_info.id));
             
-                    await _getCookie('order_check', 'add', JSON.stringify(cookie_obj), true);
+                    await _getCookie('order_check', 'add', _stringCrypt(JSON.stringify(cookie_obj), "_order_check", true), true);
                     // sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
 
                     IMP.request_pay({
@@ -523,20 +525,20 @@ class Order extends Component {
     }
 
     _moveOrderCheck = async (cookie_obj) => {
-        const { _getCookie, user_info, _hashString } = this.props;
+        const { _getCookie, user_info, _hashString, _stringCrypt } = this.props;
 
         // const session_obj = {};
         cookie_obj[_hashString('user_id')] = _hashString(user_info.user_id);
         cookie_obj[_hashString('order_id')] = _hashString(String(cookie_obj.order_info.id));
 
-        await _getCookie('order_check', 'add', JSON.stringify(cookie_obj), true);
+        await _getCookie('order_check', 'add', _stringCrypt(JSON.stringify(cookie_obj), "_order_check", true), true);
         // sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
 
         return window.location.replace('/orderCheck');
     }
 
     _complateOrder = async (type, payment, form_data) => {
-        const { prediction_point, user_info, _setPoint, use_point, cart_coupon_price, _getCookie, coupon_select, _hashString } = this.props;
+        const { prediction_point, user_info, _setPoint, use_point, cart_coupon_price, _getCookie, coupon_select } = this.props;
         const order_info = JSON.parse(this.props.order_info);
 
         let order_able = true;
@@ -1189,7 +1191,7 @@ class Order extends Component {
                         <div className='order_delivery_top_div'> 
                             <div> * 우편번호 </div>
                             <div> 
-                                <input type='input' id='order_delivery_host_code_input' defaultValue={order_host_code}  readOnly disabled /> 
+                                <input type='input' id='order_delivery_host_code_input' value={order_host_code}  readOnly disabled /> 
                                 <input type='button' value='주소 조회' className='order_delivery_input_1 pointer bold' id='order_delivery_host_code_button'
                                        onClick={() => _toggleModal(true) }
                                 />
@@ -1204,7 +1206,7 @@ class Order extends Component {
                             >
                                 <h3 className='aCenter'> 우편번호 조회 </h3>
                                 <img src={img.icon.close_black} id='close_order_delivery_code' className='pointer' title='닫기' 
-                                     onClick={() => _toggleModal(false)}
+                                     onClick={() => _toggleModal(false)} alt=''
                                 />
 
                                 <div className='border_top'>
@@ -1217,7 +1219,7 @@ class Order extends Component {
 
                         <div className='order_delivery_top_div'> 
                             <div> * 주소 </div>
-                            <div> <input type='input' name='order_delievery_host' maxLength='50' className='order_delivery_input_2' defaultValue={order_host}  readOnly disabled /> </div>
+                            <div> <input type='input' name='order_delievery_host' maxLength='50' className='order_delivery_input_2' value={order_host}  readOnly disabled /> </div>
                         </div>
 
                         <div className='order_delivery_top_div'> 
@@ -1263,7 +1265,7 @@ class Order extends Component {
                         >
                             <div id='order_save_user_info_agree_div'>
                                 <h4 className='recipe_korea bold aCenter border_bottom_black boredr_width_2'> 개인정보 수집 약관 </h4>
-                                <img src={img.icon.close_black} className='pointer' id='order_save_user_info_close_icon' onClick={() => this.props.configAction.toggle_agree_modal({ 'bool' : false})} />
+                                <img alt='' src={img.icon.close_black} className='pointer' id='order_save_user_info_close_icon' onClick={() => this.props.configAction.toggle_agree_modal({ 'bool' : false})} />
                             
                                 <div id='order_save_user_info_contents_div'>
                                     <div dangerouslySetInnerHTML={ {__html: info_agree} } />
@@ -1344,7 +1346,7 @@ class Order extends Component {
                                         <div title={'[' + coupon_select.name + '] 쿠폰 적용 중'}> {coupon_select.name.length > 15 ? coupon_select.name.slice(0, 15) + ' ...' : coupon_select.name} </div> 
                                         <div style={{ 'color' : '#35c5f0'}}> [ {price_comma(cart_coupon_price)} 원 ] </div>
                                         <div>   <img src={img.icon.close_black} id='cart_remove_coupon' className='pointer' title='쿠폰 해제'
-                                                     onClick={() => _removeCoupon()}
+                                                     onClick={() => _removeCoupon()} alt=''
                                                 />
                                         </div>
                                     </li>
@@ -1360,7 +1362,7 @@ class Order extends Component {
                         onRequestClose={coupon_list_open_modal ? () => _toggleCouponListModal(false) : null}
                         style={_setModalStyle('50%', '400px')}
                     >
-                        <Coupon_list 
+                        <CouponList 
                             _toggleCouponListModal={_toggleCouponListModal}
                             _addCoupon={this.props._addCoupon}
                             price_comma={price_comma}

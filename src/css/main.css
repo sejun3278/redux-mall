@@ -17,6 +17,14 @@
 #bottom_stack_grid_div { margin-top: 20px; }
 .bottom_stack_grid { display: grid; grid-template-columns: 100px auto; padding-bottom: 10px; }
 
+#bottom_grid_div { display: grid; grid-template-columns: 75% auto; }
+#bottom_feedback_div div u { text-decoration: none; line-height: 30px; color: #ababab; cursor: pointer; }
+
+@media( max-width : 550px) {
+    #bottom_grid_div { display: block; }
+    #bottom_feedback_div { margin-top: 10px; padding-top: 10px; border-top : dotted 1px #ababab; }
+}
+
 @media (max-width : 425px) {
     #bottom_div { padding: 30px 15px 30px 15px !important; }
 }
@@ -441,7 +449,7 @@
 #admin_icon {
     position: absolute;
     width: 25px;
-    margin-top: -50px;
+    margin-top: -55px;
     margin-left: 15px;
 }
 

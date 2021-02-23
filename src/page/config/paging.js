@@ -65,13 +65,13 @@ class Paging extends Component {
             page_arr.push(page);
         }
 
-        console.log('전체 페이지 수 : ' + all_page)
-        console.log('현재 페이지 : ' + now_page)
+        // console.log('전체 페이지 수 : ' + all_page)
+        // console.log('현재 페이지 : ' + now_page)
 
-        console.log('전체 블록 수 : ' + all_block)
-        console.log('현재 블록 : ' + now_block)
+        // console.log('전체 블록 수 : ' + all_block)
+        // console.log('현재 블록 : ' + now_block)
 
-        console.log('노출될 페이지 : ' + page_arr)
+        // console.log('노출될 페이지 : ' + page_arr)
         return(
             <div className='paging_div aCenter'>
                 

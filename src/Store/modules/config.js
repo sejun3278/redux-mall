@@ -22,6 +22,7 @@ const REMOVING = 'config/removing';
 const TOGGLEMODAL = 'config/toggle_modal';
 const SAVEUSERALERTINFO = 'config/save_user_alert_info';
 const SAVEHOTITEMINFO = 'config/save_hot_item_info';
+const SETFEEDBACKINFO = 'config/set_feedback_info';
 
 export const login_and_logout = createAction(LOGINANDLOGOUT);
 export const resize_window = createAction(RESIZEWINODW);
@@ -45,6 +46,7 @@ export const removing = createAction(REMOVING);
 export const toggle_modal = createAction(TOGGLEMODAL);
 export const save_user_alert_info = createAction(SAVEUSERALERTINFO);
 export const save_hot_item_info = createAction(SAVEHOTITEMINFO);
+export const set_feedback_info = createAction(SETFEEDBACKINFO);
 
 const initialState = {
     login : false,
@@ -100,7 +102,10 @@ const initialState = {
     alert_loading : false,
     alert_scroll : 0,
     alert_scrolling : false,
-    hot_item_info : JSON.stringify([])
+    hot_item_info : JSON.stringify([]),
+    feedback_loading : false,
+    feedback_info : JSON.stringify([]),
+    feedback_modal : false
 }
 
 export default handleActions({
@@ -297,6 +302,13 @@ export default handleActions({
         return {
             ...state,
             hot_item_info : data.payload.info !== undefined ? data.payload.info : state.hot_item_info
+        }
+    },
+
+    [SETFEEDBACKINFO] : (state, data) => {
+        return {
+            ...state,
+            feedback_modal : data.payload.modal !== undefined ? data.payload.modal : state.feedback_modal
         }
     }
 

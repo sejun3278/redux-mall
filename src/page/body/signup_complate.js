@@ -18,18 +18,16 @@ class Signup_complate extends Component {
   _checkSignupId = async () => {
     const { match, _getCookie, signupAction, _stringCrypt } = this.props;
 
-
     const referrer = document.referrer;
     if(!referrer.includes('/signup')) {
       alert('정상적인 접근이 아닙니다.');
       return window.location.replace('/');
     }
 
-    const id = match.params.id;
+    const check_id = match.params.id;
     const check_cookie = await _getCookie('signup', 'get', null, true);
 
     let user_id = null;
-    let check_id = null;
 
     const check_timer = setTimeout(() => {
       if(user_id !== check_id) {
@@ -39,9 +37,7 @@ class Signup_complate extends Component {
     }, 500);
 
     if(check_cookie) {
-      user_id = _stringCrypt(check_cookie, 'id', false);
-      check_id = _stringCrypt(id, 'check_id', false);
-
+      user_id = JSON.parse(_stringCrypt(check_cookie, '_signup_complate_id', false));
       if(user_id === check_id) {
         return signupAction.save_signup_id({ 'id' : user_id });
       }

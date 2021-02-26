@@ -102,14 +102,14 @@ class Signup extends Component {
         const { _stringCrypt } = this.props;
 
         // 1차 회원가입 완료
-        await _getCookie('signup', 'add', _stringCrypt(id, 'id', true), true);
+        await _getCookie('signup', 'add', _stringCrypt(id, '_signup_complate_id', true), true);
 
         signup = false;
 
         // const test = await _getCookie('signup', 'get', null, true);
         // const test2 = _stringCrypt(test, 'id', false);
 
-        return window.location.replace('/signup/complate/' + _stringCrypt(id, 'check_id', true))
+        return window.location.replace('/signup/complate/' + id)
       }
     }  
   }
@@ -507,7 +507,7 @@ class Signup extends Component {
               <span className='check_toggle_1' onClick={() => _checkBox(!agree, true)}> </span>
               <label htmlFor='agree_info_button' id='signup_agree_input'
                     onClick={() => _checkBox(!agree)}
-                    className={agree === false ? 'pointer font_13' : 'pointer font_13 custom_color_1 bold'}
+                    className={agree === false ? 'pointer font_13 recipe_korea' : 'pointer font_13 custom_color_1 bold recipe_korea'}
               > 
                 이용약관에 동의합니다.  
               </label>
@@ -516,7 +516,7 @@ class Signup extends Component {
         </div>
 
         <div id='signup_submit_div'>
-          <input type='submit' id='signup_submit_button' className='pointer' value='가입 신청' 
+          <input type='submit' id='signup_submit_button' className='pointer recipe_korea' value='가입 신청' 
                 onMouseOver={() => this._mouseToggle(true)}      
                 onMouseLeave={() => this._mouseToggle(false)}
                 style={ !signup_allow ? { 'background' : '#ababab' } : null }

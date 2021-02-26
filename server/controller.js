@@ -35,6 +35,7 @@ const MyError = createError({
 });
 
 const IP = require("ip");
+const user_IP = IP.address();
 
 module.exports = {
     needs: () => upload,
@@ -321,7 +322,10 @@ module.exports = {
                                 value += "'" + add_date + "'"; 
                             }
 
-                        } else {
+                        } else if(el.key === 'ip') {
+                            value += "'" + user_IP + "'";
+
+                        } else  {
                             value += "'" + el.value + "'"; 
                         }
 

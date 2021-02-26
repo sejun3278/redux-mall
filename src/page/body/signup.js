@@ -20,7 +20,8 @@ class Signup extends Component {
     const { login, user_info } = this.props;
     
     if(user_info || login === true) {
-      window.location.replace('/')
+      alert('로그인 중입니다.');
+      return window.location.replace('/')
     }
   }
 

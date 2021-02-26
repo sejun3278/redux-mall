@@ -21,7 +21,7 @@ class Bottom extends Component {
 
                   <div id='bottom_stack_grid_div'> 
                     <div className='bottom_stack_grid'> 
-                      <div> 사용 스택　|　</div>
+                      <div> 기술 스택　|　</div>
                       <div className='gray'> 
                         <div> Frontend : Redux (90%), jQuery (10%), CSS </div>
                         <div> Backend : Node.js (Express) </div>
@@ -30,7 +30,7 @@ class Bottom extends Component {
 
                     <div className='bottom_stack_grid'> 
                       <div> 진행 기간　|　</div>
-                      <div> 2020.11 ~ 2021.02 </div>
+                      <div> 2020.11 ~ 2021.02.26 </div>
                     </div>
                   </div>
                 </div>

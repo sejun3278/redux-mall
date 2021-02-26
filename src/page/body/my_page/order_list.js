@@ -800,7 +800,7 @@ class OrderList extends Component {
                     <div id='order_list_date_grid_div'>
                         <div id='order_list_date_select_gird_div'>
                                 <div id='order_list_set_date_div'>
-                                    <div className='bold font_14'> 기간 설정 </div>
+                                    <div className='bold font_14 recipe_korea' style={{ 'lineHeight' : '2.3' }}> 기간 설정 </div>
                                     <div id='order_list_set_date'>
                                         <DatePicker className='pointer aCenter' name='order_list_date_start' selected={start_date}
                                             locale={ko} dateFormat="yyyy-MM-dd" minDate={min_date} maxDate={end_date} closeOnScroll={true}
@@ -822,7 +822,7 @@ class OrderList extends Component {
                                     </div>
                                 </div>
 
-                                <div id={qry.start_date && qry.end_date ? 'order_list_select_date_div_2' : 'order_list_select_date_div' } className='order_list_select_grid_div font_13'>
+                                <div id={qry.start_date && qry.end_date ? 'order_list_select_date_div_2' : 'order_list_select_date_div' } className='order_list_select_grid_div font_13 paybook_bold'>
                                     {qry.start_date && qry.end_date
                                         ? <div id='filter_month' className='bold white' title='필터를 삭제합니다.'
                                             onClick={() => _removeOption('date', '설정한 기간 옵션을 해제하시겠습니까?')}
@@ -928,14 +928,18 @@ class OrderList extends Component {
 
                         {condifion_option
                             ? <div id='order_list_option_div' className='aLeft'>
-                                <h4> ● 검색 옵션 </h4>
-                                {filter_search_check === true
-                                ? <img src={icon.icon.reload} id='order_list_filter_reload' title='검색 옵션 초기화' className='pointer' alt=''
-                                    onClick={() => window.confirm('검색 옵션을 초기화하시겠습니까?') ? window.location.replace('/myPage/order_list') : null }
-                                 />
-                                : null }
+                                <h4 className='recipe_korea'> 
+                                    ● 검색 옵션 
 
-                                    <ul id='order_list_option_ul'>
+                                {filter_search_check === true
+                                    ? <img src={icon.icon.reload} id='order_list_filter_reload' title='검색 옵션 초기화' className='pointer' alt=''
+                                        onClick={() => window.confirm('검색 옵션을 초기화하시겠습니까?') ? window.location.replace('/myPage/order_list') : null }
+                                    />
+                                    : null }    
+                                </h4>
+
+
+                                    <ul id='order_list_option_ul' className='gray paybook_bold'>
                                         {date_option 
                                             ? <li> {date_option} 
                                                     {diff_days > 0 ? <b className='gray'> ( {diff_days} 일 ) </b> : null}
@@ -1031,7 +1035,7 @@ class OrderList extends Component {
 
                             : <div> 
                                 <div id='order_length_result_div'>
-                                    <div> <h4> 총 {paging_cnt} 건의 주문 내역들을 조회했습니다. </h4> </div>
+                                    <div> <h4 className='paybook_bold'> 총 <b className='custom_color_1'> {paging_cnt} </b> 건의 주문 내역들을 조회했습니다. </h4> </div>
                                     <div id='order_list_select_page_cnt' className='aRight'>
                                         <select name='select_page_cnt' className='pointer' id='order_list_page_cnt_select'
                                                 defaultValue={paging_show} onChange={(event) => _setPageCnt(event)}
@@ -1087,7 +1091,7 @@ class OrderList extends Component {
                                                 id={'order_list_' + el.id}
                                                 onClick={() => _moveDetail(el.id)}
                                             >
-                                                <div className='order_list_top_div'>
+                                                <div className='order_list_top_div gray paybook_bold' >
                                                     <div> 주문 번호　|　{el.id} </div>
                                                     <div className='order_list_contents_date_div'> 주문 일자　|　{el.buy_date}  </div>
                                                     <div className='order_list_contents_grid_div'> 
@@ -1097,10 +1101,10 @@ class OrderList extends Component {
                                                 </div>
 
                                                 <div className='order_list_middle_div'>
-                                                    <div className='order_list_contents_title_div cut_one_line paybook_bold'
+                                                    <div className='order_list_contents_title_div cut_one_line recipe_korea'
                                                          dangerouslySetInnerHTML={{ __html : order_title }}
                                                     />
-                                                    <div className='order_list_contents_grid_div'> 
+                                                    <div className='order_list_contents_grid_div gray paybook_bold'> 
                                                         <div className='aRight'> 배송 현황　|　</div>
                                                         <div className='aLeft'> {delivery_state} </div>
                                                     </div>
@@ -1113,10 +1117,10 @@ class OrderList extends Component {
                                                     </div>
 
                                                     <div className='order_list_price_info_and_move_div'>
-                                                        <div> 결제 금액　|　<b> {price_comma(el.final_price)} 원 </b> </div>
+                                                        <div className='paybook_bold'> 결제 금액　|　<b> {price_comma(el.final_price)} 원 </b> </div>
 
                                                         <div className='order_list_detail_move_div'>
-                                                            <u className='remove_underLine pointer gray'> 상세 정보로 이동 ▶ </u>
+                                                            <u className='pointer gray paybook_bold'> 상세 정보로 이동 ▶ </u>
                                                         </div>
                                                     </div>
                                                 </div>

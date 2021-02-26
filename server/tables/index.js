@@ -69,6 +69,7 @@ let sequelize = new Sequelize(
     db.Alert = require('./alert')(sequelize, Sequelize);
     db.Chat = require('./chat')(sequelize, Sequelize);
     db.Keyword = require('./keyword')(sequelize, Sequelize);
+    db.Feedback = require('./feedback')(sequelize, Sequelize);
 
   /* UserInfo 테이블 관계 설정*/
     /* UserInfo 와 Like 의 관계 설정 (M : 1)*/
@@ -198,6 +199,18 @@ let sequelize = new Sequelize(
       });
 
       db.Chat.belongsTo(db.UserInfo, {
+        foreignKey: 'user_id',
+        targetKey : 'user_id'
+      });
+    /* ///////////////////////////////////// */
+
+    /* Feedback 와 Chat 의 관계 설정 (M : 1)*/
+      db.UserInfo.hasMany(db.Feedback, {
+        foreignKey: 'user_id',
+        sourceKey : 'id'
+      });
+
+      db.Feedback.belongsTo(db.UserInfo, {
         foreignKey: 'user_id',
         targetKey : 'user_id'
       });

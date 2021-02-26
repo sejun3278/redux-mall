@@ -375,7 +375,7 @@ class ReviewList extends Component {
         insert_obj['columns'].push({ "key" : "score", "value" : review_star });
         insert_obj['columns'].push({ "key" : "state", "value" : 0 });
         insert_obj['columns'].push({ "key" : "title", "value" : title });
-        insert_obj['columns'].push({ "key" : "contents", "value" : contents });
+        insert_obj['columns'].push({ "key" : "contents", "value" : contents.replace(/(\n|\r\n)/g, '<br>') });
         insert_obj['columns'].push({ "key" : "create_date", "value" : null });
 
         const set_data = await axios(URL + '/api/query', {
@@ -517,7 +517,7 @@ class ReviewList extends Component {
                 }
 
                 <div id='review_list_title_div'>
-                    <h4 className='aCenter paybook_bold'> 리뷰 리스트 </h4>
+                    <h4 className='aCenter recipe_korea'> 리뷰 리스트 </h4>
                     <img src={icon.icon.close_black} id='review_list_close_icon' className='pointer'
                         onClick={() => review_writing === false ? configAction.toggle_review_modal({ 'bool' : false, 'loading' : false, 'goods_id' : null, 'select' : null, 'star' : 0, 'scroll' : 0 }) : null} alt=''
                     />
@@ -614,7 +614,7 @@ class ReviewList extends Component {
                             </div>
                         </div>
 
-                    : <div id='review_list_empty_div' className='aCenter'>
+                    : <div id='review_list_empty_div' className='aCenter recipe_korea'>
                         <h3> 리뷰를 남길 수 있는 주문 내역이 없습니다. </h3>
                     </div>    
 

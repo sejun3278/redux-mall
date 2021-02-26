@@ -1034,7 +1034,7 @@ class Goods extends Component {
             }
 
             const title = $('input[name=qna_title]').val();
-            const contents = this.props.QandA_contents;
+            const contents = this.props.QandA_contents.replace(/(\n|\r\n)/g, '<br>');
             
             if(title.trim().length <= 1) {
                 alert('제목은 최소 2 글자 이상으로 입력해주세요.');
@@ -1761,7 +1761,7 @@ class Goods extends Component {
                                     </div>
                             </div>
 
-                            <div id='goods_fixed_toggle_div' className='display_none pointer font_13'
+                            <div id='goods_fixed_toggle_div' className='display_none pointer font_13 kotra_bold_font'
                                  onClick={() => _toggleFixedInfo()}
                             >
                                 {open_fixed === false ? "▼ 상품 구매창 열기" : "▲ 상품 구매창 닫기"}
@@ -1821,7 +1821,7 @@ class Goods extends Component {
 
                                     <div id='goods_qna_contents_div'>
                                         <div id='goods_qna_other_div' className='aRight'>
-                                            <input type='button' value='상품 문의하기' id='goods_qna_write_button' className='goods_write_button button_style_1'
+                                            <input type='button' value='상품 문의하기' id='goods_qna_write_button' className='goods_write_button button_style_1 paybook_bold'
                                                    onClick={() => QandA_write === false ? _toggleWrite('qna', true) : _toggleWrite('qna', false)}
                                             />
                                         </div>
@@ -1858,7 +1858,7 @@ class Goods extends Component {
                                         {qry.filter_1 || qry.filter_2
                                         ?
                                         <div className='goods_qna_and_review_filter_info_div'>
-                                            <p> ▼ 적용중인 필터 옵션 
+                                            <p className='font_14 recipe_korea'> ▼　적용중인 필터 옵션 
                                                 <img src={icon.icon.reload} className='pointer goods_qna_filter_reload_icon' title='적용중인 모든 필터를 삭제합니다.' alt=''
                                                      onClick={() => window.confirm('모든 필터 옵션을 삭제하시겠습니까?') ? _qnaFilter('1', qry, false, 'qna', true) : null}
                                                 />  
@@ -1884,7 +1884,7 @@ class Goods extends Component {
                                         </div>
 
                                         {QandA_info.length > 0 && QandA_length > 0
-                                            ? <div className='bold font_14' id='goods_qna_length_div'> 총 {QandA_length} 개의 Q & A 가 있습니다. </div>
+                                            ? <div className='bold font_14 paybook_bold' id='goods_qna_length_div'> 총 <b className='custom_color_1'> {QandA_length} </b> 개의 Q & A 가 있습니다. </div>
                                             : null
                                         }
 
@@ -2015,8 +2015,8 @@ class Goods extends Component {
                                               </div>
                                             
                                             : <div id='goods_qna_empty_div' className='aCenter'> 
-                                                <h2> 문의된 정보가 없습니다. </h2>
-                                                <p className='font_14'> 
+                                                <h2 className='recipe_korea'> 문의된 정보가 없습니다. </h2>
+                                                <p className='font_14 paybook_bold'> 
                                                     <u className='pointer' onClick={() => QandA_write === false ? _toggleWrite('qna', true) : _toggleWrite('qna', false)}> 
                                                         처음으로 문의해보세요! 
                                                     </u> 
@@ -2028,18 +2028,18 @@ class Goods extends Component {
                                         <div id='goods_qna_write_div'>
                                             {QandA_write === true 
                                             ? <div id='goods_qna_write_content_div'>
-                                                <h3 id='goods_qna_write_title'> 문의 작성 </h3>
+                                                <h3 id='goods_qna_write_title' className='custom_color_1 recipe_korea'> 문의 작성 </h3>
 
                                                 <form name='goods_qna_write' onSubmit={_writeQnA}>
                                                     <div id='goods_qna_wirte_title_div'>
-                                                        <div> 제목　|　 </div>
+                                                        <div className='paybook_bold'> 제목　|　 </div>
                                                         <div> 
                                                             <input type='text' placeholder='제목을 입력해주세요.' maxLength='30' name='qna_title' /> 
                                                         </div>
                                                     </div>
 
                                                     <div id='goods_qna_write_contents_div'>
-                                                        <div id='goods_qna_write_contents_title'> 내용　|　</div>
+                                                        <div id='goods_qna_write_contents_title' className='paybook_bold'> 내용　|　</div>
                                                         <div> 
                                                             <textarea id='goods_qna_contents_box' name='qna_contents' maxLength='300' defaultValue={QandA_contents} 
                                                                       onChange={() => _checkStringLength('qna_contents')}
@@ -2054,13 +2054,13 @@ class Goods extends Component {
                                                             // onClick={() => _sameDeliveryInfo(!order_same_info_bool)} defaultChecked={order_same_info_bool}
                                                         />
                                                         <span className='check_toggle_1' onClick={() => _checkStringLength('qna_secret')}> </span>
-                                                        <label htmlFor='goods_qna_secret_button' className='pointer font_13' id='goods_qna_secret_label'
+                                                        <label htmlFor='goods_qna_secret_button' className='pointer font_13 kotra_bold_font' id='goods_qna_secret_label'
                                                                style={QandA_secret === true ? { 'color' : '#35c5f0' } : { 'color' : 'black' } }
                                                         > 
                                                             　비밀글 (관리자만 보기)
                                                         </label>
                                                     </div>
-                                                    <input type='submit' value='작성' id='goods_qna_write_submit' className='pointer' />
+                                                    <input type='submit' value='작성' id='goods_qna_write_submit' className='pointer recipe_korea'/>
                                                 </form>
                                               </div>
 
@@ -2089,7 +2089,7 @@ class Goods extends Component {
 
                                     <div id='goods_review_div'>
                                         <div className='aRight'>
-                                            <input type='button' value='리뷰 작성' id='goods_review_write_button' className='goods_write_button button_style_1' 
+                                            <input type='button' value='리뷰 작성' id='goods_review_write_button' className='goods_write_button button_style_1 paybook_bold' 
                                                    onClick={() => _toggleWrite('review', null, goods_id)}
                                             />
                                         </div>
@@ -2101,7 +2101,7 @@ class Goods extends Component {
                                                     <u 
                                                         title='내가 쓴 리뷰만 조회합니다.'
                                                         onClick={() => qry['filter_3'] !== '1' ? _qnaFilter('3', qry, true, 'review') : _qnaFilter('3', qry, false, 'review')}
-                                                        className={qry['filter_3'] !== '1' ? 'pointer' : 'pointer  bold custom_color_1' }
+                                                        className={qry['filter_3'] !== '1' ? 'pointer paybook_bold' : 'pointer  bold custom_color_1 paybook_bold' }
                                                     > 
                                                         내가 쓴 리뷰 보기 
                                                     </u> 
@@ -2109,7 +2109,7 @@ class Goods extends Component {
                                             : null}
 
                                             <div>
-                                                <select className='pointer font_13' id='goods_review_filter_selector'
+                                                <select className='pointer font_13 paybook_bold' id='goods_review_filter_selector'
                                                         onChange={(event) => _selectReviewFilter(event, qry)} name='review_filter_select'
                                                         defaultValue={review_filter}
                                                 >
@@ -2123,7 +2123,7 @@ class Goods extends Component {
                                         {qry.filter_3 || (qry.filter_4 || qry.filter_5)
                                             ?
                                             <div className='goods_qna_and_review_filter_info_div font_14'>
-                                                <p> ▼ 적용중인 필터 옵션 
+                                                <p className='font_14 recipe_korea'> ▼　적용중인 필터 옵션 
                                                     <img src={icon.icon.reload} className='goods_qna_filter_reload_icon pointer' title='적용중인 모든 필터를 삭제합니다.' alt=''
                                                         onClick={() => window.confirm('모든 필터 옵션을 삭제하시겠습니까?') ? _qnaFilter('3', qry, false, 'review', true) : null}
                                                     />  
@@ -2234,8 +2234,8 @@ class Goods extends Component {
                                               </div>
 
                                             : <div id='goods_review_empty_div' className='aCenter'>
-                                                <h2> 작성된 리뷰가 없습니다. </h2>
-                                                <p className='font_14'> 
+                                                <h2 className='recipe_korea'> 작성된 리뷰가 없습니다. </h2>
+                                                <p className='font_14 paybook_bold'> 
                                                     <u className='pointer' onClick={() => _toggleWrite('review', null, goods_id)}> 
                                                         처음으로 리뷰를 작성해보세요! 
                                                     </u> 
@@ -2253,7 +2253,7 @@ class Goods extends Component {
 
                                     <div id='goods_main_delivery_info_div'>
                                         <div className='goods_main_paybook_info_div'>
-                                            <h3> 결제 및 상품 정보</h3>
+                                            <h3 className='kotra_bold_font'> 결제 및 상품 정보</h3>
 
                                             <ul className='goods_main_info_div'>
                                                 <li> 세준몰에서 결제를 통한 모든 과정에서는 실제로 결제되지 않습니다.  </li>
@@ -2264,7 +2264,7 @@ class Goods extends Component {
                                         </div>
 
                                         <div className='goods_main_paybook_info_div'>
-                                            <h3> 배송 정보</h3>
+                                            <h3 className='kotra_bold_font'> 배송 정보</h3>
 
                                             <ul className='goods_main_info_div'>
                                                 <li> 세준몰에서 구매한 모든 상품은 실제로 배송이 되지 않습니다.  </li>

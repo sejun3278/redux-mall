@@ -191,8 +191,51 @@ ul { padding-left: 0px !important; }
 #feedback_write_close_icon { width: 18px; position: absolute; margin: -60px 0px 0px 350px; }
 
 #feedback_write_contents_div { margin-top: 15px; padding: 0px 10px 0px 10px; }
-.feedback_grid_div { display: grid; grid-template-columns: 120px auto; font-size: 13px; line-height: 25px; }
-.feedback_grid_div div input { width: -webkit-fill-available; padding: 2px 5px 2px 5px; font-size: 13px; color: #ababab; }
+.feedback_grid_div { font-size: 13px; line-height: 25px; margin-top: 10px; }
+.feedback_grid_div div input { width: -webkit-fill-available; padding: 2px 5px 2px 5px; font-size: 13px; }
+#feedback_contents { width: -webkit-fill-available; min-height: 100px; max-width: 95.5%; min-width: 50%; max-height: 250px; padding : 7px }
+#feedback_loading_div { padding: 40px 0px 20px 0px; }
+/* ; */
+input[name=feedback_submit] {  width: -webkit-fill-available; margin-top: 10px; font-size: 12px; padding: 5px 0px 5px 0px; }
+#feedback_able { background-color: #52BFFF }
+
+#feedback_contents_div { padding: 0px 20px 0px 20px; }
+
+#feedback_empty_div { margin-top: 60px; }
+#feedback_contents_list_div { margin-top: 30px; }
+#feedback_contents_list_border_div { margin-top: 20px; border-top: solid 3px #ababab; border-bottom : solid 3px #ababab; }
+#feedback_top_paging_div { margin-top: 40px; }
+
+/* .feedback_list_divs { padding: 0px 10px 0px 10px; } */
+.feedback_list_other_div { display: grid; grid-template-columns: 68% auto; padding: 7px 10px 7px 10px; }
+/* .feedback_list_grid_div_1 { display: grid; grid-template-columns: 30px auto; } */
+.feedback_list_grid_div_2 { display: grid; grid-template-columns: 70% auto; }
+/* .feedback_list_other_div div { padding: 0px 10px 0px 10px; } */
+/* .feedback_page_div { width: 58%; } */
+
+#select_feedback { background-color: lightblue; }
+.feedback_contents_divs { padding: 10px; max-height: 400px; overflow-y: auto; }
+.feedback_admin_other_div { display: grid; grid-template-columns: 200px auto; border-top: solid 2px #ababab; padding: 7px 5px 7px 5px; }
+#feedback_select_border { border-top: solid 3px black; }
+#feedback_select_font { font-weight: bold; font-size: 15px; }
+.feedback_control_div div { padding: 0px 0px 0px 20px; }
+.feedback_control_div div input { border: none; background-color: white; cursor: pointer; font-size: 12px; }
+
+#feedback_bottom_div { margin-top: 20px; }
+
+#feedback_filter_div { margin-top: 10px; }
+#feedback_filter_div div { margin-bottom: 5px; }
+#feedback_filter_div div select { font-size: 12px; width: 100px; cursor: pointer; padding: 3px; font-family: 'paybooc-Bold'; }
+
+.select_feedback_filter { font-weight: bold; border: solid 2px #52BFFF; color: #52BFFF; }
+#feedback_using_filter_div { margin-top: 15px; padding: 10px 0px 10px 0px; border-top: solid 3px #28527a; border-bottom: solid 3px #28527a; }
+#feedback_using_filter_div h4 { margin-bottom: 0px; }
+
+#feedback_using_list_ul { margin-left: 25px; }
+#feedback_using_list_ul li { margin-top: 5px; }
+#feedback_using_list_ul li img { width: 15px; position: absolute; margin: 1px 0px 0px 8px; }
+
+#feedback_reset_filter_icon { width: 15px; position: absolute; margin: -2px 0px 0px 10px; }
 
 @media (max-width : 1200px) {
     #top_category_index_div, #open_top_category_div { grid-template-columns: 2% 98% 0% !important; }
@@ -293,6 +336,8 @@ ul { padding-left: 0px !important; }
     #search_view_value_filter_div { line-height: 30px; }
     /* #search_price_title_div { display: none; } */
     .home_contents_slick_divs img { width: 70%; }
+
+    .feedback_list_other_div, .feedback_list_grid_div_2 { grid-template-columns: 60% auto; }
 }
 
 @media (max-width : 550px) {
@@ -307,6 +352,14 @@ ul { padding-left: 0px !important; }
 @media (max-width : 500px) {
     .home_contents_slick_divs img { width: 80%; }
     .top_category_grid_div div { width: 75% !important; }
+
+    .feedback_list_other_div { display: block; }
+    .feedback_list_grid_div_2 { grid-template-columns: 80% auto; }
+
+    #feedback_contents_list_div p { padding: 0px 5px 0px 10px; }
+    #feedback_contents_div { padding: 0px 0px 0px 0px; }
+    #feedback_filter_div { padding-right: 15px; }
+    #feedback_using_filter_div { padding-left: 15px; }
 }
 
 @media (max-width : 426px) {
@@ -384,5 +437,8 @@ ul { padding-left: 0px !important; }
 
     #feedback_write_div { padding: 0px 40px 0px 40px; }
     #feedback_write_close_icon { margin-left: 290px; }
+
+    .feedback_list_grid_div_2 { grid-template-columns: 75% auto; }
+
     /* #top_category_contents_div { width: 65% !important; } */
 }

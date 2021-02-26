@@ -166,7 +166,7 @@
 .qna_data_list_detail_question_div div { padding-top: 20px; padding-bottom: 20px; line-height: 28px;  }
 
 .qna_data_list_detail_title_div { vertical-align: middle !important; text-align: center; font-size: 22px; border-right: solid 1px #ababab; }
-.qna_data_list_detail_contents_div { margin-left: 10px; margin-right: 10px; font-size: 14px; }
+.qna_data_list_detail_contents_div { max-height: 500px; overflow-y: auto; margin-left: 10px; margin-right: 10px; font-size: 14px; }
 
 .qna_data_detail_close_div { background-color: black; font-size: 13px; height : 25px; line-height: 25px; }
 .qna_data_list_remove_div { display: grid; padding: 0px 10px 0px 10px; height: 40px; line-height: 35px; border: dotted 1px black; border-bottom: solid 2px black; border-top: solid 2px black; padding-right: 15px; font-size: 13px;  }
@@ -181,8 +181,8 @@
 #goods_qna_filter_icon { width: 20px; margin-right: -20px;  }
 
 .goods_qna_and_review_filter_info_div { margin-left: 10px; margin-top: 30px; border-top : dotted 1px black; border-bottom: dotted 1px black ;}
-.goods_qna_filter_reload_icon { width: 18px; position: absolute; margin-left: 10px; }
-.goods_qna_and_review_filter_info_div ul { margin-left: 30px; color: #ababab; margin-top: 20px; line-height: 30px; }
+.goods_qna_filter_reload_icon { width: 18px; position: absolute; margin-left: 10px; margin-top: -2px; }
+.goods_qna_and_review_filter_info_div ul { margin-left: 30px; color: #ababab; margin-top: 5px; line-height: 30px; }
 
 .goods_qna_filter_remove_icon { width: 10px; position : absolute; margin : 11px 0px 0px 10px}
 #review_list_close_icon { width: 15px; position: absolute; margin-top: -60px; right: 5%; }
@@ -201,7 +201,7 @@
 .qna_review_data_list_grid_div .review_star_div { margin-right: 0px !important; padding-left: 0px !important; }
 
 #goods_review_list .qna_data_list_other_div { grid-template-columns: 50% 50%; }
-.goods_review_contents_div { padding: 20px 15px 20px 15px; border-left: solid 1px #ababab; border-right: solid 1px #ababab; border-bottom: solid 4px black; }
+.goods_review_contents_div { max-height: 300px; overflow-y: auto; padding: 20px 15px 20px 15px; border-left: solid 1px #ababab; border-right: solid 1px #ababab; border-bottom: solid 4px black; }
 .goods_review_remove_div { text-align: right; margin-top: 10px; }
 .goods_review_remove_div input { background-color: white; padding: 5px 10px 5px 10px; font-size: 12px; border-color: #ababab; }
 /* .review_star_div { float: right; margin: 0px !important; margin-right: 5px !important; } */

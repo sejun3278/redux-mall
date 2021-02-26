@@ -25,6 +25,7 @@ router.post('/check/nickname', controller.check.nickname);
 router.post('/add/signup', controller.add.signup);
 router.post('/add/goods', controller.add.goods);
 router.post('/add/like', controller.add.like);
+// router.post('/add/feedback', controller.add.feedback);
 
 router.post('/api/login', controller.api.login);
 router.post('/api/send_mail', controller.api.send_mail);

@@ -1299,6 +1299,11 @@ class App extends Component {
                       render={(props) => <Feedback
                         _setModalStyle={_setModalStyle}
                         price_comma={price_comma}
+                        _checkLogin={_checkLogin}
+                        user_info={user_info}
+                        _sendMailer={_sendMailer}
+                        _addAlert={_addAlert}
+                        _filterURL={_filterURL}
                       {...props} 
                   />}                    
                 />

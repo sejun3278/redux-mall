@@ -181,12 +181,16 @@ class MyPageHome extends Component {
 
         let page_name = "마이 페이지"
         let page_icon = icon.my_page.my_page
+
+        let move_url = '/myPage/' + path;
         if(path !== undefined) {
             page_name = page_list.myPage.page_name[path];
             page_icon = icon.my_page[path +  '_black']
+
+        } else {
+            move_url = qry;
         }
 
-        const move_url = '/myPage/' + path;
         return(
             <div id='my_page_div'>
                 {user_info ? <div>

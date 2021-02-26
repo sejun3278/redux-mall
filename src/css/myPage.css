@@ -314,7 +314,7 @@ input[name=use_point_input] { height: 20px !important; padding: 5px; margin-righ
 
 .order_list_remove_icon { width: 12px; position: absolute; margin: 7.5px 0px 0px 10px; cursor: pointer; }
 
-#order_length_result_div { margin-top: 90px; font-size: 14px; display: grid; grid-template-columns: 60% 40%; }
+#order_length_result_div { margin-top: 20px; font-size: 14px; display: grid; grid-template-columns: 60% 40%; }
 #order_list_select_page_cnt { line-height: 60px; }
 #order_list_page_cnt_select { padding: 5px; }
 #order_list_contents_div { margin-top: 20px; border-top: solid 1px #ababab; }
@@ -378,7 +378,7 @@ select[name=order_cancel_reason] { display: block; width: 100%; padding: 5px; ma
 #order_list_max_price_input { margin-left: 2.5px; }
 
 .order_filter_search_icon { border: solid 2px #ababab; padding: 5.2px; cursor: pointer; width: 15px; position: absolute; margin: 0px 0px 0px 5px; }
-#order_list_filter_reload { width: 20px; position: absolute; margin: -57px 0px 0px 95px; }
+#order_list_filter_reload { width: 20px; position: absolute; margin: -1px 0px 0px 10px; }
 
 .order_list_filter_alert { position: absolute; margin-top: 15px; font-size: 12px; }
 .order_list_paging_div { margin-top: 70px; padding-bottom: 40px; }
@@ -405,7 +405,7 @@ select[name=order_cancel_reason] { display: block; width: 100%; padding: 5px; ma
 #mypage_qna_loading_div { margin-top: 60px; }
 #mypage_qna_contents_div { margin : 25px 40px 0px 40px !important; }
 #mypage_qna_main_empty_div { padding: 40px 0px 40px 0px; }
-#mypage_qna_length_div { margin-top: 50px; }
+#mypage_qna_length_div { margin-top: 100px; }
 #mypage_qna_contents_show_div { margin-top: 5px; }
 
 .mypage_qna_main_list_div { padding: 10px 0px 10px 0px; }
@@ -422,7 +422,7 @@ select[name=order_cancel_reason] { display: block; width: 100%; padding: 5px; ma
 .mypage_qna_goods_and_price_grid_div { display: grid; grid-template-columns: 85px auto;  }
 
 .mypage_qna_goods_info_thumbnail { width: 70px; height: 70px; border: solid 1px #ababab; margin: 5px; background-size: contain; background-repeat: no-repeat; }
-.mypage_qnd_goods_info_div { padding: 10px 0px 5px 5px; }
+.mypage_qnd_goods_info_div { padding: 5px 0px 5px 5px; }
 .mypage_qnd_goods_name_div { font-weight: bold; margin-top: 20px; font-family: 'Recipekorea'; width: 90%; }
 .mypage_qnd_goods_price_div { margin-top: -2px !important; }
 
@@ -451,8 +451,8 @@ input[name=search_goods_id] { width: 50px;  text-align: center; background-color
 input[name=search_contents] { width: 60%; background-color: #ece2e1 }
 .mypage_qna_search_button, .mypage_review_search_button { width: 15px; border: none !important; position: absolute; margin-top : 3px; margin-left : 5px }
 
-#mypage_qna_filtering_div { margin-top: 50px; }
-#mypage_qna_filter_reset_button { margin: 0px 0px 0px 10px; width: 18px; position: absolute; }
+#mypage_qna_filtering_div { margin-top: 50px; border-top: dotted 1px #ababab; }
+#mypage_qna_filter_reset_button { margin: -2px 0px 0px 10px; width: 18px; position: absolute; }
 #mypage_qna_filtering_div ul li { padding-bottom: 10px; }
 .mypage_qna_remove_filter_icon { cursor : pointer; width: 12px; position: absolute; margin: 4px 0px 0px 15px; }
 
@@ -488,7 +488,7 @@ input[name=search_contents] { width: 60%; background-color: #ece2e1 }
 .mypage_review_goods_num_and_price_div { font-size: 12px; margin-top: 35px; }
 .mypage_review_star_div { border-bottom: solid 1px #ababab; }
 .mypage_review_title_div { height: 30px; line-height: 30px; display: inline-block; width: -webkit-fill-available; overflow: hidden; text-overflow: ellipsis; line-height: 3; }
-.mypage_review_contents_div { height: 50px; }
+.mypage_review_contents_div { max-height: 100px; overflow-y: auto; }
 .mypage_review_contents_div div { padding : 0px 0px 10px 15px; }
 
 #mypage_loading_scrolling { background-color: black; padding : 20px 0px 20px 0px; color: white; text-align: center; margin-top: -40px; opacity: 0.8; }

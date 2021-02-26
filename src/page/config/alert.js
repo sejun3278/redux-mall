@@ -10,6 +10,7 @@ import * as signupAction from '../../Store/modules/signup';
 import '../../css/main.css';
 import icon from '../../source/img/icon.json';
 
+import URL from '../../config/url';
 import $ from 'jquery';
 
 let alert_scrolling = false;

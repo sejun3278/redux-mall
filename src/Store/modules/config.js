@@ -105,7 +105,11 @@ const initialState = {
     hot_item_info : JSON.stringify([]),
     feedback_loading : false,
     feedback_info : JSON.stringify([]),
-    feedback_modal : false
+    feedback_modal : false,
+    feedback_url : "",
+    feedback_contents : "",
+    feedback_length : 0,
+    feedback_now_id : null,
 }
 
 export default handleActions({
@@ -308,7 +312,13 @@ export default handleActions({
     [SETFEEDBACKINFO] : (state, data) => {
         return {
             ...state,
-            feedback_modal : data.payload.modal !== undefined ? data.payload.modal : state.feedback_modal
+            feedback_modal : data.payload.modal !== undefined ? data.payload.modal : state.feedback_modal,
+            feedback_url : data.payload.page !== undefined ? data.payload.page : state.feedback_url,
+            feedback_contents : data.payload.contents !== undefined ? data.payload.contents : state.feedback_contents,
+            feedback_loading : data.payload.loading !== undefined ? data.payload.loading : state.feedback_loading,
+            feedback_info : data.payload.info !== undefined ? data.payload.info : state.feedback_info,
+            feedback_length : data.payload.length !== undefined ? data.payload.length : state.feedback_length,
+            feedback_now_id : data.payload.select !== undefined ? data.payload.select : state.feedback_now_id
         }
     }
 

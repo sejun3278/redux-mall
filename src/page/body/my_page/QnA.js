@@ -373,7 +373,7 @@ class QnA extends Component {
 
                         ?  */}
                         <div id='mypage_qna_filter_list_div'>
-                            <div id='mypage_qna_view_filter_div'>
+                            <div id='mypage_qna_view_filter_div' className='paybook_bold gray'>
                                 <div id='mypage_qna_date_filter_div'>
                                     <ul>
                                         <li className={qry['date'] === 'lately' || !qry['date'] ? "bold custom_color_1" : null}> 
@@ -405,7 +405,7 @@ class QnA extends Component {
 
                             <div id='mypage_qna_search_div'>
                                 <form name='mypage_qna_search_form' onSubmit={_searchFilter}>
-                                    <div id='mypage_qna_search_grid_div'>
+                                    <div id='mypage_qna_search_grid_div' className='paybook_bold'>
                                         <div> 상품 번호　|　
                                             <input type='number' max={1000} min={1} name='search_goods_id' defaultValue={qry.goods_id} /> 
                                             <input alt='' type='image' className='mypage_qna_search_button pointer' src={icon.icon.search_black} />
@@ -422,13 +422,13 @@ class QnA extends Component {
                             {Object.keys(qry).length > 0
                             ?
                             <div id='mypage_qna_filtering_div'>
-                                <h4> 적용중인 필터 옵션 
+                                <h4 className='recipe_korea custom_color_1'> 적용중인 필터 옵션 
                                     <img alt='' src={icon.icon.reload} id='mypage_qna_filter_reset_button' className='pointer' title='필터 옵션 초기화' 
                                          onClick={() => window.confirm('모든 필터 옵션을 삭제하시겠습니까?') ? window.location.href='/myPage/QandA' : null}
                                     /> 
                                 </h4>
 
-                                <ul className='font_13 gray'>
+                                <ul className='font_13 gray paybook_bold'>
                                     {qry.date
                                         ? qry.date === 'lately' ? <li> 최신순으로 정렬 <img onClick={() => _initFilter('date', 'lately', false)} src={icon.icon.close_black} alt='' className='mypage_qna_remove_filter_icon' /> </li>
 
@@ -470,7 +470,7 @@ class QnA extends Component {
 
                         {/* : null } */}
 
-                        <p id='mypage_qna_length_div' className='font_13 bold'> 총 {QandA_length} 개의 상품 문의 내역이 조회됐습니다.  </p>
+                        <p id='mypage_qna_length_div' className='font_14 bold paybook_bold'> 총 <b className='custom_color_1'> {QandA_length} </b> 개의 상품 문의 내역이 조회됐습니다.  </p>
 
                         {QandA_length > 0
 
@@ -535,7 +535,7 @@ class QnA extends Component {
                                         <div key={key} className={class_col}
                                             style={ QandA_info.length > key + 1 ? { 'borderBottom' : 'solid 1px #ababab' } : null }
                                         >
-                                                <div className='mypage_qna_other_grid_div'>
+                                                <div className='mypage_qna_other_grid_div gray paybook_bold'>
                                                     <div className='mypage_qna_other_div_1'
                                                          onClick={() => el.state !== 2 ? _selectQandA(el.id) : null}
                                                     >
@@ -558,7 +558,7 @@ class QnA extends Component {
                                                         <div className='mypage_qna_remove_div'>
                                                             {el.state !== 2
                                                             ?
-                                                            <input type='button' value='삭제' className='mypage_qna_remove_button pointer'
+                                                            <input type='button' value='삭제' className='mypage_qna_remove_button pointer paybook_bold'
                                                                    onClick={() => _removeQandA(el.id, false)}
                                                             />
 
@@ -581,7 +581,7 @@ class QnA extends Component {
                                                         style={{ 'backgroundImage' : `url(${el.goods_thumbnail})` }}/>
 
                                                     <div className='mypage_qnd_goods_info_div'>
-                                                        <div className='font_12 pointer'> 
+                                                        <div className='font_12 pointer paybook_bold gray'> 
                                                             <b onClick={() => window.location.href='/goods?goods_num=' + el.goods_id}> 상품 번호　|　{el.goods_id} </b>
                                                         </div>
                                                         <div className='mypage_qnd_goods_name_div cut_one_line pointer'> 

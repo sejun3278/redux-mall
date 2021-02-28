@@ -482,7 +482,7 @@ class Order extends Component {
                     const check_mobile = _checkDevice();
                     let redirect = '';
                     if(check_mobile) {
-                        redirect = 'http://localhost:3000/orderCheck'
+                        redirect = 'http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/orderCheck'
                     }
                     console.log(redirect)
 

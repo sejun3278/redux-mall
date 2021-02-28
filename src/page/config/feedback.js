@@ -151,7 +151,7 @@ class Feedback extends Component {
                     'contents' : contents, 
                     'title' : `Sejun's Mall 피드백이 새로 등록되었습니다.` 
                 }
-                await _sendMailer(obj);
+                _sendMailer(obj);
 
                 // 알림 메세지 전송
                 const alert_info = {};
@@ -159,7 +159,7 @@ class Feedback extends Component {
                 alert_info['reason'] = '새로운 피드백이 등록되었습니다.';
                 alert_info['move_url'] = '/feedback';
 
-                await _addAlert(alert_info)
+                _addAlert(alert_info)
 
                 await this._getFeedbackList();
 

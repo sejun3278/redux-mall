@@ -676,8 +676,8 @@ class AdminOrder extends Component {
 
             if(order_info.info_agree === 1) {
                 if(type === 'complate_delivery' || type === 'start_delivery' || type === 'order_cancel') {
-                    await _sendMailer(sand_obj);
-                    await _addAlert(alert_obj)
+                    _sendMailer(sand_obj);
+                    _addAlert(alert_obj)
                 }
             }
         }

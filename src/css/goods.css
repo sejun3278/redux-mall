@@ -3,7 +3,7 @@
 
 #goods_title_div { margin : 20px 5% 0px 5% !important; }
 #goods_contents_grid_div { display: grid; grid-template-columns: 5% 30% 60% 5%; margin: 20px 0px 0px 0px; padding-bottom: 75px; border-bottom: solid 2px black; }
-#goods_thumbnail_div div { padding: 5px; width: -webkit-fill-available; min-height: 300px; border: solid 1px #ababab; background-repeat: no-repeat; background-size: contain; background-position-x: center; background-position-y: center; }
+#goods_thumbnail_div div { padding: 5px; width: -webkit-fill-available; min-height: 300px; border: solid 1px #ababab; background-repeat: no-repeat; background-size: cover; background-position-x: center; background-position-y: 15%; }
 
 #goods_detail_contents_div { margin-left: 10px; }
 /* #goods_price_and_like_div { display: grid; grid-template-columns: 80% 20%; } */

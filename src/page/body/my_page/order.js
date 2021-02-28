@@ -297,7 +297,7 @@ class Order extends Component {
 
         $('#same_delivery_info_button').prop("checked", bool)
 
-        console.log(user_info)
+        // console.log(user_info)
 
         if(bool === true) {
             $('#same_delivery_info').addClass('bold black');
@@ -464,7 +464,7 @@ class Order extends Component {
                     // return this._complateOrder(payment_select, false, form_data);
 
                 } else {
-                    const { _hashString, _getCookie, _stringCrypt } = this.props;
+                    const { _hashString, _getCookie, _stringCrypt, _checkDevice } = this.props;
 
                     // 카드 결제인 경우
                     const host = form_obj['order_host'] + ' ' + form_obj['order_host_detail'];
@@ -478,6 +478,14 @@ class Order extends Component {
                     await _getCookie('order_check', 'add', _stringCrypt(JSON.stringify(cookie_obj), "_order_check", true), true);
                     // sessionStorage.setItem(_hashString('order_check'), JSON.stringify(session_obj));
 
+                    // 모바일 체크하기
+                    const check_mobile = _checkDevice();
+                    let redirect = '';
+                    if(check_mobile) {
+                        redirect = 'http://localhost:3000/orderCheck'
+                    }
+                    console.log(redirect)
+
                     IMP.request_pay({
                         pg : 'kcp', // version 1.1.0부터 지원.
                         pay_method : 'card',
@@ -489,7 +497,7 @@ class Order extends Component {
                         buyer_tel : form_obj['post_phone'],
                         buyer_addr : host,
                         buyer_postcode : form_obj['order_host_code'],
-                        m_redirect_url : ''
+                        m_redirect_url : redirect
 
                     }, async function(rsp) {
                         if ( rsp.success ) {
@@ -502,6 +510,8 @@ class Order extends Component {
                                 return window.location.replace('/orderCheck');
 
                         } else {
+                            // console.log(rsp)
+
                             let msg = '결제에 실패하였습니다. \n';
                             msg += '( ' + rsp.error_msg + ' )';
 
@@ -728,7 +738,6 @@ class Order extends Component {
                 data : coupon_obj
             })
 
-            console.log(get_data)
             if(get_data.data[0][0] === undefined) {
                 alert('쿠폰 정보를 조회할 수 없습니다. \n관리자에게 문의해주세요.');
                 result = false;
@@ -1191,7 +1200,7 @@ class Order extends Component {
                         <div className='order_delivery_top_div'> 
                             <div> * 우편번호 </div>
                             <div> 
-                                <input type='input' id='order_delivery_host_code_input' value={order_host_code}  readOnly disabled /> 
+                                <input type='input' id='order_delivery_host_code_input' value={order_host_code} readOnly disabled /> 
                                 <input type='button' value='주소 조회' className='order_delivery_input_1 pointer bold' id='order_delivery_host_code_button'
                                        onClick={() => _toggleModal(true) }
                                 />

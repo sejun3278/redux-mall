@@ -297,7 +297,7 @@ input[name=feedback_submit] {  width: -webkit-fill-available; margin-top: 10px; 
 }
 
 @media (max-width : 650px) {
-    #search_view_filter_grid_div { margin-top: 30px; }
+    #search_view_filter_grid_div { margin-top: 15px; }
     #home_category_list_div { grid-template-columns: repeat(7, 25%) !important; overflow: auto; }
 }
 
@@ -328,7 +328,7 @@ input[name=feedback_submit] {  width: -webkit-fill-available; margin-top: 10px; 
     #search_filter_div { padding-bottom: 15px; }
     #search_price_title_div { display: none; text-align: left; margin: 10px 0px 0px 20px; }
     #search_price_input_div { display: block !important; margin-right: 20px; }
-    #search_price_filter_grid_div { margin-right: 35px; }
+    /* #search_price_filter_grid_div { margin-right: 55px; } */
 
     .search_option_grid_div { grid-template-columns: 27% auto; }
     #search_view_filter_grid_div { display: block; height: 20px; }
@@ -389,10 +389,12 @@ input[name=feedback_submit] {  width: -webkit-fill-available; margin-top: 10px; 
     #search_option_list_div { margin-left: 10px; }
 
     #search_price_input_max_div { display: block; }
-    #search_price_filter_grid_div { margin-right: 0px; border-top: 1px #ababab dotted; padding-top: 20px; }
+    #search_price_filter_grid_div { line-height: 35px; text-align: left !important; margin-right: 0px !important; padding-left: 30px; margin-bottom: 0px !important; }
+    /* #search_price_filter_grid_div { margin-right: 0px; border-top: 1px #ababab dotted; padding-top: 20px; } */
     #search_price_input_div { margin-right: 25%;}
     #search_price_input_div input[type=number] { width: 60%; margin-bottom: 5px; }
-    #search_price_filter_submit { margin: -62px 0px 0px 10px; width: 48px; }
+    #search_price_filter_submit { margin: -65px 0px 0px 200px; width: 48px; }
+    #search_view_filter_grid_div { margin-top: 10px !important; }
 
     #review_list_div { margin-left: 55px; margin-right: 55px; }
     #review_list_close_icon { margin-right: 55px; }

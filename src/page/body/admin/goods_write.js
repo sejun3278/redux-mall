@@ -279,7 +279,7 @@ class AdminGoodsWrite extends Component {
                   })
 
                 if(img_file_upload.data.result === false) {
-                    console.log(img_file_upload.data.ment)
+                    // console.log(img_file_upload.data.ment)
                     return alert('이미지를 업로드 할 수 없습니다.');
                 }
 
@@ -298,7 +298,7 @@ class AdminGoodsWrite extends Component {
                 })
     
                 if(upload_image.data.result === false) {
-                    console.log(upload_image.data.ment)
+                    // console.log(upload_image.data.ment)
                     return alert('이미지를 업로드 할 수 없습니다.');
                 }
 

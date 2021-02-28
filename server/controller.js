@@ -271,35 +271,48 @@ module.exports = {
                         }
                     }
 
+                    let union = "";
                     if(body.union === true) {
                         if(!body.count) {
-                            qry += ') UNION SELECT ';
-                            qry += '`' + body.union_table + '`.* FROM `' + body.union_table + '`';
+                            union = ') UNION SELECT ';
+
+                            // if(body.board) {
+                            //     union = ') UNION (SELECT ';
+                            // }
+
+                            union += '`' + body.union_table + '`.* FROM `' + body.union_table + '`';
 
                             if(body.union_where) {
-                                qry += ' WHERE '
+                                union += ' WHERE '
 
                                 body.union_where.forEach( (el, cnt) => {
                                     if(cnt > 0 && body.union_where.length > cnt) {
-                                        qry += ' AND '
+                                        union += ' AND '
                                     }
 
-                                    qry += '`' + body.union_table + '`.' + el.key;
+                                    union += '`' + body.union_table + '`.' + el.key;
                                     if(el.key === 'result_price') {
-                                        qry += ' >= ' + el.value[0] + ' AND ';
-                                        qry += '`' + body.union_table + '`.result_price <= ' + el.value[1];
+                                        union += ' >= ' + el.value[0] + ' AND ';
+                                        union += '`' + body.union_table + '`.result_price <= ' + el.value[1];
 
                                     } else {
-                                        qry += ' ' + el.option + ' "' + el.value + '" '
+                                        union += ' ' + el.option + ' "' + el.value + '" '
                                     }
                                 })
                             }
 
                             if(order !== '') {
-                                qry += order;
+                                // if(body.limit !== false) {
+                                    union += order;
+                                // }
                             }
+
+                            // if(body.board) {
+                            //     union += ')';
+                            // }
                         }
                     }
+                    qry += union;
 
                 } else if(body.type === 'INSERT') {
                     // INSERT 타입

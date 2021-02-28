@@ -178,15 +178,24 @@ class Search extends Component {
     }
 
     _getData = async (scrolls) => {
-        const { location, searchAction, user_info, review_scroll } = this.props;
+        const { location, searchAction, user_info, review_scroll, _checkDevice } = this.props;
 
         const qry = queryString.parse(location.search);
         const obj = { 'type' : "SELECT", 'table' : "goods", 'comment' : "검색 정보 가져오기" };
 
-        obj['union'] = true;
-        obj['union_table'] = 'goods';
+        let type = qry.view_type ? qry.view_type : 'album';
+        const mobile_check = _checkDevice();
 
-        obj['union_where'] = [{ 'key' : 'state', 'option' : '=', 'value' : '1' }];
+        if(mobile_check === true) {
+            type = 'board';
+        }
+
+        if(type === 'album') {
+            obj['union'] = true;
+            obj['union_table'] = 'goods';
+
+            obj['union_where'] = [{ 'key' : 'state', 'option' : '=', 'value' : '1' }];
+        }
 
         // WHERE 옵션 적용
         obj['option'] = {};
@@ -208,28 +217,37 @@ class Search extends Component {
         }
 
         obj['where'].push({ 'table' : 'goods', 'key' : 'name', 'value' : "%" + search + "%" });
-        obj['union_where'].push({ 'key' : 'name', 'option' : 'LIKE', 'value' : "%" + search + "%" });
+
+        if(type === 'album') {
+            obj['union_where'].push({ 'key' : 'name', 'option' : 'LIKE', 'value' : "%" + search + "%" });
+        }
 
         if(qry.first_cat) {
             obj['option']['first_cat'] = '=';
             obj['where'].push({ 'table' : 'goods', 'key' : 'first_cat', 'value' : first_cat });
 
-            obj['union_where'].push({ 'key' : 'first_cat', 'option' : '=', 'value' : first_cat });
+            if(type === 'album') {
+                obj['union_where'].push({ 'key' : 'first_cat', 'option' : '=', 'value' : first_cat });
+            }
         }
 
         if(qry.last_cat) {
             obj['option']['last_cat'] = '=';
             obj['where'].push({ 'table' : 'goods', 'key' : 'last_cat', 'value' : last_cat });
 
-            obj['union_where'].push({ 'key' : 'last_cat', 'option' : '=', 'value' : last_cat });
+            if(type === 'album') {
+                obj['union_where'].push({ 'key' : 'last_cat', 'option' : '=', 'value' : last_cat });
+            }
         }
         
         obj['where'].push({ 'table' : 'goods', 'key' : 'state', 'value' : "1" });
         obj['where'].push({ 'table' : 'goods', 'key' : 'result_price', 'value' : [Number(min_price), Number(max_price)] });
-        obj['where'].push({ 'table' : 'goods', 'key' : 'stock', 'value' : "0" });
 
-        obj['union_where'].push({ 'key' : 'result_price', 'option' : '=', 'value' : [Number(min_price), Number(max_price)] });
+        if(type === 'album') {
+            obj['where'].push({ 'table' : 'goods', 'key' : 'stock', 'value' : "0" });
 
+            obj['union_where'].push({ 'key' : 'result_price', 'option' : '=', 'value' : [Number(min_price), Number(max_price)] });
+        }
         // obj['union'] = true;
         // obj['union_info'] = { 'table' : 'goods',  }
 
@@ -268,7 +286,6 @@ class Search extends Component {
             obj['where'].push({ 'table' : 'like', 'key' : 'state', 'value' : 1 });
         }
 
-        const type = qry.view_type ? qry.view_type : 'album';
         let start = 0;
         let end = 0;
 
@@ -277,12 +294,13 @@ class Search extends Component {
             end = scroll === 0 ? 18 : (scroll * 18) + 18;
 
         } else if(type === 'board') {
+            obj['board'] = true; //
+
             const now_page = qry.search_page ? qry.search_page : this.props.now_page;
 
             start = now_page === 1 ? 0 : (20 * Number(now_page)) - 20;
             end = now_page * 20;
         }
-
 
         obj['order'][1] = { 'table' : 'goods', 'key' : 'limit', 'value' : [start, end] }
 

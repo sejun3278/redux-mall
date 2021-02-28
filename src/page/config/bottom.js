@@ -23,8 +23,9 @@ class Bottom extends Component {
                     <div className='bottom_stack_grid'> 
                       <div> 기술 스택　|　</div>
                       <div className='gray'> 
-                        <div> Frontend : Redux (90%), jQuery (10%), CSS </div>
+                        <div> Frontend : Redux (90%), jQuery (10%) </div>
                         <div> Backend : Node.js (Express) </div>
+                        <div className='bold'> <u> 반응형 완료 </u> </div>
                       </div>
                     </div>
 

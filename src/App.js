@@ -552,7 +552,7 @@ class App extends Component {
               get();
             }
 
-            console.log(alerts)
+            // console.log(alerts)
             if(alerts !== false) {
               alert('쿠폰이 등록되었습니다.');
               this._getCouponList();
@@ -1130,12 +1130,24 @@ class App extends Component {
     return result;
   }
 
+  // 현재 디바이스 (모바일인지) 체크하기
+  _checkDevice = () => {
+    const mobileKeyWords = new Array('Android', 'iPhone', 'iPod', 'BlackBerry', 'Windows CE', 'SAMSUNG', 'LG', 'MOT', 'SonyEricsson');
+  
+    for (var info in mobileKeyWords) {
+      if (navigator.userAgent.match(mobileKeyWords[info]) != null) {
+          return true;
+        }
+    }
+    return false;
+  }
+
   render() {
     const { login_modal, admin_info, login, admin_state, search_id_pw_modal, loading, review_modal } = this.props;
     const { 
           _pageMove, _modalToggle, _checkAdmin, _checkLogin, _searchCategoryName, _toggleSearchIdAndPw, _search, price_comma, _setPoint, _loginAfter,
           _filterURL, _clickCategory, _moveScrollbar, _getCookie, _setModalStyle, _loginCookieCheck, _addCoupon, _getCouponList, _hashString, _setGoodsStock,
-          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert, _stringCrypt, _getAlertMessage
+          _removeReview, _checkScrolling, _searchStringColor, _sendMailer, _addAlert, _stringCrypt, _getAlertMessage, _checkDevice
     } = this;
     const user_info = JSON.parse(this.props.user_info);
 
@@ -1330,6 +1342,7 @@ class App extends Component {
                         _getCookie={_getCookie}
                         _stringCrypt={_stringCrypt}
                         _hashString={_hashString}
+                        _checkDevice={_checkDevice}
                         // cat_name={cat_name}
                         // _pageMove={_pageMove}
                       {...props} 
@@ -1405,6 +1418,7 @@ class App extends Component {
                       _checkScrolling={_checkScrolling}
                       _searchStringColor={_searchStringColor}
                       _stringCrypt={_stringCrypt}
+                      _checkDevice={_checkDevice}
                       {...props} 
                   />}
                 />

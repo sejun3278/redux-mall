@@ -170,7 +170,7 @@ class MyPageHome extends Component {
         const { 
             user_info, _getCookie, price_comma, _modalToggle, admin_info, coupon_list_open_modal, _setModalStyle, 
             _loginCookieCheck, _addCoupon, _getCouponList, _setPoint, _checkLogin, _filterURL, _hashString, _moveScrollbar, _setGoodsStock,
-            _removeReview, _checkScrolling, _searchStringColor, _stringCrypt
+            _removeReview, _checkScrolling, _searchStringColor, _stringCrypt, _checkDevice
         } = this.props;
 
         const coupon_list = JSON.parse(this.props.coupon_list);
@@ -280,6 +280,7 @@ class MyPageHome extends Component {
                             _checkLogin={_checkLogin}
                              _hashString={_hashString}
                              _stringCrypt={_stringCrypt}
+                             _checkDevice={_checkDevice}
                         {...props}  />}
                     />
 

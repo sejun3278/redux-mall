@@ -484,8 +484,7 @@ class Order extends Component {
                     if(check_mobile) {
                         redirect = 'http://sejun-redux-mall.s3-website.ap-northeast-2.amazonaws.com/orderCheck'
                     }
-                    console.log(redirect)
-
+                    
                     IMP.request_pay({
                         pg : 'kcp', // version 1.1.0부터 지원.
                         pay_method : 'card',
